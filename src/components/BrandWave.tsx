@@ -1,17 +1,15 @@
 import React, { useId } from 'react';
 
 export interface BrandWaveProps {
-  /** Color of the wave stroke. Supports hex, rgb, or CSS variables. Default: var(--color-orange-primary, #F68621) */
+  /** Color of the wave pattern. Supports hex, rgb, or CSS variables. Default: var(--color-orange-primary, #F68621) */
   color?: string;
-  /** Height of the wave element in pixels. Default: 22 */
+  /** Height of the wave element in pixels. Default: 24 */
   height?: number;
-  /** Width of a single repeating wave cycle in pixels. Default: 48 */
+  /** Width of a single repeating arch cycle in pixels. Default: 48 */
   unitWidth?: number;
-  /** Thickness of the wave line stroke in pixels. Default: 3.5 */
-  strokeWidth?: number;
   /** Opacity of the wave (0 to 1). Default: 1 */
   opacity?: number;
-  /** Optional slow horizontal drifting animation */
+  /** Optional subtle horizontal drifting animation */
   animated?: boolean;
   /** Additional CSS class names */
   className?: string;
@@ -22,33 +20,29 @@ export interface BrandWaveProps {
 /**
  * BrandWave Component
  * 
- * Renders the signature 60FRAMEWORKS curved scallop/wave line pattern.
- * Uses an SVG pattern for crisp, pixel-perfect responsiveness across all screen sizes
- * and fully dynamic color control without needing raster images.
+ * Renders the authentic 60FRAMEWORKS signature arch pattern:
+ * alternating downward and upward semicircular ribbon arches meeting flat at the centerline.
  */
 export const BrandWave: React.FC<BrandWaveProps> = ({
   color = 'var(--color-orange-primary, #F68621)',
-  height = 22,
-  unitWidth = 48,
-  strokeWidth = 3.5,
+  height = 24,
+  unitWidth,
   opacity = 1,
   animated = false,
   className = '',
   style = {},
 }) => {
   const rawId = useId();
-  const patternId = `wave-pattern-${rawId.replace(/:/g, '')}`;
+  const patternId = `brand-arch-pattern-${rawId.replace(/:/g, '')}`;
 
-  // SVG path coordinates scaled to unitWidth and height
-  // S-curved scallop arches from (0, base) over crest (half, top) to (unit, base)
-  const half = unitWidth / 2;
-  const c1 = unitWidth * 0.25;
-  const c2 = unitWidth * 0.75;
-  const pad = strokeWidth;
-  const baseY = height - pad;
-  const crestY = pad;
+  // Preserve 2:1 aspect ratio so semicircular arches remain perfectly circular
+  const actualUnitWidth = unitWidth || height * 2;
 
-  const pathD = `M 0 ${baseY} C ${c1} ${baseY} ${c1} ${crestY} ${half} ${crestY} C ${c2} ${crestY} ${c2} ${baseY} ${unitWidth} ${baseY}`;
+  // Authentic pattern:
+  // - Downward arch: outer radius 12, inner radius 6, thickness 6 (y: 12 -> 24)
+  // - Upward arch: outer radius 12, inner radius 6, thickness 6 (y: 0 -> 12)
+  // - Ends cut flat at midline y=12 and touch seamlessly at x=24
+  const pathD = "M 0 12 A 12 12 0 0 0 24 12 H 18 A 6 6 0 0 1 6 12 H 0 Z M 24 12 A 12 12 0 0 1 48 12 H 42 A 6 6 0 0 0 30 12 H 24 Z";
 
   return (
     <div
@@ -75,17 +69,14 @@ export const BrandWave: React.FC<BrandWaveProps> = ({
         <defs>
           <pattern
             id={patternId}
-            width={unitWidth}
+            width={actualUnitWidth}
             height={height}
+            viewBox="0 0 48 24"
             patternUnits="userSpaceOnUse"
           >
             <path
               d={pathD}
-              fill="none"
-              stroke={color}
-              strokeWidth={strokeWidth}
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              fill={color}
             />
           </pattern>
         </defs>
@@ -96,3 +87,4 @@ export const BrandWave: React.FC<BrandWaveProps> = ({
 };
 
 export default BrandWave;
+

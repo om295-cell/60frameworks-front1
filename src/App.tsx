@@ -165,8 +165,8 @@ export const App: React.FC = () => {
         />
 
         {/* Signature Brand Wave Divider (Hero -> About Transition) */}
-        <div style={{ backgroundColor: 'var(--color-sec-about-bg, #FFFFFF)', paddingTop: '1rem' }}>
-          <BrandWave color="var(--color-orange-primary, #F68621)" height={18} unitWidth={44} strokeWidth={3} opacity={0.8} />
+        <div style={{ backgroundColor: 'var(--color-sec-about-bg, #FFFFFF)', paddingTop: '1.5rem', paddingBottom: '0.5rem' }}>
+          <BrandWave color="var(--color-orange-primary, #F68621)" height={24} opacity={0.9} />
         </div>
 
         {/* 3. About Us */}
@@ -182,8 +182,8 @@ export const App: React.FC = () => {
         />
 
         {/* Signature Brand Wave Divider (Services -> Clients) */}
-        <div style={{ backgroundColor: 'var(--color-sec-clients-bg, #FFFFFF)', paddingTop: '1.25rem' }}>
-          <BrandWave color="var(--color-sec-clients-accent, var(--color-orange-primary, #F68621))" height={16} unitWidth={42} strokeWidth={2.5} opacity={0.4} />
+        <div style={{ backgroundColor: 'var(--color-sec-clients-bg, #FFFFFF)', paddingTop: '1.5rem', paddingBottom: '0.5rem' }}>
+          <BrandWave color="var(--color-sec-clients-accent, var(--color-orange-primary, #F68621))" height={20} opacity={0.6} />
         </div>
 
         {/* 5. Trusted Clients */}
