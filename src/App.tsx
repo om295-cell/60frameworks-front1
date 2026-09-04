@@ -89,12 +89,30 @@ export const App: React.FC = () => {
           api.getContent(),
         ]);
 
-        if (pData && pData.length > 0) setProjects(pData);
-        if (sData && sData.length > 0) setServices(sData);
-        if (secData && secData.length > 0) setSectors(secData);
-        if (cData && cData.length > 0) setClients(cData);
-        if (tData && tData.length > 0) setTestimonials(tData);
-        if (hData) setHomeContent(hData);
+        if (pData && pData.length > 0) {
+          setProjects(pData);
+          localStorage.setItem('60fw_projects', JSON.stringify(pData));
+        }
+        if (sData && sData.length > 0) {
+          setServices(sData);
+          localStorage.setItem('60fw_services', JSON.stringify(sData));
+        }
+        if (secData && secData.length > 0) {
+          setSectors(secData);
+          localStorage.setItem('60fw_sectors', JSON.stringify(secData));
+        }
+        if (cData && cData.length > 0) {
+          setClients(cData);
+          localStorage.setItem('60fw_clients', JSON.stringify(cData));
+        }
+        if (tData && tData.length > 0) {
+          setTestimonials(tData);
+          localStorage.setItem('60fw_testimonials', JSON.stringify(tData));
+        }
+        if (hData) {
+          setHomeContent(hData);
+          localStorage.setItem('60fw_homepage_content', JSON.stringify(hData));
+        }
       } catch (err) {
         console.warn('API data fetch failed, using fallback in-memory state:', err);
       }
