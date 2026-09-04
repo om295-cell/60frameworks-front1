@@ -18,6 +18,61 @@
   --color-border: #E6E7E8;
   --color-border-dark: #383838;
 
+  /* ── Dynamic Theme Variables (overridden at runtime by themeApplier) ── */
+  /* Header */
+  --color-header-bg: #FFFFFF;
+  --color-header-scrolled-bg: #FFFFFF;
+  --color-header-text: #242424;
+  --color-header-link: #242424;
+  --color-header-link-hover: #F68621;
+  --color-header-border: #E6E7E8;
+
+  /* Footer */
+  --color-footer-bg: #242424;
+  --color-footer-text: #B0B0B0;
+  --color-footer-heading: #FFFFFF;
+  --color-footer-link: #B0B0B0;
+  --color-footer-accent: #F68621;
+  --color-footer-border: rgba(255, 255, 255, 0.08);
+
+  /* Section-specific backgrounds / text / accents */
+  --color-sec-hero-bg: #242424;
+  --color-sec-hero-text: #FFFFFF;
+  --color-sec-hero-accent: #F68621;
+
+  --color-sec-about-bg: #FFFFFF;
+  --color-sec-about-text: #242424;
+  --color-sec-about-accent: #F68621;
+
+  --color-sec-services-bg: #E6E7E8;
+  --color-sec-services-text: #242424;
+  --color-sec-services-accent: #F68621;
+
+  --color-sec-clients-bg: #FFFFFF;
+  --color-sec-clients-text: #242424;
+  --color-sec-clients-accent: #F68621;
+
+  --color-sec-sectors-bg: #F4D3C9;
+  --color-sec-sectors-text: #242424;
+  --color-sec-sectors-accent: #F68621;
+
+  --color-sec-caseStudies-bg: #242424;
+  --color-sec-caseStudies-text: #FFFFFF;
+  --color-sec-caseStudies-accent: #F68621;
+
+  --color-sec-whyUs-bg: #FFFFFF;
+  --color-sec-whyUs-text: #242424;
+  --color-sec-whyUs-accent: #F68621;
+
+  --color-sec-testimonials-bg: #F4D3C9;
+  --color-sec-testimonials-text: #242424;
+  --color-sec-testimonials-accent: #F68621;
+
+  --color-sec-finalCta-bg: #F68621;
+  --color-sec-finalCta-text: #FFFFFF;
+  --color-sec-finalCta-accent: #FFFFFF;
+
+
   /* Typography Scale */
   --font-family-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-family-arabic: 'Cairo', 'Tajawal', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;

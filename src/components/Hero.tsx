@@ -35,8 +35,8 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
         display: 'flex',
         alignItems: 'center',
         overflow: 'hidden',
-        backgroundColor: 'var(--color-charcoal-dark)',
-        color: 'var(--color-white)',
+        backgroundColor: 'var(--color-sec-hero-bg, var(--color-charcoal-dark))',
+        color: 'var(--color-sec-hero-text, var(--color-white))',
         paddingTop: '3.5rem',
         paddingBottom: '4.5rem',
       }}

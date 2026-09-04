@@ -1,47 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Save, RotateCcw } from 'lucide-react';
+import { Save, RotateCcw, Eye } from 'lucide-react';
 import { adminApi } from '../adminApi';
 import { useAdminAuth } from '../AdminAuthContext';
+import { DEFAULT_THEME, applyTheme, SiteTheme } from '../../utils/themeApplier';
 
-export const DEFAULT_THEME = {
-  header: {
-    backgroundColor: '#242424',
-    textColor: '#FFFFFF',
-    linkColor: '#D1D5DB',
-    linkHoverColor: '#F68621',
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-    scrolledBackgroundColor: '#1A1A1A',
-  },
-  footer: {
-    backgroundColor: '#1E1E1E',
-    textColor: '#9CA3AF',
-    headingColor: '#FFFFFF',
-    linkColor: '#D1D5DB',
-    accentColor: '#F68621',
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  global: {
-    primaryColor: '#F68621',
-    secondaryColor: '#FFD400',
-    backgroundColor: '#FFFFFF',
-    textColor: '#242424',
-  },
-  sections: {
-    hero: { backgroundColor: '#1A1A1A', textColor: '#FFFFFF', accentColor: '#F68621' },
-    about: { backgroundColor: '#FFFFFF', textColor: '#242424', accentColor: '#F68621' },
-    services: { backgroundColor: '#1A1A1A', textColor: '#FFFFFF', accentColor: '#F68621' },
-    clients: { backgroundColor: '#242424', textColor: '#FFFFFF', accentColor: '#F68621' },
-    sectors: { backgroundColor: '#1A1A1A', textColor: '#FFFFFF', accentColor: '#F68621' },
-    caseStudies: { backgroundColor: '#1A1A1A', textColor: '#FFFFFF', accentColor: '#F68621' },
-    whyUs: { backgroundColor: '#FFFFFF', textColor: '#242424', accentColor: '#F68621' },
-    testimonials: { backgroundColor: '#1A1A1A', textColor: '#FFFFFF', accentColor: '#F68621' },
-    finalCta: { backgroundColor: '#F68621', textColor: '#FFFFFF', accentColor: '#FFFFFF' },
-  },
-};
+export { DEFAULT_THEME };
 
 export const ThemeCustomizer: React.FC = () => {
   const { logActivity, canPerform } = useAdminAuth();
-  const [theme, setTheme] = useState<any>(() => {
+  const [theme, setTheme] = useState<SiteTheme>(() => {
     try {
       const cached = localStorage.getItem('60fw_theme_settings');
       return cached ? JSON.parse(cached) : DEFAULT_THEME;
@@ -60,6 +27,7 @@ export const ThemeCustomizer: React.FC = () => {
         if (r?.data) {
           setTheme(r.data);
           localStorage.setItem('60fw_theme_settings', JSON.stringify(r.data));
+          applyTheme(r.data);
         }
       })
       .catch(() => {});
@@ -69,6 +37,7 @@ export const ThemeCustomizer: React.FC = () => {
     setSaving(true);
     try {
       localStorage.setItem('60fw_theme_settings', JSON.stringify(theme));
+      applyTheme(theme);
       await adminApi.updateTheme(theme);
       logActivity('UPDATE_THEME', 'theme', 'Theme & Colors', 'Updated global theme, header, footer, or section colors');
       setSaved(true);
@@ -84,84 +53,105 @@ export const ThemeCustomizer: React.FC = () => {
     if (confirm('Reset all colors to the official 60FRAMEWORKS brand defaults?')) {
       setTheme(DEFAULT_THEME);
       localStorage.setItem('60fw_theme_settings', JSON.stringify(DEFAULT_THEME));
+      applyTheme(DEFAULT_THEME);
       logActivity('RESET_THEME', 'theme', 'Theme & Colors', 'Reset colors to default');
     }
   };
 
   const updateHeader = (key: string, val: string) => {
-    setTheme((prev: any) => ({
-      ...prev,
-      header: { ...prev.header, [key]: val },
-    }));
+    setTheme((prev: any) => {
+      const updated = {
+        ...prev,
+        header: { ...prev.header, [key]: val },
+      };
+      applyTheme(updated);
+      return updated;
+    });
   };
 
   const updateFooter = (key: string, val: string) => {
-    setTheme((prev: any) => ({
-      ...prev,
-      footer: { ...prev.footer, [key]: val },
-    }));
+    setTheme((prev: any) => {
+      const updated = {
+        ...prev,
+        footer: { ...prev.footer, [key]: val },
+      };
+      applyTheme(updated);
+      return updated;
+    });
   };
 
   const updateGlobal = (key: string, val: string) => {
-    setTheme((prev: any) => ({
-      ...prev,
-      global: { ...prev.global, [key]: val },
-    }));
+    setTheme((prev: any) => {
+      const updated = {
+        ...prev,
+        global: { ...prev.global, [key]: val },
+      };
+      applyTheme(updated);
+      return updated;
+    });
   };
 
   const updateSectionColor = (sectionKey: string, field: string, val: string) => {
-    setTheme((prev: any) => ({
-      ...prev,
-      sections: {
-        ...prev.sections,
-        [sectionKey]: {
-          ...(prev.sections?.[sectionKey] || {}),
-          [field]: val,
+    setTheme((prev: any) => {
+      const updated = {
+        ...prev,
+        sections: {
+          ...prev.sections,
+          [sectionKey]: {
+            ...(prev.sections?.[sectionKey] || {}),
+            [field]: val,
+          },
         },
-      },
-    }));
+      };
+      applyTheme(updated);
+      return updated;
+    });
   };
 
   const SECTIONS_LIST = [
-    { key: 'hero', label: '🎬 Hero Banner' },
-    { key: 'about', label: '🏢 About Section' },
-    { key: 'services', label: '⚙️ Services Section' },
-    { key: 'clients', label: '🤝 Clients Logo Bar' },
-    { key: 'sectors', label: '🏭 Industry Sectors' },
-    { key: 'caseStudies', label: '🎯 Case Studies' },
-    { key: 'whyUs', label: '⭐ Why 60FRAMEWORKS' },
-    { key: 'testimonials', label: '💬 Testimonials' },
-    { key: 'finalCta', label: '📣 Final Call-to-Action' },
+    { key: 'hero', label: '🎬 Hero Banner (Home Intro)', defaultBg: '#242424', defaultText: '#FFFFFF', defaultAccent: '#F68621' },
+    { key: 'about', label: '🏢 About Section (Agency Vision)', defaultBg: '#FFFFFF', defaultText: '#242424', defaultAccent: '#F68621' },
+    { key: 'services', label: '⚙️ Services Section (6 Offerings)', defaultBg: '#E6E7E8', defaultText: '#242424', defaultAccent: '#F68621' },
+    { key: 'clients', label: '🤝 Clients Section (Logos Bar)', defaultBg: '#FFFFFF', defaultText: '#242424', defaultAccent: '#F68621' },
+    { key: 'sectors', label: '🏭 Industry Sectors (Capabilities)', defaultBg: '#F4D3C9', defaultText: '#242424', defaultAccent: '#F68621' },
+    { key: 'caseStudies', label: '🎯 Case Studies / Stories (Portfolio)', defaultBg: '#242424', defaultText: '#FFFFFF', defaultAccent: '#F68621' },
+    { key: 'whyUs', label: '⭐ Why 60FRAMEWORKS (Pillars)', defaultBg: '#FFFFFF', defaultText: '#242424', defaultAccent: '#F68621' },
+    { key: 'testimonials', label: '💬 Testimonials & Impact (Quotes)', defaultBg: '#F4D3C9', defaultText: '#242424', defaultAccent: '#F68621' },
+    { key: 'finalCta', label: '📣 Final Call-to-Action (Footer Banner)', defaultBg: '#F68621', defaultText: '#FFFFFF', defaultAccent: '#FFFFFF' },
   ];
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827' }}>🎨 Theme & Color Customizer</h2>
           <p style={{ fontSize: '0.8125rem', color: '#6B7280', marginTop: '0.2rem' }}>
-            Control header & footer styling across all pages, plus individual section color schemes.
+            Accurate live control over Header, Footer, Global palette, and individual Section backgrounds & text.
           </p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
           <button onClick={handleReset} style={resetBtn}>
-            <RotateCcw size={15} /> Reset Defaults
+            <RotateCcw size={15} /> Reset Brand Defaults
           </button>
           <button onClick={handleSave} disabled={saving || !canPerform('canEditColors')} style={saveBtn}>
-            <Save size={16} /> {saving ? 'Saving...' : saved ? '✓ Saved!' : 'Save Colors'}
+            <Save size={16} /> {saving ? 'Saving...' : saved ? '✓ Saved Live!' : 'Save All Colors'}
           </button>
         </div>
       </div>
 
-      {saved && <div style={successBox}>✓ Colors saved successfully and applied live!</div>}
+      {saved && (
+        <div style={successBox}>
+          ✓ Color theme saved successfully! All updates are active live across the website.
+        </div>
+      )}
 
       {/* Sub-tab Switcher */}
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.75rem' }}>
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.75rem', overflowX: 'auto' }}>
         {[
-          { key: 'header', label: 'Header Navigation' },
+          { key: 'header', label: 'Top Navigation / Header' },
           { key: 'footer', label: 'Global Footer' },
           { key: 'sections', label: 'Section-by-Section Colors' },
-          { key: 'global', label: 'Brand Palette' },
+          { key: 'global', label: 'Brand Palette & Accents' },
         ].map(t => (
           <button
             key={t.key}
@@ -171,6 +161,7 @@ export const ThemeCustomizer: React.FC = () => {
               background: activeSubTab === t.key ? '#FFF3E0' : 'none',
               color: activeSubTab === t.key ? '#F68621' : '#6B7280',
               fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer',
+              whiteSpace: 'nowrap',
             }}
           >
             {t.label}
@@ -181,26 +172,35 @@ export const ThemeCustomizer: React.FC = () => {
       {/* 1. Header Tab */}
       {activeSubTab === 'header' && (
         <div style={cardStyle}>
-          <h3 style={cardTitle}>Top Navigation / Header (All Pages)</h3>
-          <p style={cardDesc}>Customize the look of the top bar and its scrolled state.</p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <h3 style={cardTitle}>Top Navigation / Header (All Pages)</h3>
+            <span style={{ fontSize: '0.75rem', color: '#059669', background: '#ECFDF5', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <Eye size={12} /> Live Preview Synchronized
+            </span>
+          </div>
+          <p style={cardDesc}>Customize the look of the top bar and its scrolled state on desktop and mobile.</p>
 
           <div style={gridStyle}>
-            <ColorField label="Background Color" value={theme.header?.backgroundColor} onChange={v => updateHeader('backgroundColor', v)} />
-            <ColorField label="Scrolled Background" value={theme.header?.scrolledBackgroundColor} onChange={v => updateHeader('scrolledBackgroundColor', v)} />
-            <ColorField label="Brand / Logo Text Color" value={theme.header?.textColor} onChange={v => updateHeader('textColor', v)} />
-            <ColorField label="Navigation Link Color" value={theme.header?.linkColor} onChange={v => updateHeader('linkColor', v)} />
-            <ColorField label="Link Hover / Active Color" value={theme.header?.linkHoverColor} onChange={v => updateHeader('linkHoverColor', v)} />
-            <ColorField label="Bottom Border Color" value={theme.header?.borderColor} onChange={v => updateHeader('borderColor', v)} />
+            <ColorField label="Header Background" value={theme.header?.backgroundColor || '#FFFFFF'} onChange={v => updateHeader('backgroundColor', v)} />
+            <ColorField label="Scrolled Background" value={theme.header?.scrolledBackgroundColor || '#FFFFFF'} onChange={v => updateHeader('scrolledBackgroundColor', v)} />
+            <ColorField label="Brand / Logo Text Color" value={theme.header?.textColor || '#242424'} onChange={v => updateHeader('textColor', v)} />
+            <ColorField label="Navigation Link Color" value={theme.header?.linkColor || '#242424'} onChange={v => updateHeader('linkColor', v)} />
+            <ColorField label="Link Hover / Active Color" value={theme.header?.linkHoverColor || '#F68621'} onChange={v => updateHeader('linkHoverColor', v)} />
+            <ColorField label="Bottom Border Color" value={theme.header?.borderColor || '#E6E7E8'} onChange={v => updateHeader('borderColor', v)} />
           </div>
 
           {/* Live Preview Strip */}
-          <div style={{ marginTop: '1.5rem', padding: '1rem', borderRadius: '10px', background: theme.header?.backgroundColor, border: `1px solid ${theme.header?.borderColor}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ color: theme.header?.textColor, fontWeight: 800 }}>60FRAMEWORKS</span>
-            <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8125rem' }}>
-              <span style={{ color: theme.header?.linkColor }}>Home</span>
-              <span style={{ color: theme.header?.linkHoverColor, fontWeight: 700 }}>About (Hover)</span>
-              <span style={{ color: theme.header?.linkColor }}>Services</span>
-              <span style={{ color: theme.header?.linkColor }}>Contact</span>
+          <div style={{ marginTop: '1.75rem', padding: '1.25rem 1.5rem', borderRadius: '10px', background: theme.header?.backgroundColor || '#FFFFFF', border: `1px solid ${theme.header?.borderColor || '#E6E7E8'}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <span style={{ color: theme.header?.textColor || '#242424', fontWeight: 800, fontSize: '1.125rem' }}>60FRAMEWORKS</span>
+              <span style={{ fontSize: '0.625rem', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.1em' }}>CREATIVE AGENCY</span>
+            </div>
+            <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.875rem', alignItems: 'center' }}>
+              <span style={{ color: theme.header?.linkColor || '#242424', fontWeight: 600 }}>Home</span>
+              <span style={{ color: theme.header?.linkHoverColor || '#F68621', fontWeight: 700, borderBottom: `2px solid ${theme.header?.linkHoverColor || '#F68621'}` }}>About (Active)</span>
+              <span style={{ color: theme.header?.linkColor || '#242424', fontWeight: 600 }}>Services</span>
+              <span style={{ color: theme.header?.linkColor || '#242424', fontWeight: 600 }}>Stories</span>
+              <span style={{ padding: '0.4rem 0.9rem', borderRadius: '9999px', background: theme.global?.primaryColor || '#F68621', color: '#FFFFFF', fontWeight: 700, fontSize: '0.75rem' }}>Contact Us ↗</span>
             </div>
           </div>
         </div>
@@ -209,25 +209,49 @@ export const ThemeCustomizer: React.FC = () => {
       {/* 2. Footer Tab */}
       {activeSubTab === 'footer' && (
         <div style={cardStyle}>
-          <h3 style={cardTitle}>Global Footer (All Pages)</h3>
-          <p style={cardDesc}>Customize the bottom footer colors, headings, links, and borders.</p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <h3 style={cardTitle}>Global Footer (All Pages)</h3>
+            <span style={{ fontSize: '0.75rem', color: '#059669', background: '#ECFDF5', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <Eye size={12} /> Live Preview Synchronized
+            </span>
+          </div>
+          <p style={cardDesc}>Customize the bottom footer background, headings, body text, links, and borders.</p>
 
           <div style={gridStyle}>
-            <ColorField label="Footer Background" value={theme.footer?.backgroundColor} onChange={v => updateFooter('backgroundColor', v)} />
-            <ColorField label="Headings Color" value={theme.footer?.headingColor} onChange={v => updateFooter('headingColor', v)} />
-            <ColorField label="Paragraph / Body Text" value={theme.footer?.textColor} onChange={v => updateFooter('textColor', v)} />
-            <ColorField label="Links Color" value={theme.footer?.linkColor} onChange={v => updateFooter('linkColor', v)} />
-            <ColorField label="Accent / Highlight Color" value={theme.footer?.accentColor} onChange={v => updateFooter('accentColor', v)} />
-            <ColorField label="Divider Border Color" value={theme.footer?.borderColor} onChange={v => updateFooter('borderColor', v)} />
+            <ColorField label="Footer Background" value={theme.footer?.backgroundColor || '#242424'} onChange={v => updateFooter('backgroundColor', v)} />
+            <ColorField label="Headings Color" value={theme.footer?.headingColor || '#FFFFFF'} onChange={v => updateFooter('headingColor', v)} />
+            <ColorField label="Paragraph / Body Text" value={theme.footer?.textColor || '#B0B0B0'} onChange={v => updateFooter('textColor', v)} />
+            <ColorField label="Links Color" value={theme.footer?.linkColor || '#B0B0B0'} onChange={v => updateFooter('linkColor', v)} />
+            <ColorField label="Accent / Highlight Color" value={theme.footer?.accentColor || '#F68621'} onChange={v => updateFooter('accentColor', v)} />
+            <ColorField label="Divider Border Color" value={theme.footer?.borderColor || 'rgba(255, 255, 255, 0.08)'} onChange={v => updateFooter('borderColor', v)} />
           </div>
 
           {/* Live Preview Strip */}
-          <div style={{ marginTop: '1.5rem', padding: '1.5rem', borderRadius: '10px', background: theme.footer?.backgroundColor, border: `1px solid ${theme.footer?.borderColor}` }}>
-            <div style={{ color: theme.footer?.headingColor, fontWeight: 800, marginBottom: '0.5rem' }}>60FRAMEWORKS FOOTER</div>
-            <p style={{ color: theme.footer?.textColor, fontSize: '0.8125rem', marginBottom: '1rem' }}>Architecting world-class experiences.</p>
-            <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8125rem', borderTop: `1px solid ${theme.footer?.borderColor}`, paddingTop: '0.75rem' }}>
-              <span style={{ color: theme.footer?.linkColor }}>Privacy Policy</span>
-              <span style={{ color: theme.footer?.accentColor }}>accent@60frameworks.com</span>
+          <div style={{ marginTop: '1.75rem', padding: '1.75rem', borderRadius: '10px', background: theme.footer?.backgroundColor || '#242424', border: `1px solid ${theme.footer?.borderColor || 'rgba(255, 255, 255, 0.08)'}` }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
+              <div>
+                <div style={{ color: theme.footer?.headingColor || '#FFFFFF', fontWeight: 800, fontSize: '1.1rem', marginBottom: '0.5rem' }}>60FRAMEWORKS</div>
+                <p style={{ color: theme.footer?.textColor || '#B0B0B0', fontSize: '0.8125rem', lineHeight: 1.5 }}>Architecting monumental summits and world-class experiences.</p>
+              </div>
+              <div>
+                <div style={{ color: theme.footer?.headingColor || '#FFFFFF', fontWeight: 700, fontSize: '0.875rem', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Navigation</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', fontSize: '0.8125rem' }}>
+                  <span style={{ color: theme.footer?.linkColor || '#B0B0B0' }}>About Agency</span>
+                  <span style={{ color: theme.footer?.linkColor || '#B0B0B0' }}>Capabilities</span>
+                  <span style={{ color: theme.footer?.linkColor || '#B0B0B0' }}>Case Studies</span>
+                </div>
+              </div>
+              <div>
+                <div style={{ color: theme.footer?.headingColor || '#FFFFFF', fontWeight: 700, fontSize: '0.875rem', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Contact</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', fontSize: '0.8125rem' }}>
+                  <span style={{ color: theme.footer?.accentColor || '#F68621' }}>+966 55 307 7467</span>
+                  <span style={{ color: theme.footer?.textColor || '#B0B0B0' }}>Riyadh, Saudi Arabia</span>
+                </div>
+              </div>
+            </div>
+            <div style={{ borderTop: `1px solid ${theme.footer?.borderColor || 'rgba(255, 255, 255, 0.08)'}`, paddingTop: '0.75rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: theme.footer?.textColor || '#B0B0B0' }}>
+              <span>© {new Date().getFullYear()} 60FRAMEWORKS. All rights reserved.</span>
+              <span style={{ color: theme.footer?.accentColor || '#F68621' }}>Back to Top ↑</span>
             </div>
           </div>
         </div>
@@ -235,16 +259,45 @@ export const ThemeCustomizer: React.FC = () => {
 
       {/* 3. Section by Section Colors */}
       {activeSubTab === 'sections' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '0.875rem 1.25rem', borderRadius: '10px', fontSize: '0.8125rem', color: '#1E40AF' }}>
+            💡 <strong>Section Color Control:</strong> Modify the specific background, text/heading color, and accent badges for each block of the landing page.
+          </div>
+
           {SECTIONS_LIST.map(sec => {
-            const secColors = theme.sections?.[sec.key] || { backgroundColor: '#FFFFFF', textColor: '#242424', accentColor: '#F68621' };
+            const secColors = theme.sections?.[sec.key] || {
+              backgroundColor: sec.defaultBg,
+              textColor: sec.defaultText,
+              accentColor: sec.defaultAccent,
+            };
             return (
               <div key={sec.key} style={cardStyle}>
-                <h4 style={{ fontSize: '0.9375rem', fontWeight: 700, color: '#111827', marginBottom: '0.75rem' }}>{sec.label}</h4>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-                  <ColorField label="Section Background" value={secColors.backgroundColor} onChange={v => updateSectionColor(sec.key, 'backgroundColor', v)} />
-                  <ColorField label="Text / Heading Color" value={secColors.textColor} onChange={v => updateSectionColor(sec.key, 'textColor', v)} />
-                  <ColorField label="Accent / Badge Color" value={secColors.accentColor} onChange={v => updateSectionColor(sec.key, 'accentColor', v)} />
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#111827' }}>{sec.label}</h4>
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <span style={{ width: '16px', height: '16px', borderRadius: '4px', background: secColors.backgroundColor, border: '1px solid #D1D5DB' }} title="Current BG" />
+                    <span style={{ width: '16px', height: '16px', borderRadius: '4px', background: secColors.textColor, border: '1px solid #D1D5DB' }} title="Current Text" />
+                    <span style={{ width: '16px', height: '16px', borderRadius: '4px', background: secColors.accentColor, border: '1px solid #D1D5DB' }} title="Current Accent" />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
+                  <ColorField label="Section Background" value={secColors.backgroundColor || sec.defaultBg} onChange={v => updateSectionColor(sec.key, 'backgroundColor', v)} />
+                  <ColorField label="Text / Heading Color" value={secColors.textColor || sec.defaultText} onChange={v => updateSectionColor(sec.key, 'textColor', v)} />
+                  <ColorField label="Accent / Badge Color" value={secColors.accentColor || sec.defaultAccent} onChange={v => updateSectionColor(sec.key, 'accentColor', v)} />
+                </div>
+
+                {/* Micro preview snippet */}
+                <div style={{ padding: '0.875rem 1.25rem', borderRadius: '8px', background: secColors.backgroundColor || sec.defaultBg, color: secColors.textColor || sec.defaultText, border: '1px solid rgba(0,0,0,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div>
+                    <span style={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: secColors.accentColor || sec.defaultAccent, display: 'block' }}>
+                      SECTION EYEBROW
+                    </span>
+                    <strong style={{ fontSize: '0.9375rem' }}>Sample Section Headline & Content</strong>
+                  </div>
+                  <span style={{ padding: '0.3rem 0.75rem', borderRadius: '9999px', background: secColors.accentColor || sec.defaultAccent, color: '#FFFFFF', fontSize: '0.6875rem', fontWeight: 700 }}>
+                    Badge
+                  </span>
                 </div>
               </div>
             );
@@ -255,14 +308,26 @@ export const ThemeCustomizer: React.FC = () => {
       {/* 4. Global Palette */}
       {activeSubTab === 'global' && (
         <div style={cardStyle}>
-          <h3 style={cardTitle}>Global Brand Accents</h3>
-          <p style={cardDesc}>Base theme colors used across interactive buttons, icons, and highlights.</p>
+          <h3 style={cardTitle}>Global Brand Accents & Colors</h3>
+          <p style={cardDesc}>Core brand colors used for interactive buttons, glows, highlights, and defaults.</p>
 
           <div style={gridStyle}>
-            <ColorField label="Primary Brand Color" value={theme.global?.primaryColor} onChange={v => updateGlobal('primaryColor', v)} />
-            <ColorField label="Secondary Glow Color" value={theme.global?.secondaryColor} onChange={v => updateGlobal('secondaryColor', v)} />
-            <ColorField label="Default Page Background" value={theme.global?.backgroundColor} onChange={v => updateGlobal('backgroundColor', v)} />
-            <ColorField label="Default Text Color" value={theme.global?.textColor} onChange={v => updateGlobal('textColor', v)} />
+            <ColorField label="Primary Brand Color" value={theme.global?.primaryColor || '#F68621'} onChange={v => updateGlobal('primaryColor', v)} />
+            <ColorField label="Secondary Glow Color" value={theme.global?.secondaryColor || '#FFD400'} onChange={v => updateGlobal('secondaryColor', v)} />
+            <ColorField label="Default Page Background" value={theme.global?.backgroundColor || '#FFFFFF'} onChange={v => updateGlobal('backgroundColor', v)} />
+            <ColorField label="Default Body Text Color" value={theme.global?.textColor || '#242424'} onChange={v => updateGlobal('textColor', v)} />
+          </div>
+
+          <div style={{ marginTop: '1.5rem', padding: '1.25rem', borderRadius: '10px', background: theme.global?.backgroundColor || '#FFFFFF', border: '1px solid #E5E7EB', display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            <button style={{ padding: '0.75rem 1.5rem', borderRadius: '9999px', background: theme.global?.primaryColor || '#F68621', color: '#FFFFFF', border: 'none', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer' }}>
+              Primary Button ({theme.global?.primaryColor || '#F68621'})
+            </button>
+            <span style={{ padding: '0.4rem 1rem', borderRadius: '9999px', background: '#FFF3EB', color: theme.global?.primaryColor || '#F68621', border: `1px solid ${theme.global?.primaryColor || '#F68621'}`, fontSize: '0.75rem', fontWeight: 700 }}>
+              Pill Badge
+            </span>
+            <span style={{ color: theme.global?.textColor || '#242424', fontSize: '0.875rem' }}>
+              Default Body Text Preview
+            </span>
           </div>
         </div>
       )}
@@ -277,6 +342,8 @@ interface ColorFieldProps {
 }
 
 const ColorField: React.FC<ColorFieldProps> = ({ label, value, onChange }) => {
+  const safeHex = value?.startsWith('#') && value.length === 7 ? value : '#F68621';
+
   return (
     <div>
       <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#374151', marginBottom: '0.35rem' }}>
@@ -285,14 +352,15 @@ const ColorField: React.FC<ColorFieldProps> = ({ label, value, onChange }) => {
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#F9FAFB', border: '1px solid #D1D5DB', borderRadius: '8px', padding: '0.25rem 0.5rem' }}>
         <input
           type="color"
-          value={value?.startsWith('#') && value.length === 7 ? value : '#F68621'}
+          value={safeHex}
           onChange={e => onChange(e.target.value)}
-          style={{ width: '32px', height: '32px', border: 'none', borderRadius: '6px', cursor: 'pointer', background: 'none' }}
+          style={{ width: '34px', height: '34px', border: 'none', borderRadius: '6px', cursor: 'pointer', background: 'none' }}
         />
         <input
           type="text"
           value={value || ''}
           onChange={e => onChange(e.target.value)}
+          placeholder="#F68621 or rgba(...)"
           style={{ flex: 1, border: 'none', background: 'none', fontSize: '0.8125rem', outline: 'none', fontFamily: 'monospace', color: '#111827' }}
         />
       </div>

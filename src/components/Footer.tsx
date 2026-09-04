@@ -43,11 +43,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
   return (
     <footer
       style={{
-        backgroundColor: 'var(--color-charcoal-dark)',
-        color: 'var(--color-white)',
+        backgroundColor: 'var(--color-footer-bg, var(--color-charcoal-dark))',
+        color: 'var(--color-footer-text, rgba(255, 255, 255, 0.7))',
         paddingTop: '5rem',
         paddingBottom: '2.5rem',
-        borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+        borderTop: '1px solid var(--color-footer-border, rgba(255, 255, 255, 0.08))',
       }}
     >
       <div className="container">
@@ -81,12 +81,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
                   display: 'block',
                 }}
               />
-              <span style={{ fontSize: '1.35rem', fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--color-white)' }}>
+              <span style={{ fontSize: '1.35rem', fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--color-footer-heading, var(--color-white))' }}>
                 60FRAMEWORKS
               </span>
             </div>
 
-            <p style={{ fontSize: '0.875rem', lineHeight: 1.65, color: 'rgba(255, 255, 255, 0.7)', marginBottom: '1.5rem' }}>
+            <p style={{ fontSize: '0.875rem', lineHeight: 1.65, color: 'var(--color-footer-text, rgba(255, 255, 255, 0.7))', marginBottom: '1.5rem' }}>
               {t('footerDesc')}
             </p>
 
@@ -137,7 +137,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
                 fontWeight: 700,
                 textTransform: language === 'ar' ? 'none' : 'uppercase',
                 letterSpacing: language === 'ar' ? 'normal' : '0.08em',
-                color: 'var(--color-white)',
+                color: 'var(--color-footer-heading, var(--color-white))',
                 marginBottom: '1.25rem',
               }}
             >
@@ -172,7 +172,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
                 fontWeight: 700,
                 textTransform: language === 'ar' ? 'none' : 'uppercase',
                 letterSpacing: language === 'ar' ? 'normal' : '0.08em',
-                color: 'var(--color-white)',
+                color: 'var(--color-footer-heading, var(--color-white))',
                 marginBottom: '1.25rem',
               }}
             >
@@ -207,15 +207,15 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
                 fontWeight: 700,
                 textTransform: language === 'ar' ? 'none' : 'uppercase',
                 letterSpacing: language === 'ar' ? 'normal' : '0.08em',
-                color: 'var(--color-white)',
+                color: 'var(--color-footer-heading, var(--color-white))',
                 marginBottom: '1.25rem',
               }}
             >
               {t('footerContactTitle')}
             </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.7)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.875rem', color: 'var(--color-footer-text, rgba(255, 255, 255, 0.7))' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <Mail size={16} color="var(--color-orange-primary)" />
+                <Mail size={16} color="var(--color-footer-accent, var(--color-orange-primary))" />
                 <a
                   href="mailto:inquiries@impactagency.com"
                   style={{ color: 'inherit', textDecoration: 'none' }}
@@ -226,7 +226,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
                 </a>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <Phone size={16} color="var(--color-orange-primary)" />
+                <Phone size={16} color="var(--color-footer-accent, var(--color-orange-primary))" />
                 <a
                   href="https://api.whatsapp.com/send/?phone=966553077467"
                   target="_blank"
@@ -240,7 +240,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
                 </a>
               </div>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-                <MapPin size={16} color="var(--color-orange-primary)" style={{ marginTop: '2px', flexShrink: 0 }} />
+                <MapPin size={16} color="var(--color-footer-accent, var(--color-orange-primary))" style={{ marginTop: '2px', flexShrink: 0 }} />
                 <span>{t('footerHubs')}</span>
               </div>
             </div>
@@ -264,14 +264,14 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
         <div
           style={{
             paddingTop: '2rem',
-            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+            borderTop: '1px solid var(--color-footer-border, rgba(255, 255, 255, 0.08))',
             display: 'flex',
             flexWrap: 'wrap',
             alignItems: 'center',
             justifyContent: 'space-between',
             gap: '1rem',
             fontSize: '0.8125rem',
-            color: 'rgba(255, 255, 255, 0.5)',
+            color: 'var(--color-footer-text, rgba(255, 255, 255, 0.5))',
           }}
         >
           <div>
@@ -289,7 +289,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
                 gap: '0.35rem',
                 background: 'none',
                 border: 'none',
-                color: 'var(--color-orange-primary)',
+                color: 'var(--color-footer-accent, var(--color-orange-primary))',
                 cursor: 'pointer',
                 fontSize: '0.8125rem',
                 fontWeight: 600,

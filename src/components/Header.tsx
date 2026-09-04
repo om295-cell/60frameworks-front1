@@ -65,10 +65,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
         position: 'sticky',
         top: 0,
         zIndex: 50,
-        backgroundColor: 'var(--color-white)',
-        transition: 'box-shadow var(--transition-normal), border-color var(--transition-normal)',
+        backgroundColor: isScrolled
+          ? 'var(--color-header-scrolled-bg, var(--color-white))'
+          : 'var(--color-header-bg, var(--color-white))',
+        transition: 'background-color var(--transition-normal), box-shadow var(--transition-normal), border-color var(--transition-normal)',
         boxShadow: isScrolled ? '0 4px 20px rgba(36, 36, 36, 0.08)' : 'none',
-        borderBottom: isScrolled ? '1px solid var(--color-border)' : '1px solid rgba(230, 231, 232, 0.6)',
+        borderBottom: isScrolled
+          ? '1px solid var(--color-header-border, var(--color-border))'
+          : '1px solid rgba(230, 231, 232, 0.6)',
       }}
     >
       <div className="container">
@@ -89,7 +93,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
               alignItems: 'center',
               gap: '0.75rem',
               textDecoration: 'none',
-              color: 'var(--color-charcoal-dark)',
+              color: 'var(--color-header-text, var(--color-charcoal-dark))',
             }}
           >
             <img
@@ -109,7 +113,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
                   fontSize: '1.25rem',
                   fontWeight: 800,
                   letterSpacing: '-0.02em',
-                  color: 'var(--color-charcoal-dark)',
+                  color: 'var(--color-header-text, var(--color-charcoal-dark))',
                   display: 'block',
                   lineHeight: 1.1,
                 }}
@@ -151,16 +155,18 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
                     fontSize: '0.9375rem',
                     fontWeight: 600,
                     textDecoration: 'none',
-                    color: isActive ? 'var(--color-orange-primary)' : 'var(--color-charcoal-dark)',
+                    color: isActive
+                      ? 'var(--color-header-link-hover, var(--color-orange-primary))'
+                      : 'var(--color-header-link, var(--color-charcoal-dark))',
                     transition: 'color var(--transition-fast)',
                     position: 'relative',
                     padding: '0.25rem 0',
                   }}
                   onMouseEnter={(e) => {
-                    if (!isActive) e.currentTarget.style.color = 'var(--color-orange-primary)';
+                    if (!isActive) e.currentTarget.style.color = 'var(--color-header-link-hover, var(--color-orange-primary))';
                   }}
                   onMouseLeave={(e) => {
-                    if (!isActive) e.currentTarget.style.color = 'var(--color-charcoal-dark)';
+                    if (!isActive) e.currentTarget.style.color = 'var(--color-header-link, var(--color-charcoal-dark))';
                   }}
                 >
                   {link.label}
@@ -172,7 +178,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
                         left: 0,
                         right: 0,
                         height: '2px',
-                        backgroundColor: 'var(--color-orange-primary)',
+                        backgroundColor: 'var(--color-header-link-hover, var(--color-orange-primary))',
                         borderRadius: '2px',
                       }}
                     />
@@ -306,7 +312,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
                   fontSize: '1.125rem',
                   fontWeight: 600,
                   textDecoration: 'none',
-                  color: activeSection === link.id ? 'var(--color-orange-primary)' : 'var(--color-charcoal-dark)',
+                  color: activeSection === link.id
+                    ? 'var(--color-header-link-hover, var(--color-orange-primary))'
+                    : 'var(--color-header-link, var(--color-charcoal-dark))',
                   padding: '0.5rem 0',
                   borderBottom: '1px solid rgba(230, 231, 232, 0.4)',
                 }}

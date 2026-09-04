@@ -146,30 +146,66 @@ body {
   position: relative;
 }
 
-/* Section Themes */
+/* Section Themes — all driven by dynamic CSS vars from themeApplier */
 .bg-white-space {
-  background-color: var(--color-white);
-  color: var(--color-charcoal-dark);
+  background-color: var(--color-sec-about-bg, var(--color-white));
+  color: var(--color-sec-about-text, var(--color-charcoal-dark));
 }
 
 .bg-gray-structure {
-  background-color: var(--color-gray-structure);
-  color: var(--color-charcoal-dark);
+  background-color: var(--color-sec-services-bg, var(--color-gray-structure));
+  color: var(--color-sec-services-text, var(--color-charcoal-dark));
 }
 
 .bg-blush-softness {
-  background-color: var(--color-blush-softness);
-  color: var(--color-charcoal-dark);
+  background-color: var(--color-sec-sectors-bg, var(--color-blush-softness));
+  color: var(--color-sec-sectors-text, var(--color-charcoal-dark));
 }
 
 .bg-charcoal-dark {
-  background-color: var(--color-charcoal-dark);
-  color: var(--color-white);
+  background-color: var(--color-sec-caseStudies-bg, var(--color-charcoal-dark));
+  color: var(--color-sec-caseStudies-text, var(--color-white));
 }
 
 .bg-orange-brand {
-  background-color: var(--color-orange-primary);
-  color: var(--color-white);
+  background-color: var(--color-sec-finalCta-bg, var(--color-orange-primary));
+  color: var(--color-sec-finalCta-text, var(--color-white));
+}
+
+/* Standalone section overrides for sections that use same class but different theme slot */
+section#about.bg-white-space {
+  background-color: var(--color-sec-about-bg, var(--color-white));
+  color: var(--color-sec-about-text, var(--color-charcoal-dark));
+}
+
+section#clients.bg-white-space {
+  background-color: var(--color-sec-clients-bg, var(--color-white));
+  color: var(--color-sec-clients-text, var(--color-charcoal-dark));
+}
+
+section#why-us.bg-white-space {
+  background-color: var(--color-sec-whyUs-bg, var(--color-white));
+  color: var(--color-sec-whyUs-text, var(--color-charcoal-dark));
+}
+
+section#sectors.bg-blush-softness {
+  background-color: var(--color-sec-sectors-bg, var(--color-blush-softness));
+  color: var(--color-sec-sectors-text, var(--color-charcoal-dark));
+}
+
+section#testimonials.bg-blush-softness {
+  background-color: var(--color-sec-testimonials-bg, var(--color-blush-softness));
+  color: var(--color-sec-testimonials-text, var(--color-charcoal-dark));
+}
+
+section#services.bg-gray-structure {
+  background-color: var(--color-sec-services-bg, var(--color-gray-structure));
+  color: var(--color-sec-services-text, var(--color-charcoal-dark));
+}
+
+section#stories.bg-charcoal-dark {
+  background-color: var(--color-sec-caseStudies-bg, var(--color-charcoal-dark));
+  color: var(--color-sec-caseStudies-text, var(--color-white));
 }
 
 /* Buttons */

@@ -16,6 +16,7 @@ import { api, FALLBACK_SERVICES, FALLBACK_SECTORS, FALLBACK_PROJECTS, FALLBACK_C
 import { Project, Service, Sector, ClientItem, Testimonial } from './types';
 import { AdminAuthProvider } from './admin/AdminAuthContext';
 import { AdminPanel } from './admin/AdminPanel';
+import { applyTheme } from './utils/themeApplier';
 
 const ADMIN_PATH = '/cp-admin-60fw';
 
@@ -73,17 +74,26 @@ export const App: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Load data from REST API with fallback fallback
+  // Load data from REST API with fallback
   useEffect(() => {
+    // Apply cached theme immediately (no flash)
+    try {
+      const cachedTheme = localStorage.getItem('60fw_theme_settings');
+      if (cachedTheme) {
+        applyTheme(JSON.parse(cachedTheme));
+      }
+    } catch { /* ignore */ }
+
     const loadContent = async () => {
       try {
-        const [pData, sData, secData, cData, tData, hData] = await Promise.all([
+        const [pData, sData, secData, cData, tData, hData, themeData] = await Promise.all([
           api.getProjects(),
           api.getServices(),
           api.getSectors(),
           api.getClients(),
           api.getTestimonials(),
           api.getContent(),
+          api.getTheme(),
         ]);
 
         if (pData && pData.length > 0) {
@@ -109,6 +119,11 @@ export const App: React.FC = () => {
         if (hData) {
           setHomeContent(hData);
           localStorage.setItem('60fw_homepage_content', JSON.stringify(hData));
+        }
+        // Apply and cache fresh theme from server
+        if (themeData) {
+          applyTheme(themeData);
+          localStorage.setItem('60fw_theme_settings', JSON.stringify(themeData));
         }
       } catch (err) {
         console.warn('API data fetch failed, using fallback in-memory state:', err);

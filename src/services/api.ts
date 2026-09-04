@@ -598,6 +598,10 @@ class ApiClient {
     return this.fetchWithFallback<typeof FALLBACK_HOMEPAGE_CONTENT>('/content', FALLBACK_HOMEPAGE_CONTENT);
   }
 
+  async getTheme(): Promise<any> {
+    return this.fetchWithFallback<any>('/theme', null);
+  }
+
   async submitContact(formData: ContactFormData): Promise<{ success: boolean; message: string }> {
     try {
       const response = await fetch(`${this.baseUrl}/contact`, {
@@ -628,3 +632,4 @@ class ApiClient {
 }
 
 export const api = new ApiClient();
+
