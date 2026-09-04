@@ -17,6 +17,7 @@ import { Project, Service, Sector, ClientItem, Testimonial } from './types';
 import { AdminAuthProvider } from './admin/AdminAuthContext';
 import { AdminPanel } from './admin/AdminPanel';
 import { applyTheme } from './utils/themeApplier';
+import { BrandWave } from './components/BrandWave';
 
 const ADMIN_PATH = '/cp-admin-60fw';
 
@@ -163,6 +164,11 @@ export const App: React.FC = () => {
           content={homeContent?.hero}
         />
 
+        {/* Signature Brand Wave Divider (Hero -> About Transition) */}
+        <div style={{ backgroundColor: 'var(--color-sec-about-bg, #FFFFFF)', paddingTop: '1rem' }}>
+          <BrandWave color="var(--color-orange-primary, #F68621)" height={18} unitWidth={44} strokeWidth={3} opacity={0.8} />
+        </div>
+
         {/* 3. About Us */}
         <About
           onOpenContact={() => handleOpenContact('Agency Partnership')}
@@ -174,6 +180,11 @@ export const App: React.FC = () => {
           services={services}
           onSelectService={(serviceTitle) => handleOpenContact(`Service: ${serviceTitle}`)}
         />
+
+        {/* Signature Brand Wave Divider (Services -> Clients) */}
+        <div style={{ backgroundColor: 'var(--color-sec-clients-bg, #FFFFFF)', paddingTop: '1.25rem' }}>
+          <BrandWave color="var(--color-sec-clients-accent, var(--color-orange-primary, #F68621))" height={16} unitWidth={42} strokeWidth={2.5} opacity={0.4} />
+        </div>
 
         {/* 5. Trusted Clients */}
         <Clients clients={clients} />
