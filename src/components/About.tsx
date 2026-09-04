@@ -109,12 +109,12 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
                 position: 'absolute',
                 bottom: '-20px',
                 [dir === 'rtl' ? 'left' : 'right']: '20px',
-                backgroundColor: 'var(--color-charcoal-dark)',
-                color: 'var(--color-white)',
+                backgroundColor: 'var(--color-sec-about-card-bg, var(--color-charcoal-dark))',
+                color: 'var(--color-sec-about-card-text, var(--color-white))',
                 padding: '1.25rem 1.75rem',
                 borderRadius: 'var(--radius-md)',
                 boxShadow: 'var(--shadow-dark-card)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '1rem',
@@ -126,8 +126,8 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
                   width: '12px',
                   height: '12px',
                   borderRadius: '50%',
-                  backgroundColor: 'var(--color-orange-primary)',
-                  boxShadow: '0 0 12px var(--color-orange-primary)',
+                  backgroundColor: 'var(--color-sec-about-accent, var(--color-orange-primary))',
+                  boxShadow: '0 0 12px var(--color-sec-about-accent, var(--color-orange-primary))',
                   flexShrink: 0,
                 }}
               />
@@ -139,22 +139,22 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
 
           {/* Right Column: Editorial Copy */}
           <div>
-            <span className="type-eyebrow">{eyebrow}</span>
+            <span className="type-eyebrow" style={{ color: 'var(--color-sec-about-accent, var(--color-orange-primary))' }}>{eyebrow}</span>
             <h2
               className="type-h1"
               style={{
-                color: 'var(--color-charcoal-dark)',
+                color: 'var(--color-sec-about-text, var(--color-charcoal-dark))',
                 marginBottom: '1.75rem',
               }}
             >
               {heading}
             </h2>
 
-            <p className="type-body-lg" style={{ marginBottom: '1.25rem', lineHeight: 1.7 }}>
+            <p className="type-body-lg" style={{ color: 'var(--color-sec-about-subtitle, var(--color-body-gray))', marginBottom: '1.25rem', lineHeight: 1.7 }}>
               {para1}
             </p>
 
-            <p className="type-body" style={{ marginBottom: '2rem', lineHeight: 1.7 }}>
+            <p className="type-body" style={{ color: 'var(--color-sec-about-subtitle, var(--color-body-gray))', marginBottom: '2rem', lineHeight: 1.7 }}>
               {para2}
             </p>
 
@@ -182,8 +182,8 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
                   ]
               ).map((item, idx) => (
                 <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-                  <CheckCircle2 size={18} color="var(--color-orange-primary)" />
-                  <span style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--color-charcoal-dark)' }}>
+                  <CheckCircle2 size={18} color="var(--color-sec-about-accent, var(--color-orange-primary))" />
+                  <span style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--color-sec-about-text, var(--color-charcoal-dark))' }}>
                     {item}
                   </span>
                 </div>
@@ -192,9 +192,12 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
 
             <button
               onClick={onOpenContact}
-              className="btn btn-outline-charcoal"
+              className="btn"
               style={{
                 padding: '0.85rem 1.85rem',
+                border: '1.5px solid var(--color-sec-about-text, var(--color-charcoal-dark))',
+                color: 'var(--color-sec-about-text, var(--color-charcoal-dark))',
+                backgroundColor: 'transparent',
               }}
             >
               <span>{t('aboutCta')}</span>
@@ -209,7 +212,7 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
         {/* Animated Statistics Bar */}
         <div
           style={{
-            backgroundColor: 'var(--color-gray-structure)',
+            backgroundColor: 'var(--color-sec-about-card-bg, var(--color-gray-structure))',
             borderRadius: 'var(--radius-lg)',
             padding: 'clamp(2rem, 4vw, 3.5rem)',
             display: 'grid',
@@ -224,7 +227,7 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
                 style={{
                   fontSize: 'clamp(2.25rem, 4.5vw, 3.5rem)',
                   fontWeight: 800,
-                  color: 'var(--color-orange-primary)',
+                  color: 'var(--color-sec-about-accent, var(--color-orange-primary))',
                   letterSpacing: '-0.03em',
                   lineHeight: 1,
                   marginBottom: '0.5rem',
@@ -238,7 +241,7 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
                 style={{
                   fontSize: '0.875rem',
                   fontWeight: 600,
-                  color: 'var(--color-charcoal-dark)',
+                  color: 'var(--color-sec-about-card-text, var(--color-charcoal-dark))',
                   textTransform: language === 'ar' ? 'none' : 'uppercase',
                   letterSpacing: '0.04em',
                 }}

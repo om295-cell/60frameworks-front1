@@ -35,42 +35,69 @@
   --color-footer-accent: #F68621;
   --color-footer-border: rgba(255, 255, 255, 0.08);
 
-  /* Section-specific backgrounds / text / accents */
+  /* Section-specific backgrounds / text / subtitles / accents / cards */
   --color-sec-hero-bg: #242424;
   --color-sec-hero-text: #FFFFFF;
+  --color-sec-hero-subtitle: #D1D5DB;
   --color-sec-hero-accent: #F68621;
+  --color-sec-hero-card-bg: #2E2E2E;
+  --color-sec-hero-card-text: #FFFFFF;
 
   --color-sec-about-bg: #FFFFFF;
   --color-sec-about-text: #242424;
+  --color-sec-about-subtitle: #4A4A4A;
   --color-sec-about-accent: #F68621;
+  --color-sec-about-card-bg: #E6E7E8;
+  --color-sec-about-card-text: #242424;
 
   --color-sec-services-bg: #E6E7E8;
   --color-sec-services-text: #242424;
+  --color-sec-services-subtitle: #4A4A4A;
   --color-sec-services-accent: #F68621;
+  --color-sec-services-card-bg: #FFFFFF;
+  --color-sec-services-card-text: #242424;
 
   --color-sec-clients-bg: #FFFFFF;
   --color-sec-clients-text: #242424;
+  --color-sec-clients-subtitle: #4A4A4A;
   --color-sec-clients-accent: #F68621;
+  --color-sec-clients-card-bg: #F8F9FA;
+  --color-sec-clients-card-text: #242424;
 
   --color-sec-sectors-bg: #F4D3C9;
   --color-sec-sectors-text: #242424;
+  --color-sec-sectors-subtitle: #3A3A3A;
   --color-sec-sectors-accent: #F68621;
+  --color-sec-sectors-card-bg: #FFFFFF;
+  --color-sec-sectors-card-text: #242424;
 
   --color-sec-caseStudies-bg: #242424;
   --color-sec-caseStudies-text: #FFFFFF;
+  --color-sec-caseStudies-subtitle: #D1D5DB;
   --color-sec-caseStudies-accent: #F68621;
+  --color-sec-caseStudies-card-bg: #2E2E2E;
+  --color-sec-caseStudies-card-text: #FFFFFF;
 
   --color-sec-whyUs-bg: #FFFFFF;
   --color-sec-whyUs-text: #242424;
+  --color-sec-whyUs-subtitle: #4A4A4A;
   --color-sec-whyUs-accent: #F68621;
+  --color-sec-whyUs-card-bg: #F8F9FA;
+  --color-sec-whyUs-card-text: #242424;
 
   --color-sec-testimonials-bg: #F4D3C9;
   --color-sec-testimonials-text: #242424;
+  --color-sec-testimonials-subtitle: #3A3A3A;
   --color-sec-testimonials-accent: #F68621;
+  --color-sec-testimonials-card-bg: #FFFFFF;
+  --color-sec-testimonials-card-text: #242424;
 
   --color-sec-finalCta-bg: #F68621;
   --color-sec-finalCta-text: #FFFFFF;
+  --color-sec-finalCta-subtitle: #FFF3E0;
   --color-sec-finalCta-accent: #FFFFFF;
+  --color-sec-finalCta-card-bg: rgba(255, 255, 255, 0.15);
+  --color-sec-finalCta-card-text: #FFFFFF;
 
 
   /* Typography Scale */

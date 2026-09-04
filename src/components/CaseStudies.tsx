@@ -41,13 +41,13 @@ export const CaseStudies: React.FC<CaseStudiesProps> = ({ projects, onSelectProj
           }}
         >
           <div style={{ maxWidth: '650px' }}>
-            <span className="type-eyebrow" style={{ color: 'var(--color-orange-primary)' }}>
+            <span className="type-eyebrow" style={{ color: 'var(--color-sec-caseStudies-accent, var(--color-orange-primary))' }}>
               {t('storiesEyebrow')}
             </span>
-            <h2 className="type-h1" style={{ color: 'var(--color-white)', marginBottom: '0.75rem' }}>
+            <h2 className="type-h1" style={{ color: 'var(--color-sec-caseStudies-text, var(--color-white))', marginBottom: '0.75rem' }}>
               {t('storiesHeading')}
             </h2>
-            <p className="type-body-lg" style={{ color: 'rgba(255,255,255,0.75)', lineHeight: 1.7 }}>
+            <p className="type-body-lg" style={{ color: 'var(--color-sec-caseStudies-subtitle, rgba(255,255,255,0.75))', lineHeight: 1.7 }}>
               {t('storiesSubtitle')}
             </p>
           </div>
@@ -74,17 +74,23 @@ export const CaseStudies: React.FC<CaseStudiesProps> = ({ projects, onSelectProj
                     borderRadius: 'var(--radius-full)',
                     fontSize: '0.8125rem',
                     fontWeight: 600,
-                    border: isActive ? '1px solid var(--color-orange-primary)' : '1px solid rgba(255,255,255,0.15)',
-                    backgroundColor: isActive ? 'var(--color-orange-primary)' : 'rgba(255,255,255,0.05)',
-                    color: isActive ? 'var(--color-white)' : 'rgba(255,255,255,0.85)',
+                    border: isActive
+                      ? '1px solid var(--color-sec-caseStudies-accent, var(--color-orange-primary))'
+                      : '1px solid var(--color-sec-caseStudies-text, rgba(255,255,255,0.2))',
+                    backgroundColor: isActive
+                      ? 'var(--color-sec-caseStudies-accent, var(--color-orange-primary))'
+                      : 'transparent',
+                    color: isActive
+                      ? '#FFFFFF'
+                      : 'var(--color-sec-caseStudies-text, rgba(255,255,255,0.85))',
                     cursor: 'pointer',
                     transition: 'all var(--transition-fast)',
                   }}
                   onMouseEnter={(e) => {
-                    if (!isActive) e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.12)';
+                    if (!isActive) e.currentTarget.style.opacity = '0.75';
                   }}
                   onMouseLeave={(e) => {
-                    if (!isActive) e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)';
+                    if (!isActive) e.currentTarget.style.opacity = '1';
                   }}
                 >
                   {label}
@@ -117,10 +123,10 @@ export const CaseStudies: React.FC<CaseStudiesProps> = ({ projects, onSelectProj
                 className="card-hover-lift"
                 onClick={() => onSelectProject(project)}
                 style={{
-                  backgroundColor: 'var(--color-charcoal-card)',
+                  backgroundColor: 'var(--color-sec-caseStudies-card-bg, var(--color-charcoal-card))',
                   borderRadius: 'var(--radius-lg)',
                   overflow: 'hidden',
-                  border: '1px solid var(--color-border-dark)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
                   cursor: 'pointer',
                   display: 'flex',
                   flexDirection: 'column',
@@ -159,7 +165,7 @@ export const CaseStudies: React.FC<CaseStudiesProps> = ({ projects, onSelectProj
                       style={{
                         backgroundColor: 'rgba(36,36,36,0.85)',
                         backdropFilter: 'blur(6px)',
-                        color: 'var(--color-orange-primary)',
+                        color: 'var(--color-sec-caseStudies-accent, var(--color-orange-primary))',
                         padding: '0.35rem 0.85rem',
                         borderRadius: 'var(--radius-full)',
                         fontSize: '0.75rem',
@@ -184,7 +190,7 @@ export const CaseStudies: React.FC<CaseStudiesProps> = ({ projects, onSelectProj
                     <span
                       style={{
                         backgroundColor: 'rgba(0,0,0,0.6)',
-                        color: 'var(--color-white)',
+                        color: '#FFFFFF',
                         padding: '0.25rem 0.75rem',
                         borderRadius: 'var(--radius-sm)',
                         fontSize: '0.75rem',
@@ -211,7 +217,7 @@ export const CaseStudies: React.FC<CaseStudiesProps> = ({ projects, onSelectProj
                       style={{
                         fontSize: '1.375rem',
                         fontWeight: 700,
-                        color: 'var(--color-white)',
+                        color: 'var(--color-sec-caseStudies-card-text, var(--color-white))',
                         marginBottom: '0.75rem',
                         lineHeight: 1.3,
                       }}
@@ -223,7 +229,8 @@ export const CaseStudies: React.FC<CaseStudiesProps> = ({ projects, onSelectProj
                       style={{
                         fontSize: '0.9375rem',
                         lineHeight: 1.65,
-                        color: 'rgba(255, 255, 255, 0.7)',
+                        color: 'var(--color-sec-caseStudies-card-text, rgba(255, 255, 255, 0.7))',
+                        opacity: 0.8,
                         marginBottom: '1.5rem',
                       }}
                     >

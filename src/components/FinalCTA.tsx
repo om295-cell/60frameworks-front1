@@ -76,13 +76,13 @@ export const FinalCTA: React.FC<FinalCTAProps> = ({ onOpenContact, content }) =>
               border: '1px solid rgba(255, 255, 255, 0.3)',
             }}
           >
-            <Sparkles size={16} color="var(--color-white)" />
+            <Sparkles size={16} color="var(--color-sec-finalCta-accent, #FFFFFF)" />
             <span
               style={{
                 fontSize: '0.75rem',
                 fontWeight: 700,
                 letterSpacing: '0.08em',
-                color: 'var(--color-white)',
+                color: 'var(--color-sec-finalCta-text, #FFFFFF)',
               }}
             >
               {eyebrow}
@@ -93,7 +93,7 @@ export const FinalCTA: React.FC<FinalCTAProps> = ({ onOpenContact, content }) =>
           <h2
             className="type-hero"
             style={{
-              color: 'var(--color-white)',
+              color: 'var(--color-sec-finalCta-text, #FFFFFF)',
               marginBottom: '1.5rem',
               lineHeight: 1.15,
             }}
@@ -105,7 +105,7 @@ export const FinalCTA: React.FC<FinalCTAProps> = ({ onOpenContact, content }) =>
           <p
             className="type-body-lg"
             style={{
-              color: 'rgba(255, 255, 255, 0.95)',
+              color: 'var(--color-sec-finalCta-subtitle, var(--color-sec-finalCta-text, rgba(255, 255, 255, 0.95)))',
               maxWidth: '680px',
               margin: '0 auto 2.5rem auto',
               fontSize: '1.1875rem',

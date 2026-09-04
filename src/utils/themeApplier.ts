@@ -28,7 +28,10 @@ export interface ThemeGlobal {
 export interface SectionTheme {
   backgroundColor: string;
   textColor: string;
+  subtitleColor?: string;
   accentColor: string;
+  cardBackgroundColor?: string;
+  cardTextColor?: string;
 }
 
 export interface ThemeSections {
@@ -75,17 +78,106 @@ export const DEFAULT_THEME: SiteTheme = {
     textColor: '#242424',
   },
   sections: {
-    hero: { backgroundColor: '#242424', textColor: '#FFFFFF', accentColor: '#F68621' },
-    about: { backgroundColor: '#FFFFFF', textColor: '#242424', accentColor: '#F68621' },
-    services: { backgroundColor: '#E6E7E8', textColor: '#242424', accentColor: '#F68621' },
-    clients: { backgroundColor: '#FFFFFF', textColor: '#242424', accentColor: '#F68621' },
-    sectors: { backgroundColor: '#F4D3C9', textColor: '#242424', accentColor: '#F68621' },
-    caseStudies: { backgroundColor: '#242424', textColor: '#FFFFFF', accentColor: '#F68621' },
-    whyUs: { backgroundColor: '#FFFFFF', textColor: '#242424', accentColor: '#F68621' },
-    testimonials: { backgroundColor: '#F4D3C9', textColor: '#242424', accentColor: '#F68621' },
-    finalCta: { backgroundColor: '#F68621', textColor: '#FFFFFF', accentColor: '#FFFFFF' },
+    hero: {
+      backgroundColor: '#242424',
+      textColor: '#FFFFFF',
+      subtitleColor: '#D1D5DB',
+      accentColor: '#F68621',
+      cardBackgroundColor: '#2E2E2E',
+      cardTextColor: '#FFFFFF',
+    },
+    about: {
+      backgroundColor: '#FFFFFF',
+      textColor: '#242424',
+      subtitleColor: '#4A4A4A',
+      accentColor: '#F68621',
+      cardBackgroundColor: '#E6E7E8',
+      cardTextColor: '#242424',
+    },
+    services: {
+      backgroundColor: '#E6E7E8',
+      textColor: '#242424',
+      subtitleColor: '#4A4A4A',
+      accentColor: '#F68621',
+      cardBackgroundColor: '#FFFFFF',
+      cardTextColor: '#242424',
+    },
+    clients: {
+      backgroundColor: '#FFFFFF',
+      textColor: '#242424',
+      subtitleColor: '#4A4A4A',
+      accentColor: '#F68621',
+      cardBackgroundColor: '#F8F9FA',
+      cardTextColor: '#242424',
+    },
+    sectors: {
+      backgroundColor: '#F4D3C9',
+      textColor: '#242424',
+      subtitleColor: '#3A3A3A',
+      accentColor: '#F68621',
+      cardBackgroundColor: '#FFFFFF',
+      cardTextColor: '#242424',
+    },
+    caseStudies: {
+      backgroundColor: '#242424',
+      textColor: '#FFFFFF',
+      subtitleColor: '#D1D5DB',
+      accentColor: '#F68621',
+      cardBackgroundColor: '#2E2E2E',
+      cardTextColor: '#FFFFFF',
+    },
+    whyUs: {
+      backgroundColor: '#FFFFFF',
+      textColor: '#242424',
+      subtitleColor: '#4A4A4A',
+      accentColor: '#F68621',
+      cardBackgroundColor: '#F8F9FA',
+      cardTextColor: '#242424',
+    },
+    testimonials: {
+      backgroundColor: '#F4D3C9',
+      textColor: '#242424',
+      subtitleColor: '#3A3A3A',
+      accentColor: '#F68621',
+      cardBackgroundColor: '#FFFFFF',
+      cardTextColor: '#242424',
+    },
+    finalCta: {
+      backgroundColor: '#F68621',
+      textColor: '#FFFFFF',
+      subtitleColor: '#FFF3E0',
+      accentColor: '#FFFFFF',
+      cardBackgroundColor: 'rgba(255, 255, 255, 0.15)',
+      cardTextColor: '#FFFFFF',
+    },
   },
 };
+
+/**
+ * Check if a color is perceptually dark (useful for automatic contrast calculation)
+ */
+export function isDarkColor(color: string): boolean {
+  if (!color) return false;
+  if (color.startsWith('#')) {
+    const hex = color.substring(1);
+    const fullHex = hex.length === 3 ? hex.split('').map(x => x + x).join('') : hex;
+    const rgb = parseInt(fullHex, 16);
+    const r = (rgb >> 16) & 0xff;
+    const g = (rgb >> 8) & 0xff;
+    const b = (rgb >> 0) & 0xff;
+    const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    return luma < 140;
+  }
+  if (color.includes('rgba') || color.includes('rgb')) {
+    const match = color.match(/\d+/g);
+    if (match && match.length >= 3) {
+      const [r, g, b] = match.map(Number);
+      const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      return luma < 140;
+    }
+  }
+  return false;
+}
 
 /**
  * Apply the theme configuration directly to CSS custom properties on document.documentElement
@@ -143,15 +235,30 @@ export function applyTheme(theme: Partial<SiteTheme> | null | undefined): void {
   root.style.setProperty('--color-footer-accent', t.footer.accentColor || t.global.primaryColor || '#F68621');
   root.style.setProperty('--color-footer-border', t.footer.borderColor || 'rgba(255, 255, 255, 0.08)');
 
-  // 4. Section by Section Variables
+  // 4. Section by Section Variables (with intelligent contrast guards)
   const sectionKeys = ['hero', 'about', 'services', 'clients', 'sectors', 'caseStudies', 'whyUs', 'testimonials', 'finalCta'] as const;
 
   for (const secKey of sectionKeys) {
     const sec = t.sections[secKey];
     if (sec) {
+      const isSecDark = isDarkColor(sec.backgroundColor);
+
+      // Section Background & Headings
       root.style.setProperty(`--color-sec-${secKey}-bg`, sec.backgroundColor);
       root.style.setProperty(`--color-sec-${secKey}-text`, sec.textColor);
+
+      // Subtitle / Paragraph Text (fallback to readable contrasting shade if not specified)
+      const fallbackSubtitle = isSecDark ? '#D1D5DB' : '#4B5563';
+      root.style.setProperty(`--color-sec-${secKey}-subtitle`, sec.subtitleColor || fallbackSubtitle);
+
+      // Accent / Eyebrow / Badges
       root.style.setProperty(`--color-sec-${secKey}-accent`, sec.accentColor || t.global.primaryColor || '#F68621');
+
+      // Cards inside this section
+      const fallbackCardBg = isSecDark ? '#2E2E2E' : '#FFFFFF';
+      const fallbackCardText = isDarkColor(sec.cardBackgroundColor || fallbackCardBg) ? '#FFFFFF' : '#242424';
+      root.style.setProperty(`--color-sec-${secKey}-card-bg`, sec.cardBackgroundColor || fallbackCardBg);
+      root.style.setProperty(`--color-sec-${secKey}-card-text`, sec.cardTextColor || fallbackCardText);
     }
   }
 }

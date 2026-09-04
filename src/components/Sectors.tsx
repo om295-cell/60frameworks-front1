@@ -59,13 +59,13 @@ export const Sectors: React.FC<SectorsProps> = ({ sectors, onOpenContact }) => {
       <div className="container">
         {/* Section Header */}
         <div style={{ maxWidth: '750px', marginBottom: '3.5rem' }}>
-          <span className="type-eyebrow" style={{ color: 'var(--color-charcoal-dark)' }}>
+          <span className="type-eyebrow" style={{ color: 'var(--color-sec-sectors-accent, var(--color-orange-primary))' }}>
             {t('sectorsEyebrow')}
           </span>
-          <h2 className="type-h1" style={{ color: 'var(--color-charcoal-dark)', marginBottom: '1rem' }}>
+          <h2 className="type-h1" style={{ color: 'var(--color-sec-sectors-text, var(--color-charcoal-dark))', marginBottom: '1rem' }}>
             {t('sectorsHeading')}
           </h2>
-          <p className="type-body-lg" style={{ color: 'rgba(36,36,36,0.85)', lineHeight: 1.7 }}>
+          <p className="type-body-lg" style={{ color: 'var(--color-sec-sectors-subtitle, var(--color-charcoal-dark))', lineHeight: 1.7 }}>
             {t('sectorsSubtitle')}
           </p>
         </div>
@@ -82,7 +82,7 @@ export const Sectors: React.FC<SectorsProps> = ({ sectors, onOpenContact }) => {
           {/* Left Column: Interactive Sector List */}
           <div
             style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.75)',
+              backgroundColor: 'var(--color-sec-sectors-card-bg, rgba(255, 255, 255, 0.75))',
               backdropFilter: 'blur(10px)',
               borderRadius: 'var(--radius-lg)',
               padding: '1.25rem',
@@ -109,15 +109,15 @@ export const Sectors: React.FC<SectorsProps> = ({ sectors, onOpenContact }) => {
                     padding: '1rem 1.25rem',
                     borderRadius: 'var(--radius-md)',
                     border: 'none',
-                    backgroundColor: isActive ? 'var(--color-charcoal-dark)' : 'transparent',
-                    color: isActive ? 'var(--color-white)' : 'var(--color-charcoal-dark)',
+                    backgroundColor: isActive ? 'var(--color-sec-sectors-accent, var(--color-orange-primary))' : 'transparent',
+                    color: isActive ? '#FFFFFF' : 'var(--color-sec-sectors-card-text, var(--color-charcoal-dark))',
                     cursor: 'pointer',
                     transition: 'all var(--transition-fast)',
                     textAlign: dir === 'rtl' ? 'right' : 'left',
                   }}
                   onMouseEnter={(e) => {
                     if (!isActive) {
-                      e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+                      e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.4)';
                     }
                   }}
                   onMouseLeave={(e) => {
@@ -129,7 +129,7 @@ export const Sectors: React.FC<SectorsProps> = ({ sectors, onOpenContact }) => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
                     <span
                       style={{
-                        color: isActive ? 'var(--color-orange-primary)' : 'var(--color-body-gray)',
+                        color: isActive ? '#FFFFFF' : 'var(--color-sec-sectors-accent, var(--color-orange-primary))',
                         display: 'flex',
                       }}
                     >
@@ -147,7 +147,7 @@ export const Sectors: React.FC<SectorsProps> = ({ sectors, onOpenContact }) => {
 
                   <ArrowRight
                     size={16}
-                    color={isActive ? 'var(--color-orange-primary)' : 'rgba(0,0,0,0.3)'}
+                    color={isActive ? '#FFFFFF' : 'currentColor'}
                     style={{
                       transform: isActive
                         ? dir === 'rtl'
@@ -168,7 +168,7 @@ export const Sectors: React.FC<SectorsProps> = ({ sectors, onOpenContact }) => {
           {activeSector && (
             <div
               style={{
-                backgroundColor: 'var(--color-white)',
+                backgroundColor: 'var(--color-sec-sectors-card-bg, var(--color-white))',
                 borderRadius: 'var(--radius-lg)',
                 overflow: 'hidden',
                 boxShadow: 'var(--shadow-md)',
@@ -214,7 +214,7 @@ export const Sectors: React.FC<SectorsProps> = ({ sectors, onOpenContact }) => {
                   <h3
                     className="type-h3"
                     style={{
-                      color: 'var(--color-charcoal-dark)',
+                      color: 'var(--color-sec-sectors-card-text, var(--color-charcoal-dark))',
                       marginBottom: '1rem',
                     }}
                   >
@@ -225,7 +225,8 @@ export const Sectors: React.FC<SectorsProps> = ({ sectors, onOpenContact }) => {
                     style={{
                       fontSize: '0.9375rem',
                       lineHeight: 1.65,
-                      color: 'var(--color-body-gray)',
+                      color: 'var(--color-sec-sectors-card-text, var(--color-body-gray))',
+                      opacity: 0.85,
                       marginBottom: '1.5rem',
                     }}
                   >
@@ -240,7 +241,7 @@ export const Sectors: React.FC<SectorsProps> = ({ sectors, onOpenContact }) => {
                         fontWeight: 700,
                         textTransform: language === 'ar' ? 'none' : 'uppercase',
                         letterSpacing: language === 'ar' ? 'normal' : '0.06em',
-                        color: 'var(--color-charcoal-dark)',
+                        color: 'var(--color-sec-sectors-card-text, var(--color-charcoal-dark))',
                         marginBottom: '0.75rem',
                       }}
                     >
@@ -261,11 +262,11 @@ export const Sectors: React.FC<SectorsProps> = ({ sectors, onOpenContact }) => {
                             alignItems: 'center',
                             gap: '0.5rem',
                             fontSize: '0.84375rem',
-                            color: 'var(--color-charcoal-dark)',
+                            color: 'var(--color-sec-sectors-card-text, var(--color-charcoal-dark))',
                             fontWeight: 500,
                           }}
                         >
-                          <CheckCircle2 size={16} color="var(--color-orange-primary)" />
+                          <CheckCircle2 size={16} color="var(--color-sec-sectors-accent, var(--color-orange-primary))" />
                           <span>{cap}</span>
                         </div>
                       ))}

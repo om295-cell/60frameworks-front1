@@ -126,7 +126,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
                   fontWeight: 700,
                   letterSpacing: language === 'ar' ? '0.04em' : '0.14em',
                   textTransform: 'uppercase',
-                  color: 'var(--color-body-light)',
+                  color: 'var(--color-header-text, var(--color-body-light))',
+                  opacity: 0.7,
                   display: 'block',
                 }}
               >
@@ -198,9 +199,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.375rem',
-                backgroundColor: 'var(--color-gray-structure)',
-                color: 'var(--color-charcoal-dark)',
-                border: '1px solid rgba(0,0,0,0.06)',
+                backgroundColor: 'rgba(128, 128, 128, 0.12)',
+                color: 'var(--color-header-text, var(--color-charcoal-dark))',
+                border: '1px solid var(--color-header-border, rgba(0,0,0,0.06))',
                 borderRadius: 'var(--radius-full)',
                 padding: '0.45rem 0.95rem',
                 fontSize: '0.8125rem',
@@ -209,7 +210,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
                 transition: 'all var(--transition-fast)',
               }}
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-orange-subtle)')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--color-gray-structure)')}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(128, 128, 128, 0.12)')}
             >
               <Globe size={15} color="var(--color-orange-primary)" />
               <span>{language === 'en' ? 'العربية 🇸🇦' : 'English 🇬🇧'}</span>
@@ -222,6 +223,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
               style={{
                 padding: '0.65rem 1.4rem',
                 fontSize: '0.875rem',
+                fontWeight: 700,
               }}
             >
               <span>{t('navContactUs')}</span>
@@ -232,15 +234,17 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
             </button>
           </div>
 
-          {/* Mobile Right Controls */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }} className="mobile-controls">
+          {/* Mobile Navigation Controls */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="mobile-controls">
             <button
               onClick={toggleLanguage}
+              aria-label="Toggle language"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.3rem',
-                backgroundColor: 'var(--color-gray-structure)',
+                backgroundColor: 'rgba(128, 128, 128, 0.12)',
+                color: 'var(--color-header-text, var(--color-charcoal-dark))',
                 border: 'none',
                 borderRadius: 'var(--radius-full)',
                 padding: '0.4rem 0.75rem',
@@ -264,10 +268,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
                 width: '40px',
                 height: '40px',
                 borderRadius: '8px',
-                backgroundColor: 'var(--color-gray-structure)',
+                backgroundColor: 'rgba(128, 128, 128, 0.12)',
                 border: 'none',
                 cursor: 'pointer',
-                color: 'var(--color-charcoal-dark)',
+                color: 'var(--color-header-text, var(--color-charcoal-dark))',
               }}
             >
               {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
@@ -293,9 +297,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
         >
           <div
             style={{
-              backgroundColor: 'var(--color-white)',
+              backgroundColor: 'var(--color-header-bg, var(--color-white))',
+              color: 'var(--color-header-text, var(--color-charcoal-dark))',
               padding: '2rem 1.5rem',
-              borderBottom: '1px solid var(--color-border)',
+              borderBottom: '1px solid var(--color-header-border, var(--color-border))',
               display: 'flex',
               flexDirection: 'column',
               gap: '1.25rem',
@@ -316,7 +321,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenContact }) => {
                     ? 'var(--color-header-link-hover, var(--color-orange-primary))'
                     : 'var(--color-header-link, var(--color-charcoal-dark))',
                   padding: '0.5rem 0',
-                  borderBottom: '1px solid rgba(230, 231, 232, 0.4)',
+                  borderBottom: '1px solid rgba(128, 128, 128, 0.15)',
                 }}
               >
                 {link.label}

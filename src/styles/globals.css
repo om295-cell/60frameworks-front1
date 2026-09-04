@@ -172,40 +172,100 @@ body {
   color: var(--color-sec-finalCta-text, var(--color-white));
 }
 
-/* Standalone section overrides for sections that use same class but different theme slot */
-section#about.bg-white-space {
+/* Standalone section overrides for sections with specific ID */
+section#hero {
+  background-color: var(--color-sec-hero-bg, var(--color-charcoal-dark));
+  color: var(--color-sec-hero-text, var(--color-white));
+}
+section#hero .type-hero, section#hero h1, section#hero h2 {
+  color: var(--color-sec-hero-text, var(--color-white));
+}
+section#hero .type-body-lg, section#hero .type-body {
+  color: var(--color-sec-hero-subtitle, rgba(255, 255, 255, 0.85));
+}
+
+section#about {
   background-color: var(--color-sec-about-bg, var(--color-white));
   color: var(--color-sec-about-text, var(--color-charcoal-dark));
 }
-
-section#clients.bg-white-space {
-  background-color: var(--color-sec-clients-bg, var(--color-white));
-  color: var(--color-sec-clients-text, var(--color-charcoal-dark));
+section#about .type-h1, section#about h2 {
+  color: var(--color-sec-about-text, var(--color-charcoal-dark));
+}
+section#about .type-body-lg, section#about .type-body {
+  color: var(--color-sec-about-subtitle, var(--color-body-gray));
 }
 
-section#why-us.bg-white-space {
-  background-color: var(--color-sec-whyUs-bg, var(--color-white));
-  color: var(--color-sec-whyUs-text, var(--color-charcoal-dark));
-}
-
-section#sectors.bg-blush-softness {
-  background-color: var(--color-sec-sectors-bg, var(--color-blush-softness));
-  color: var(--color-sec-sectors-text, var(--color-charcoal-dark));
-}
-
-section#testimonials.bg-blush-softness {
-  background-color: var(--color-sec-testimonials-bg, var(--color-blush-softness));
-  color: var(--color-sec-testimonials-text, var(--color-charcoal-dark));
-}
-
-section#services.bg-gray-structure {
+section#services {
   background-color: var(--color-sec-services-bg, var(--color-gray-structure));
   color: var(--color-sec-services-text, var(--color-charcoal-dark));
 }
+section#services .type-h1, section#services h2 {
+  color: var(--color-sec-services-text, var(--color-charcoal-dark));
+}
+section#services .type-body-lg, section#services .type-body {
+  color: var(--color-sec-services-subtitle, var(--color-body-gray));
+}
 
-section#stories.bg-charcoal-dark {
+section#clients {
+  background-color: var(--color-sec-clients-bg, var(--color-white));
+  color: var(--color-sec-clients-text, var(--color-charcoal-dark));
+}
+section#clients .type-h2, section#clients h2 {
+  color: var(--color-sec-clients-text, var(--color-charcoal-dark));
+}
+section#clients .type-body-lg, section#clients .type-body {
+  color: var(--color-sec-clients-subtitle, var(--color-body-gray));
+}
+
+section#sectors {
+  background-color: var(--color-sec-sectors-bg, var(--color-blush-softness));
+  color: var(--color-sec-sectors-text, var(--color-charcoal-dark));
+}
+section#sectors .type-h1, section#sectors h2 {
+  color: var(--color-sec-sectors-text, var(--color-charcoal-dark));
+}
+section#sectors .type-body-lg, section#sectors .type-body {
+  color: var(--color-sec-sectors-subtitle, var(--color-charcoal-dark));
+}
+
+section#stories {
   background-color: var(--color-sec-caseStudies-bg, var(--color-charcoal-dark));
   color: var(--color-sec-caseStudies-text, var(--color-white));
+}
+section#stories .type-h1, section#stories h2 {
+  color: var(--color-sec-caseStudies-text, var(--color-white));
+}
+section#stories .type-body-lg, section#stories .type-body {
+  color: var(--color-sec-caseStudies-subtitle, rgba(255, 255, 255, 0.75));
+}
+
+section#why-us {
+  background-color: var(--color-sec-whyUs-bg, var(--color-white));
+  color: var(--color-sec-whyUs-text, var(--color-charcoal-dark));
+}
+section#why-us .type-h1, section#why-us h2 {
+  color: var(--color-sec-whyUs-text, var(--color-charcoal-dark));
+}
+section#why-us .type-body-lg, section#why-us .type-body {
+  color: var(--color-sec-whyUs-subtitle, var(--color-body-gray));
+}
+
+section#testimonials {
+  background-color: var(--color-sec-testimonials-bg, var(--color-blush-softness));
+  color: var(--color-sec-testimonials-text, var(--color-charcoal-dark));
+}
+section#testimonials .type-h1, section#testimonials h2 {
+  color: var(--color-sec-testimonials-text, var(--color-charcoal-dark));
+}
+section#testimonials .type-body-lg, section#testimonials .type-body {
+  color: var(--color-sec-testimonials-subtitle, var(--color-charcoal-dark));
+}
+
+.bg-orange-brand .type-hero, .bg-orange-brand h2 {
+  color: var(--color-sec-finalCta-text, var(--color-white));
+}
+.bg-orange-brand .type-body-lg, .bg-orange-brand .type-body {
+  color: var(--color-sec-finalCta-subtitle, var(--color-sec-finalCta-text, var(--color-white)));
 }
 
 /* Buttons */

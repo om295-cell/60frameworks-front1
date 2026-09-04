@@ -106,20 +106,22 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
                     width: '38px',
                     height: '38px',
                     borderRadius: '50%',
-                    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                    backgroundColor: 'rgba(128, 128, 128, 0.15)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: 'var(--color-white)',
+                    color: 'var(--color-footer-heading, var(--color-white))',
                     textDecoration: 'none',
                     transition: 'all var(--transition-fast)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--color-orange-primary)';
+                    e.currentTarget.style.backgroundColor = 'var(--color-footer-accent, var(--color-orange-primary))';
+                    e.currentTarget.style.color = '#FFFFFF';
                     e.currentTarget.style.transform = 'translateY(-2px)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.08)';
+                    e.currentTarget.style.backgroundColor = 'rgba(128, 128, 128, 0.15)';
+                    e.currentTarget.style.color = 'var(--color-footer-heading, var(--color-white))';
                     e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
@@ -150,12 +152,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
                     href={link.href}
                     style={{
                       fontSize: '0.875rem',
-                      color: 'rgba(255, 255, 255, 0.7)',
+                      color: 'var(--color-footer-link, var(--color-footer-text, #B0B0B0))',
                       textDecoration: 'none',
                       transition: 'color var(--transition-fast)',
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-orange-primary)')}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)')}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-footer-accent, var(--color-orange-primary))')}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-footer-link, var(--color-footer-text, #B0B0B0))')}
                   >
                     {link.label}
                   </a>
@@ -185,12 +187,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
                     href="#services"
                     style={{
                       fontSize: '0.875rem',
-                      color: 'rgba(255, 255, 255, 0.7)',
+                      color: 'var(--color-footer-link, var(--color-footer-text, #B0B0B0))',
                       textDecoration: 'none',
                       transition: 'color var(--transition-fast)',
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-orange-primary)')}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)')}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-footer-accent, var(--color-orange-primary))')}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-footer-link, var(--color-footer-text, #B0B0B0))')}
                   >
                     {serv}
                   </a>

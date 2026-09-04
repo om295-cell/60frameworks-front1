@@ -103,7 +103,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
           <h1
             className="type-hero"
             style={{
-              color: 'var(--color-white)',
+              color: 'var(--color-sec-hero-text, var(--color-white))',
               marginBottom: '1.75rem',
               lineHeight: dir === 'rtl' ? 1.36 : 1.15,
             }}
@@ -111,7 +111,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
             <span>{headlinePrefix}</span>{' '}
             <span
               style={{
-                color: 'var(--color-orange-primary)',
+                color: 'var(--color-sec-hero-accent, var(--color-orange-primary))',
                 position: 'relative',
                 display: 'inline-block',
                 paddingBottom: dir === 'rtl' ? '0.35rem' : '0.15rem',
@@ -134,7 +134,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
                 <path
                   d="M0,8 Q50,0 100,8"
                   fill="none"
-                  stroke="var(--color-orange-primary)"
+                  stroke="var(--color-sec-hero-accent, var(--color-orange-primary))"
                   strokeWidth="4"
                   strokeLinecap="round"
                 />
@@ -146,7 +146,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
           <p
             className="type-body-lg"
             style={{
-              color: 'rgba(255, 255, 255, 0.85)',
+              color: 'var(--color-sec-hero-subtitle, rgba(255, 255, 255, 0.85))',
               maxWidth: '720px',
               marginBottom: '2.5rem',
               fontSize: '1.1875rem',
@@ -185,11 +185,14 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
 
             <button
               onClick={onViewWork}
-              className="btn btn-outline-white"
+              className="btn"
               style={{
                 padding: '1rem 2rem',
                 fontSize: '1rem',
                 fontWeight: 600,
+                border: '1.5px solid var(--color-sec-hero-text, rgba(255, 255, 255, 0.4))',
+                color: 'var(--color-sec-hero-text, var(--color-white))',
+                backgroundColor: 'transparent',
               }}
             >
               <span>{t('heroCtaSecondary')}</span>
@@ -203,7 +206,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
               gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
               gap: '1.5rem',
               paddingTop: '2rem',
-              borderTop: '1px solid rgba(255, 255, 255, 0.12)',
+              borderTop: '1px solid rgba(255, 255, 255, 0.15)',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
@@ -216,17 +219,17 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: 'var(--color-orange-primary)',
+                  color: 'var(--color-sec-hero-accent, var(--color-orange-primary))',
                   flexShrink: 0,
                 }}
               >
                 <Globe size={20} />
               </div>
               <div>
-                <span style={{ display: 'block', fontWeight: 700, fontSize: '0.9375rem', color: 'var(--color-white)' }}>
+                <span style={{ display: 'block', fontWeight: 700, fontSize: '0.9375rem', color: 'var(--color-sec-hero-text, var(--color-white))' }}>
                   {t('trustGlobalReach')}
                 </span>
-                <span style={{ display: 'block', fontSize: '0.8125rem', color: 'rgba(255, 255, 255, 0.65)' }}>
+                <span style={{ display: 'block', fontSize: '0.8125rem', color: 'var(--color-sec-hero-subtitle, rgba(255, 255, 255, 0.65))' }}>
                   {t('trustGlobalDesc')}
                 </span>
               </div>
@@ -249,10 +252,10 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
                 <Award size={20} />
               </div>
               <div>
-                <span style={{ display: 'block', fontWeight: 700, fontSize: '0.9375rem', color: 'var(--color-white)' }}>
+                <span style={{ display: 'block', fontWeight: 700, fontSize: '0.9375rem', color: 'var(--color-sec-hero-text, var(--color-white))' }}>
                   {t('trustAward')}
                 </span>
-                <span style={{ display: 'block', fontSize: '0.8125rem', color: 'rgba(255, 255, 255, 0.65)' }}>
+                <span style={{ display: 'block', fontSize: '0.8125rem', color: 'var(--color-sec-hero-subtitle, rgba(255, 255, 255, 0.65))' }}>
                   {t('trustAwardDesc')}
                 </span>
               </div>
@@ -275,10 +278,10 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
                 <ShieldCheck size={20} />
               </div>
               <div>
-                <span style={{ display: 'block', fontWeight: 700, fontSize: '0.9375rem', color: 'var(--color-white)' }}>
+                <span style={{ display: 'block', fontWeight: 700, fontSize: '0.9375rem', color: 'var(--color-sec-hero-text, var(--color-white))' }}>
                   {t('trustProtocol')}
                 </span>
-                <span style={{ display: 'block', fontSize: '0.8125rem', color: 'rgba(255, 255, 255, 0.65)' }}>
+                <span style={{ display: 'block', fontSize: '0.8125rem', color: 'var(--color-sec-hero-subtitle, rgba(255, 255, 255, 0.65))' }}>
                   {t('trustProtocolDesc')}
                 </span>
               </div>

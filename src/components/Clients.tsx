@@ -14,11 +14,13 @@ export const Clients: React.FC<ClientsProps> = ({ clients }) => {
       <div className="container">
         {/* Section Header */}
         <div style={{ textAlign: 'center', maxWidth: '680px', margin: '0 auto 3rem auto' }}>
-          <span className="type-eyebrow">{t('clientsEyebrow')}</span>
-          <h2 className="type-h2" style={{ color: 'var(--color-charcoal-dark)', marginBottom: '0.75rem' }}>
+          <span className="type-eyebrow" style={{ color: 'var(--color-sec-clients-accent, var(--color-orange-primary))' }}>
+            {t('clientsEyebrow')}
+          </span>
+          <h2 className="type-h2" style={{ color: 'var(--color-sec-clients-text, var(--color-charcoal-dark))', marginBottom: '0.75rem' }}>
             {t('clientsHeading')}
           </h2>
-          <p className="type-body" style={{ lineHeight: 1.7 }}>
+          <p className="type-body" style={{ color: 'var(--color-sec-clients-subtitle, var(--color-body-gray))', lineHeight: 1.7 }}>
             {t('clientsSubtitle')}
           </p>
         </div>
@@ -40,26 +42,24 @@ export const Clients: React.FC<ClientsProps> = ({ clients }) => {
               <div
                 key={client._id || idx}
                 style={{
-                  backgroundColor: 'var(--color-gray-light)',
+                  backgroundColor: 'var(--color-sec-clients-card-bg, var(--color-gray-light))',
                   borderRadius: 'var(--radius-md)',
                   padding: '1.75rem 1.5rem',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  border: '1px solid rgba(0, 0, 0, 0.04)',
+                  border: '1px solid rgba(0, 0, 0, 0.05)',
                   transition: 'all var(--transition-normal)',
                   cursor: 'pointer',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--color-orange-primary)';
-                  e.currentTarget.style.backgroundColor = 'var(--color-white)';
+                  e.currentTarget.style.borderColor = 'var(--color-sec-clients-accent, var(--color-orange-primary))';
                   e.currentTarget.style.boxShadow = 'var(--shadow-md)';
                   e.currentTarget.style.transform = 'translateY(-3px)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.04)';
-                  e.currentTarget.style.backgroundColor = 'var(--color-gray-light)';
+                  e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.05)';
                   e.currentTarget.style.boxShadow = 'none';
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}
@@ -70,7 +70,7 @@ export const Clients: React.FC<ClientsProps> = ({ clients }) => {
                     fontSize: '1.2rem',
                     fontWeight: 800,
                     letterSpacing: language === 'ar' ? 'normal' : '-0.02em',
-                    color: 'var(--color-charcoal-dark)',
+                    color: 'var(--color-sec-clients-card-text, var(--color-charcoal-dark))',
                     textTransform: language === 'ar' ? 'none' : 'uppercase',
                     marginBottom: '0.25rem',
                     display: 'flex',
@@ -85,7 +85,7 @@ export const Clients: React.FC<ClientsProps> = ({ clients }) => {
                       width: '6px',
                       height: '6px',
                       borderRadius: '50%',
-                      backgroundColor: 'var(--color-orange-primary)',
+                      backgroundColor: 'var(--color-sec-clients-accent, var(--color-orange-primary))',
                       display: 'inline-block',
                       flexShrink: 0,
                     }}
@@ -95,7 +95,8 @@ export const Clients: React.FC<ClientsProps> = ({ clients }) => {
                 <span
                   style={{
                     fontSize: '0.75rem',
-                    color: 'var(--color-body-light)',
+                    color: 'var(--color-sec-clients-card-text, var(--color-body-light))',
+                    opacity: 0.75,
                     fontWeight: 500,
                     textAlign: 'center',
                   }}

@@ -67,11 +67,13 @@ export const WhyUs: React.FC<WhyUsProps> = ({ onOpenContact, content }) => {
         >
           {/* Left Column: Strategic Content & Pillars */}
           <div>
-            <span className="type-eyebrow">{eyebrow}</span>
-            <h2 className="type-h1" style={{ color: 'var(--color-charcoal-dark)', marginBottom: '1.25rem' }}>
+            <span className="type-eyebrow" style={{ color: 'var(--color-sec-whyUs-accent, var(--color-orange-primary))' }}>
+              {eyebrow}
+            </span>
+            <h2 className="type-h1" style={{ color: 'var(--color-sec-whyUs-text, var(--color-charcoal-dark))', marginBottom: '1.25rem' }}>
               {heading}
             </h2>
-            <p className="type-body-lg" style={{ marginBottom: '2.5rem', lineHeight: 1.7 }}>
+            <p className="type-body-lg" style={{ color: 'var(--color-sec-whyUs-subtitle, var(--color-body-gray))', marginBottom: '2.5rem', lineHeight: 1.7 }}>
               {subtitle}
             </p>
 
@@ -86,18 +88,16 @@ export const WhyUs: React.FC<WhyUsProps> = ({ onOpenContact, content }) => {
                     gap: '1.125rem',
                     padding: '1.25rem',
                     borderRadius: 'var(--radius-md)',
-                    backgroundColor: 'var(--color-gray-light)',
-                    border: '1px solid rgba(0, 0, 0, 0.04)',
+                    backgroundColor: 'var(--color-sec-whyUs-card-bg, var(--color-gray-light))',
+                    border: '1px solid rgba(0, 0, 0, 0.05)',
                     transition: 'all var(--transition-normal)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--color-orange-primary)';
-                    e.currentTarget.style.backgroundColor = 'var(--color-white)';
+                    e.currentTarget.style.borderColor = 'var(--color-sec-whyUs-accent, var(--color-orange-primary))';
                     e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.04)';
-                    e.currentTarget.style.backgroundColor = 'var(--color-gray-light)';
+                    e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.05)';
                     e.currentTarget.style.boxShadow = 'none';
                   }}
                 >
@@ -121,13 +121,13 @@ export const WhyUs: React.FC<WhyUsProps> = ({ onOpenContact, content }) => {
                       style={{
                         fontSize: '1.0625rem',
                         fontWeight: 700,
-                        color: 'var(--color-charcoal-dark)',
+                        color: 'var(--color-sec-whyUs-card-text, var(--color-charcoal-dark))',
                         marginBottom: '0.35rem',
                       }}
                     >
                       {pillar.title}
                     </h3>
-                    <p style={{ fontSize: '0.875rem', lineHeight: 1.65, color: 'var(--color-body-gray)' }}>
+                    <p style={{ fontSize: '0.875rem', lineHeight: 1.65, color: 'var(--color-sec-whyUs-card-text, var(--color-body-gray))', opacity: 0.85 }}>
                       {pillar.description}
                     </p>
                   </div>

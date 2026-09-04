@@ -15,13 +15,13 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ testimonials }) => {
       <div className="container">
         {/* Section Header */}
         <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 3.5rem auto' }}>
-          <span className="type-eyebrow" style={{ color: 'var(--color-charcoal-dark)' }}>
+          <span className="type-eyebrow" style={{ color: 'var(--color-sec-testimonials-accent, var(--color-orange-primary))' }}>
             {t('testEyebrow')}
           </span>
-          <h2 className="type-h1" style={{ color: 'var(--color-charcoal-dark)', marginBottom: '1rem' }}>
+          <h2 className="type-h1" style={{ color: 'var(--color-sec-testimonials-text, var(--color-charcoal-dark))', marginBottom: '1rem' }}>
             {t('testHeading')}
           </h2>
-          <p className="type-body-lg" style={{ color: 'rgba(36,36,36,0.85)', lineHeight: 1.7 }}>
+          <p className="type-body-lg" style={{ color: 'var(--color-sec-testimonials-subtitle, rgba(36,36,36,0.85))', lineHeight: 1.7 }}>
             {t('testSubtitle')}
           </p>
         </div>
@@ -46,7 +46,7 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ testimonials }) => {
                 key={item._id || idx}
                 className="card-hover-lift"
                 style={{
-                  backgroundColor: 'var(--color-white)',
+                  backgroundColor: 'var(--color-sec-testimonials-card-bg, var(--color-white))',
                   borderRadius: 'var(--radius-lg)',
                   padding: '2.5rem 2rem',
                   display: 'flex',
@@ -54,7 +54,7 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ testimonials }) => {
                   justifyContent: 'space-between',
                   boxShadow: 'var(--shadow-md)',
                   position: 'relative',
-                  border: '1px solid rgba(255, 255, 255, 0.9)',
+                  border: '1px solid rgba(0, 0, 0, 0.06)',
                 }}
               >
                 {/* Orange Quotation Accent Icon */}
@@ -65,7 +65,7 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ testimonials }) => {
                       height: '48px',
                       borderRadius: '50%',
                       backgroundColor: 'var(--color-orange-subtle)',
-                      color: 'var(--color-orange-primary)',
+                      color: 'var(--color-sec-testimonials-accent, var(--color-orange-primary))',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -87,7 +87,7 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ testimonials }) => {
                     style={{
                       fontSize: '1rem',
                       lineHeight: 1.7,
-                      color: 'var(--color-charcoal-dark)',
+                      color: 'var(--color-sec-testimonials-card-text, var(--color-charcoal-dark))',
                       fontStyle: 'italic',
                       marginBottom: '1.75rem',
                     }}
@@ -103,7 +103,7 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ testimonials }) => {
                       style={{
                         display: 'inline-block',
                         backgroundColor: 'var(--color-blush-subtle)',
-                        color: 'var(--color-orange-primary)',
+                        color: 'var(--color-sec-testimonials-accent, var(--color-orange-primary))',
                         padding: '0.35rem 0.85rem',
                         borderRadius: 'var(--radius-full)',
                         fontSize: '0.75rem',
@@ -123,7 +123,7 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ testimonials }) => {
                       alignItems: 'center',
                       gap: '1rem',
                       paddingTop: '1.25rem',
-                      borderTop: '1px solid var(--color-gray-structure)',
+                      borderTop: '1px solid rgba(128, 128, 128, 0.18)',
                     }}
                   >
                     <img
@@ -134,15 +134,15 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ testimonials }) => {
                         height: '48px',
                         borderRadius: '50%',
                         objectFit: 'cover',
-                        border: '2px solid var(--color-orange-primary)',
+                        border: '2px solid var(--color-sec-testimonials-accent, var(--color-orange-primary))',
                       }}
                     />
                     <div>
-                      <div style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--color-charcoal-dark)' }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--color-sec-testimonials-card-text, var(--color-charcoal-dark))' }}>
                         {author}
                       </div>
-                      <div style={{ fontSize: '0.8125rem', color: 'var(--color-body-light)' }}>
-                        {role}، <strong style={{ color: 'var(--color-body-gray)' }}>{org}</strong>
+                      <div style={{ fontSize: '0.8125rem', color: 'var(--color-sec-testimonials-card-text, var(--color-body-light))', opacity: 0.8 }}>
+                        {role}، <strong>{org}</strong>
                       </div>
                     </div>
                   </div>

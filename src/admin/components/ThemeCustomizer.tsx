@@ -109,15 +109,96 @@ export const ThemeCustomizer: React.FC = () => {
   };
 
   const SECTIONS_LIST = [
-    { key: 'hero', label: '🎬 Hero Banner (Home Intro)', defaultBg: '#242424', defaultText: '#FFFFFF', defaultAccent: '#F68621' },
-    { key: 'about', label: '🏢 About Section (Agency Vision)', defaultBg: '#FFFFFF', defaultText: '#242424', defaultAccent: '#F68621' },
-    { key: 'services', label: '⚙️ Services Section (6 Offerings)', defaultBg: '#E6E7E8', defaultText: '#242424', defaultAccent: '#F68621' },
-    { key: 'clients', label: '🤝 Clients Section (Logos Bar)', defaultBg: '#FFFFFF', defaultText: '#242424', defaultAccent: '#F68621' },
-    { key: 'sectors', label: '🏭 Industry Sectors (Capabilities)', defaultBg: '#F4D3C9', defaultText: '#242424', defaultAccent: '#F68621' },
-    { key: 'caseStudies', label: '🎯 Case Studies / Stories (Portfolio)', defaultBg: '#242424', defaultText: '#FFFFFF', defaultAccent: '#F68621' },
-    { key: 'whyUs', label: '⭐ Why 60FRAMEWORKS (Pillars)', defaultBg: '#FFFFFF', defaultText: '#242424', defaultAccent: '#F68621' },
-    { key: 'testimonials', label: '💬 Testimonials & Impact (Quotes)', defaultBg: '#F4D3C9', defaultText: '#242424', defaultAccent: '#F68621' },
-    { key: 'finalCta', label: '📣 Final Call-to-Action (Footer Banner)', defaultBg: '#F68621', defaultText: '#FFFFFF', defaultAccent: '#FFFFFF' },
+    {
+      key: 'hero',
+      label: '🎬 Hero Banner (Home Intro)',
+      defaultBg: '#242424',
+      defaultText: '#FFFFFF',
+      defaultSubtitle: '#D1D5DB',
+      defaultAccent: '#F68621',
+      defaultCardBg: '#2E2E2E',
+      defaultCardText: '#FFFFFF',
+    },
+    {
+      key: 'about',
+      label: '🏢 About Section (Agency Vision)',
+      defaultBg: '#FFFFFF',
+      defaultText: '#242424',
+      defaultSubtitle: '#4A4A4A',
+      defaultAccent: '#F68621',
+      defaultCardBg: '#E6E7E8',
+      defaultCardText: '#242424',
+    },
+    {
+      key: 'services',
+      label: '⚙️ Services Section (6 Offerings)',
+      defaultBg: '#E6E7E8',
+      defaultText: '#242424',
+      defaultSubtitle: '#4A4A4A',
+      defaultAccent: '#F68621',
+      defaultCardBg: '#FFFFFF',
+      defaultCardText: '#242424',
+    },
+    {
+      key: 'clients',
+      label: '🤝 Clients Section (Logos Bar)',
+      defaultBg: '#FFFFFF',
+      defaultText: '#242424',
+      defaultSubtitle: '#4A4A4A',
+      defaultAccent: '#F68621',
+      defaultCardBg: '#F8F9FA',
+      defaultCardText: '#242424',
+    },
+    {
+      key: 'sectors',
+      label: '🏭 Industry Sectors (Capabilities)',
+      defaultBg: '#F4D3C9',
+      defaultText: '#242424',
+      defaultSubtitle: '#3A3A3A',
+      defaultAccent: '#F68621',
+      defaultCardBg: '#FFFFFF',
+      defaultCardText: '#242424',
+    },
+    {
+      key: 'caseStudies',
+      label: '🎯 Case Studies / Stories (Portfolio)',
+      defaultBg: '#242424',
+      defaultText: '#FFFFFF',
+      defaultSubtitle: '#D1D5DB',
+      defaultAccent: '#F68621',
+      defaultCardBg: '#2E2E2E',
+      defaultCardText: '#FFFFFF',
+    },
+    {
+      key: 'whyUs',
+      label: '⭐ Why 60FRAMEWORKS (Pillars)',
+      defaultBg: '#FFFFFF',
+      defaultText: '#242424',
+      defaultSubtitle: '#4A4A4A',
+      defaultAccent: '#F68621',
+      defaultCardBg: '#F8F9FA',
+      defaultCardText: '#242424',
+    },
+    {
+      key: 'testimonials',
+      label: '💬 Testimonials & Impact (Quotes)',
+      defaultBg: '#F4D3C9',
+      defaultText: '#242424',
+      defaultSubtitle: '#3A3A3A',
+      defaultAccent: '#F68621',
+      defaultCardBg: '#FFFFFF',
+      defaultCardText: '#242424',
+    },
+    {
+      key: 'finalCta',
+      label: '📣 Final Call-to-Action (Footer Banner)',
+      defaultBg: '#F68621',
+      defaultText: '#FFFFFF',
+      defaultSubtitle: '#FFF3E0',
+      defaultAccent: '#FFFFFF',
+      defaultCardBg: 'rgba(255, 255, 255, 0.15)',
+      defaultCardText: '#FFFFFF',
+    },
   ];
 
   return (
@@ -126,7 +207,7 @@ export const ThemeCustomizer: React.FC = () => {
         <div>
           <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827' }}>🎨 Theme & Color Customizer</h2>
           <p style={{ fontSize: '0.8125rem', color: '#6B7280', marginTop: '0.2rem' }}>
-            Accurate live control over Header, Footer, Global palette, and individual Section backgrounds & text.
+            Comprehensive color control across Header, Footer, Brand Accents, and Section Headings, Subtitles & Cards.
           </p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
@@ -193,7 +274,7 @@ export const ThemeCustomizer: React.FC = () => {
           <div style={{ marginTop: '1.75rem', padding: '1.25rem 1.5rem', borderRadius: '10px', background: theme.header?.backgroundColor || '#FFFFFF', border: `1px solid ${theme.header?.borderColor || '#E6E7E8'}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <span style={{ color: theme.header?.textColor || '#242424', fontWeight: 800, fontSize: '1.125rem' }}>60FRAMEWORKS</span>
-              <span style={{ fontSize: '0.625rem', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.1em' }}>CREATIVE AGENCY</span>
+              <span style={{ fontSize: '0.625rem', color: theme.header?.textColor || '#242424', opacity: 0.65, textTransform: 'uppercase', letterSpacing: '0.1em' }}>CREATIVE AGENCY</span>
             </div>
             <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.875rem', alignItems: 'center' }}>
               <span style={{ color: theme.header?.linkColor || '#242424', fontWeight: 600 }}>Home</span>
@@ -261,43 +342,96 @@ export const ThemeCustomizer: React.FC = () => {
       {activeSubTab === 'sections' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '0.875rem 1.25rem', borderRadius: '10px', fontSize: '0.8125rem', color: '#1E40AF' }}>
-            💡 <strong>Section Color Control:</strong> Modify the specific background, text/heading color, and accent badges for each block of the landing page.
+            💡 <strong>Complete Section Coverage:</strong> Customize the Section Background, Headings, Subtitle/Paragraph text, Eyebrows, and internal Cards independently so no text ever disappears!
           </div>
 
           {SECTIONS_LIST.map(sec => {
             const secColors = theme.sections?.[sec.key] || {
               backgroundColor: sec.defaultBg,
               textColor: sec.defaultText,
+              subtitleColor: sec.defaultSubtitle,
               accentColor: sec.defaultAccent,
+              cardBackgroundColor: sec.defaultCardBg,
+              cardTextColor: sec.defaultCardText,
             };
+
+            const bgVal = secColors.backgroundColor || sec.defaultBg;
+            const textVal = secColors.textColor || sec.defaultText;
+            const subVal = secColors.subtitleColor || sec.defaultSubtitle;
+            const accentVal = secColors.accentColor || sec.defaultAccent;
+            const cardBgVal = secColors.cardBackgroundColor || sec.defaultCardBg;
+            const cardTextVal = secColors.cardTextColor || sec.defaultCardText;
+
             return (
               <div key={sec.key} style={cardStyle}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                   <h4 style={{ fontSize: '1rem', fontWeight: 700, color: '#111827' }}>{sec.label}</h4>
-                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                    <span style={{ width: '16px', height: '16px', borderRadius: '4px', background: secColors.backgroundColor, border: '1px solid #D1D5DB' }} title="Current BG" />
-                    <span style={{ width: '16px', height: '16px', borderRadius: '4px', background: secColors.textColor, border: '1px solid #D1D5DB' }} title="Current Text" />
-                    <span style={{ width: '16px', height: '16px', borderRadius: '4px', background: secColors.accentColor, border: '1px solid #D1D5DB' }} title="Current Accent" />
+                  <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'center', fontSize: '0.6875rem', color: '#6B7280' }}>
+                    <span style={{ width: '14px', height: '14px', borderRadius: '3px', background: bgVal, border: '1px solid #D1D5DB' }} title="Section BG" />
+                    <span style={{ width: '14px', height: '14px', borderRadius: '3px', background: textVal, border: '1px solid #D1D5DB' }} title="Heading Text" />
+                    <span style={{ width: '14px', height: '14px', borderRadius: '3px', background: subVal, border: '1px solid #D1D5DB' }} title="Subtitle Text" />
+                    <span style={{ width: '14px', height: '14px', borderRadius: '3px', background: accentVal, border: '1px solid #D1D5DB' }} title="Accent / Badge" />
+                    <span style={{ width: '14px', height: '14px', borderRadius: '3px', background: cardBgVal, border: '1px solid #D1D5DB' }} title="Card BG" />
+                    <span style={{ width: '14px', height: '14px', borderRadius: '3px', background: cardTextVal, border: '1px solid #D1D5DB' }} title="Card Text" />
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
-                  <ColorField label="Section Background" value={secColors.backgroundColor || sec.defaultBg} onChange={v => updateSectionColor(sec.key, 'backgroundColor', v)} />
-                  <ColorField label="Text / Heading Color" value={secColors.textColor || sec.defaultText} onChange={v => updateSectionColor(sec.key, 'textColor', v)} />
-                  <ColorField label="Accent / Badge Color" value={secColors.accentColor || sec.defaultAccent} onChange={v => updateSectionColor(sec.key, 'accentColor', v)} />
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
+                  <ColorField label="1. Section Background" value={bgVal} onChange={v => updateSectionColor(sec.key, 'backgroundColor', v)} />
+                  <ColorField label="2. Heading / Title" value={textVal} onChange={v => updateSectionColor(sec.key, 'textColor', v)} />
+                  <ColorField label="3. Subtitle / Paragraphs" value={subVal} onChange={v => updateSectionColor(sec.key, 'subtitleColor', v)} />
+                  <ColorField label="4. Accent / Eyebrow" value={accentVal} onChange={v => updateSectionColor(sec.key, 'accentColor', v)} />
+                  <ColorField label="5. Card / Box Background" value={cardBgVal} onChange={v => updateSectionColor(sec.key, 'cardBackgroundColor', v)} />
+                  <ColorField label="6. Card Text Color" value={cardTextVal} onChange={v => updateSectionColor(sec.key, 'cardTextColor', v)} />
                 </div>
 
-                {/* Micro preview snippet */}
-                <div style={{ padding: '0.875rem 1.25rem', borderRadius: '8px', background: secColors.backgroundColor || sec.defaultBg, color: secColors.textColor || sec.defaultText, border: '1px solid rgba(0,0,0,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div>
-                    <span style={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: secColors.accentColor || sec.defaultAccent, display: 'block' }}>
-                      SECTION EYEBROW
+                {/* Live Section & Card Preview */}
+                <div
+                  style={{
+                    padding: '1.25rem',
+                    borderRadius: '10px',
+                    background: bgVal,
+                    border: '1px solid rgba(0,0,0,0.12)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1rem',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem' }}>
+                    <div>
+                      <span style={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: accentVal, display: 'block', marginBottom: '0.25rem' }}>
+                        ★ SECTION EYEBROW
+                      </span>
+                      <div style={{ fontSize: '1.125rem', fontWeight: 800, color: textVal, marginBottom: '0.25rem' }}>
+                        Sample Section Main Heading
+                      </div>
+                      <div style={{ fontSize: '0.8125rem', color: subVal, maxWidth: '480px', lineHeight: 1.5 }}>
+                        This is the section subtitle & body paragraph text. It clearly contrasts with the section background.
+                      </div>
+                    </div>
+                    <span style={{ padding: '0.35rem 0.85rem', borderRadius: '9999px', background: accentVal, color: '#FFFFFF', fontSize: '0.6875rem', fontWeight: 700, alignSelf: 'flex-start' }}>
+                      Accent Badge
                     </span>
-                    <strong style={{ fontSize: '0.9375rem' }}>Sample Section Headline & Content</strong>
                   </div>
-                  <span style={{ padding: '0.3rem 0.75rem', borderRadius: '9999px', background: secColors.accentColor || sec.defaultAccent, color: '#FFFFFF', fontSize: '0.6875rem', fontWeight: 700 }}>
-                    Badge
-                  </span>
+
+                  {/* Sample Card Inside Section */}
+                  <div
+                    style={{
+                      background: cardBgVal,
+                      borderRadius: '8px',
+                      padding: '1rem',
+                      border: '1px solid rgba(0,0,0,0.08)',
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+                      maxWidth: '380px',
+                    }}
+                  >
+                    <div style={{ fontSize: '0.875rem', fontWeight: 700, color: cardTextVal, marginBottom: '0.25rem' }}>
+                      Sample Content Card
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: cardTextVal, opacity: 0.8, lineHeight: 1.4 }}>
+                      Card body description text styled with Card Text Color.
+                    </div>
+                  </div>
                 </div>
               </div>
             );
