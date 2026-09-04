@@ -275,6 +275,7 @@ export const AdminPanel: React.FC = () => {
               defaultItem={DEFAULT_PROJECT}
               storageKey="60fw_projects"
               fallbackData={FALLBACK_PROJECTS}
+              moduleKey="projects"
             />
           )}
 
@@ -290,6 +291,7 @@ export const AdminPanel: React.FC = () => {
               defaultItem={DEFAULT_SERVICE}
               storageKey="60fw_services"
               fallbackData={FALLBACK_SERVICES}
+              moduleKey="services"
             />
           )}
 
@@ -305,6 +307,7 @@ export const AdminPanel: React.FC = () => {
               defaultItem={DEFAULT_SECTOR}
               storageKey="60fw_sectors"
               fallbackData={FALLBACK_SECTORS}
+              moduleKey="sectors"
             />
           )}
 
@@ -320,6 +323,7 @@ export const AdminPanel: React.FC = () => {
               defaultItem={DEFAULT_CLIENT}
               storageKey="60fw_clients"
               fallbackData={FALLBACK_CLIENTS}
+              moduleKey="clients"
             />
           )}
 
@@ -335,6 +339,7 @@ export const AdminPanel: React.FC = () => {
               defaultItem={DEFAULT_TESTIMONIAL}
               storageKey="60fw_testimonials"
               fallbackData={FALLBACK_TESTIMONIALS}
+              moduleKey="testimonials"
             />
           )}
 

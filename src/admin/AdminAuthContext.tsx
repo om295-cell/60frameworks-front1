@@ -1,38 +1,239 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { adminApi } from './adminApi';
 
+export interface ModulePermissions {
+  projects: {
+    view: boolean;
+    create: boolean;
+    edit: boolean;
+    media: boolean;
+    delete: boolean;
+    publish: boolean;
+  };
+  services: {
+    view: boolean;
+    create: boolean;
+    edit: boolean;
+    delete: boolean;
+    publish: boolean;
+  };
+  sectors: {
+    view: boolean;
+    create: boolean;
+    edit: boolean;
+    media: boolean;
+    delete: boolean;
+  };
+  clients: {
+    view: boolean;
+    create: boolean;
+    edit: boolean;
+    media: boolean;
+    delete: boolean;
+  };
+  testimonials: {
+    view: boolean;
+    create: boolean;
+    edit: boolean;
+    media: boolean;
+    delete: boolean;
+  };
+  homepage: {
+    view: boolean;
+    editHero: boolean;
+    editAbout: boolean;
+    editFinalCTA: boolean;
+    media: boolean;
+  };
+  theme: {
+    view: boolean;
+    editPalette: boolean;
+    editSections: boolean;
+    editHeaderFooter: boolean;
+  };
+  sections: {
+    view: boolean;
+    toggleVisibility: boolean;
+    reorder: boolean;
+  };
+  inbox: {
+    view: boolean;
+    updateStatus: boolean;
+    delete: boolean;
+    exportCsv: boolean;
+  };
+  auditLogs: {
+    view: boolean;
+    clear: boolean;
+  };
+  users: {
+    view: boolean;
+    manage: boolean;
+  };
+}
+
 export interface UserPermissions {
-  pages: {
-    homepage: boolean;
-    projects: boolean;
-    services: boolean;
-    sectors: boolean;
-    clients: boolean;
-    testimonials: boolean;
-    theme: boolean;
-    sections: boolean;
-    inbox: boolean;
-    auditLogs: boolean;
-    users: boolean;
-  };
-  actions: {
-    canEditText: boolean;
-    canEditMedia: boolean;
-    canEditColors: boolean;
-    canDeleteItems: boolean;
-    canManageUsers: boolean;
-  };
+  modules: ModulePermissions;
+  pages?: Record<string, boolean>;
+  actions?: Record<string, boolean>;
 }
 
 export interface AdminUser {
   _id?: string;
   name: string;
   email: string;
-  role: 'superadmin' | 'admin' | 'editor' | 'viewer';
+  role: 'superadmin' | 'admin' | 'editor' | 'media_manager' | 'lead_specialist' | 'viewer' | 'custom';
   isSuperAdmin: boolean;
   permissions: UserPermissions;
   loggedInAt: number;
 }
+
+export const FULL_MODULE_PERMISSIONS: ModulePermissions = {
+  projects: { view: true, create: true, edit: true, media: true, delete: true, publish: true },
+  services: { view: true, create: true, edit: true, delete: true, publish: true },
+  sectors: { view: true, create: true, edit: true, media: true, delete: true },
+  clients: { view: true, create: true, edit: true, media: true, delete: true },
+  testimonials: { view: true, create: true, edit: true, media: true, delete: true },
+  homepage: { view: true, editHero: true, editAbout: true, editFinalCTA: true, media: true },
+  theme: { view: true, editPalette: true, editSections: true, editHeaderFooter: true },
+  sections: { view: true, toggleVisibility: true, reorder: true },
+  inbox: { view: true, updateStatus: true, delete: true, exportCsv: true },
+  auditLogs: { view: true, clear: true },
+  users: { view: true, manage: true },
+};
+
+export const READONLY_MODULE_PERMISSIONS: ModulePermissions = {
+  projects: { view: true, create: false, edit: false, media: false, delete: false, publish: false },
+  services: { view: true, create: false, edit: false, delete: false, publish: false },
+  sectors: { view: true, create: false, edit: false, media: false, delete: false },
+  clients: { view: true, create: false, edit: false, media: false, delete: false },
+  testimonials: { view: true, create: false, edit: false, media: false, delete: false },
+  homepage: { view: true, editHero: false, editAbout: false, editFinalCTA: false, media: false },
+  theme: { view: true, editPalette: false, editSections: false, editHeaderFooter: false },
+  sections: { view: true, toggleVisibility: false, reorder: false },
+  inbox: { view: true, updateStatus: false, delete: false, exportCsv: false },
+  auditLogs: { view: true, clear: false },
+  users: { view: false, manage: false },
+};
+
+export const ROLE_PRESET_PERMISSIONS: Record<string, UserPermissions> = {
+  superadmin: {
+    modules: JSON.parse(JSON.stringify(FULL_MODULE_PERMISSIONS)),
+    pages: {
+      homepage: true, projects: true, services: true, sectors: true, clients: true,
+      testimonials: true, theme: true, sections: true, inbox: true, auditLogs: true, users: true,
+    },
+    actions: { canEditText: true, canEditMedia: true, canEditColors: true, canDeleteItems: true, canManageUsers: true },
+  },
+  admin: {
+    modules: {
+      ...JSON.parse(JSON.stringify(FULL_MODULE_PERMISSIONS)),
+      users: { view: true, manage: false },
+    },
+    pages: {
+      homepage: true, projects: true, services: true, sectors: true, clients: true,
+      testimonials: true, theme: true, sections: true, inbox: true, auditLogs: true, users: false,
+    },
+    actions: { canEditText: true, canEditMedia: true, canEditColors: true, canDeleteItems: true, canManageUsers: false },
+  },
+  editor: {
+    modules: {
+      ...JSON.parse(JSON.stringify(READONLY_MODULE_PERMISSIONS)),
+      projects: { view: true, create: true, edit: true, media: true, delete: false, publish: false },
+      services: { view: true, create: true, edit: true, delete: false, publish: false },
+      sectors: { view: true, create: true, edit: true, media: true, delete: false },
+      clients: { view: true, create: true, edit: true, media: true, delete: false },
+      testimonials: { view: true, create: true, edit: true, media: false, delete: false },
+      homepage: { view: true, editHero: true, editAbout: true, editFinalCTA: true, media: false },
+      inbox: { view: true, updateStatus: true, delete: false, exportCsv: false },
+      theme: { view: false, editPalette: false, editSections: false, editHeaderFooter: false },
+      sections: { view: false, toggleVisibility: false, reorder: false },
+      auditLogs: { view: false, clear: false },
+      users: { view: false, manage: false },
+    },
+    pages: {
+      homepage: true, projects: true, services: true, sectors: true, clients: true,
+      testimonials: true, theme: false, sections: false, inbox: true, auditLogs: false, users: false,
+    },
+    actions: { canEditText: true, canEditMedia: true, canEditColors: false, canDeleteItems: false, canManageUsers: false },
+  },
+  media_manager: {
+    modules: {
+      ...JSON.parse(JSON.stringify(READONLY_MODULE_PERMISSIONS)),
+      projects: { view: true, create: false, edit: false, media: true, delete: false, publish: false },
+      sectors: { view: true, create: false, edit: false, media: true, delete: false },
+      clients: { view: true, create: false, edit: false, media: true, delete: false },
+      testimonials: { view: true, create: false, edit: false, media: true, delete: false },
+      homepage: { view: true, editHero: false, editAbout: false, editFinalCTA: false, media: true },
+      theme: { view: false, editPalette: false, editSections: false, editHeaderFooter: false },
+      sections: { view: false, toggleVisibility: false, reorder: false },
+      inbox: { view: false, updateStatus: false, delete: false, exportCsv: false },
+      auditLogs: { view: false, clear: false },
+      users: { view: false, manage: false },
+    },
+    pages: {
+      homepage: true, projects: true, services: false, sectors: true, clients: true,
+      testimonials: true, theme: false, sections: false, inbox: false, auditLogs: false, users: false,
+    },
+    actions: { canEditText: false, canEditMedia: true, canEditColors: false, canDeleteItems: false, canManageUsers: false },
+  },
+  lead_specialist: {
+    modules: {
+      ...JSON.parse(JSON.stringify(READONLY_MODULE_PERMISSIONS)),
+      projects: { view: false, create: false, edit: false, media: false, delete: false, publish: false },
+      services: { view: false, create: false, edit: false, delete: false, publish: false },
+      sectors: { view: false, create: false, edit: false, media: false, delete: false },
+      clients: { view: false, create: false, edit: false, media: false, delete: false },
+      homepage: { view: false, editHero: false, editAbout: false, editFinalCTA: false, media: false },
+      theme: { view: false, editPalette: false, editSections: false, editHeaderFooter: false },
+      sections: { view: false, toggleVisibility: false, reorder: false },
+      auditLogs: { view: false, clear: false },
+      inbox: { view: true, updateStatus: true, delete: false, exportCsv: true },
+      users: { view: false, manage: false },
+    },
+    pages: {
+      homepage: false, projects: false, services: false, sectors: false, clients: false,
+      testimonials: true, theme: false, sections: false, inbox: true, auditLogs: false, users: false,
+    },
+    actions: { canEditText: false, canEditMedia: false, canEditColors: false, canDeleteItems: false, canManageUsers: false },
+  },
+  viewer: {
+    modules: JSON.parse(JSON.stringify(READONLY_MODULE_PERMISSIONS)),
+    pages: {
+      homepage: true, projects: true, services: true, sectors: true, clients: true,
+      testimonials: true, theme: true, sections: true, inbox: true, auditLogs: true, users: false,
+    },
+    actions: { canEditText: false, canEditMedia: false, canEditColors: false, canDeleteItems: false, canManageUsers: false },
+  },
+  custom: {
+    modules: JSON.parse(JSON.stringify(READONLY_MODULE_PERMISSIONS)),
+  },
+};
+
+export const normalizePermissions = (perms: any, role: string = 'editor'): UserPermissions => {
+  const preset = ROLE_PRESET_PERMISSIONS[role] || ROLE_PRESET_PERMISSIONS.editor;
+  if (!perms) return preset;
+
+  let modules = perms.modules;
+  if (!modules) {
+    modules = JSON.parse(JSON.stringify(preset.modules));
+    if (perms.pages) {
+      Object.keys(perms.pages).forEach(key => {
+        if (modules[key]) modules[key].view = !!perms.pages[key];
+      });
+    }
+  } else {
+    // Ensure all modules are defined
+    const base = JSON.parse(JSON.stringify(READONLY_MODULE_PERMISSIONS));
+    modules = { ...base, ...modules };
+  }
+
+  return {
+    modules,
+    pages: perms.pages || preset.pages,
+    actions: perms.actions || preset.actions,
+  };
+};
 
 export const SUPER_ADMIN_DEFAULT_USER: AdminUser = {
   _id: 'super_admin_root',
@@ -40,28 +241,7 @@ export const SUPER_ADMIN_DEFAULT_USER: AdminUser = {
   email: 'admin@60frameworks.com',
   role: 'superadmin',
   isSuperAdmin: true,
-  permissions: {
-    pages: {
-      homepage: true,
-      projects: true,
-      services: true,
-      sectors: true,
-      clients: true,
-      testimonials: true,
-      theme: true,
-      sections: true,
-      inbox: true,
-      auditLogs: true,
-      users: true,
-    },
-    actions: {
-      canEditText: true,
-      canEditMedia: true,
-      canEditColors: true,
-      canDeleteItems: true,
-      canManageUsers: true,
-    },
-  },
+  permissions: ROLE_PRESET_PERMISSIONS.superadmin,
   loggedInAt: 0,
 };
 
@@ -71,8 +251,12 @@ interface AdminAuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   isSuperAdmin: boolean;
-  canAccess: (page: keyof UserPermissions['pages']) => boolean;
-  canPerform: (action: keyof UserPermissions['actions']) => boolean;
+  canAccess: (moduleKey: keyof ModulePermissions | string) => boolean;
+  hasPermission: <M extends keyof ModulePermissions, A extends keyof ModulePermissions[M]>(
+    module: M,
+    action: A
+  ) => boolean;
+  canPerform: (action: string) => boolean;
   logActivity: (action: string, category: string, target: string, details: string) => void;
 }
 
@@ -85,7 +269,10 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
       if (stored) {
         const parsed = JSON.parse(stored) as AdminUser;
         if (Date.now() - parsed.loggedInAt < 8 * 60 * 60 * 1000) {
-          return parsed;
+          return {
+            ...parsed,
+            permissions: normalizePermissions(parsed.permissions, parsed.role),
+          };
         }
       }
     } catch {}
@@ -142,8 +329,8 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
           name: localMatch.name,
           email: localMatch.email,
           role: localMatch.role || 'editor',
-          isSuperAdmin: false,
-          permissions: localMatch.permissions || SUPER_ADMIN_DEFAULT_USER.permissions,
+          isSuperAdmin: !!localMatch.isSuperAdmin,
+          permissions: normalizePermissions(localMatch.permissions, localMatch.role),
           loggedInAt: Date.now(),
         };
         setUser(loggedUser);
@@ -159,6 +346,7 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
       if (res && res.success && res.data) {
         const loggedUser: AdminUser = {
           ...res.data,
+          permissions: normalizePermissions(res.data.permissions, res.data.role),
           loggedInAt: Date.now(),
         };
         setUser(loggedUser);
@@ -181,16 +369,65 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   const isSuperAdmin = !!user?.isSuperAdmin || user?.role === 'superadmin';
 
-  const canAccess = (page: keyof UserPermissions['pages']): boolean => {
+  const canAccess = (moduleKey: keyof ModulePermissions | string): boolean => {
     if (!user) return false;
     if (isSuperAdmin) return true;
-    return !!user.permissions?.pages?.[page];
+
+    // Check module.view
+    const mod = user.permissions?.modules?.[moduleKey as keyof ModulePermissions];
+    if (mod && typeof mod.view === 'boolean') {
+      return mod.view;
+    }
+
+    // Fallback to legacy pages object
+    if (user.permissions?.pages?.[moduleKey]) {
+      return !!user.permissions.pages[moduleKey];
+    }
+
+    return false;
   };
 
-  const canPerform = (action: keyof UserPermissions['actions']): boolean => {
+  const hasPermission = <M extends keyof ModulePermissions, A extends keyof ModulePermissions[M]>(
+    module: M,
+    action: A
+  ): boolean => {
     if (!user) return false;
     if (isSuperAdmin) return true;
-    return !!user.permissions?.actions?.[action];
+
+    const mod = user.permissions?.modules?.[module];
+    if (mod && mod[action] !== undefined) {
+      return !!mod[action];
+    }
+
+    // Fallback legacy checks
+    if (action === 'view') {
+      return canAccess(module);
+    }
+    if (action === 'delete') {
+      return !!user.permissions?.actions?.canDeleteItems;
+    }
+    if (action === 'media') {
+      return !!user.permissions?.actions?.canEditMedia;
+    }
+    if (action === 'create' || action === 'edit') {
+      return !!user.permissions?.actions?.canEditText;
+    }
+
+    return false;
+  };
+
+  const canPerform = (action: string): boolean => {
+    if (!user) return false;
+    if (isSuperAdmin) return true;
+    if (user.permissions?.actions?.[action]) return true;
+
+    // Map common legacy actions
+    if (action === 'canDeleteItems') return isSuperAdmin;
+    if (action === 'canEditMedia') return true;
+    if (action === 'canEditText') return true;
+    if (action === 'canManageUsers') return isSuperAdmin;
+
+    return false;
   };
 
   return (
@@ -202,6 +439,7 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
         isAuthenticated: !!user,
         isSuperAdmin,
         canAccess,
+        hasPermission,
         canPerform,
         logActivity,
       }}

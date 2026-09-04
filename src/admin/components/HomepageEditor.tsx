@@ -1,26 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { Save, ChevronDown, ChevronUp } from 'lucide-react';
+import { Save, ChevronDown, ChevronUp, Lock } from 'lucide-react';
 import { adminApi } from '../adminApi';
 import { MediaUploader } from './MediaUploader';
 import { FALLBACK_HOMEPAGE_CONTENT } from '../../services/api';
+import { useAdminAuth } from '../AdminAuthContext';
 
 interface Section {
   key: string;
   title: string;
   emoji: string;
+  permKey?: 'editHero' | 'editAbout' | 'editFinalCTA';
 }
 
 const SECTIONS: Section[] = [
-  { key: 'hero', title: 'Hero Section', emoji: '🎬' },
-  { key: 'about', title: 'About Section', emoji: '🏢' },
-  { key: 'whyUs', title: 'Why Us Section', emoji: '⭐' },
-  { key: 'finalCta', title: 'Final CTA Section', emoji: '📣' },
+  { key: 'hero', title: 'Hero Section', emoji: '🎬', permKey: 'editHero' },
+  { key: 'about', title: 'About Section', emoji: '🏢', permKey: 'editAbout' },
+  { key: 'whyUs', title: 'Why Us Section', emoji: '⭐', permKey: 'editAbout' },
+  { key: 'finalCta', title: 'Final CTA Section', emoji: '📣', permKey: 'editFinalCTA' },
 ];
 
 const fieldLabel = (k: string) =>
   k.replace(/_en$/, ' (English)').replace(/_ar$/, ' (Arabic)').replace(/_/g, ' ');
 
 export const HomepageEditor: React.FC = () => {
+  const { hasPermission, isSuperAdmin } = useAdminAuth();
+  const canUploadMedia = isSuperAdmin || hasPermission('homepage', 'media');
+  const canEditAny = isSuperAdmin ||
+    hasPermission('homepage', 'editHero') ||
+    hasPermission('homepage', 'editAbout') ||
+    hasPermission('homepage', 'editFinalCTA');
   const [content, setContent] = useState<any>(() => {
     try {
       const cached = localStorage.getItem('60fw_homepage_content');
@@ -75,10 +83,12 @@ export const HomepageEditor: React.FC = () => {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
         <h2 style={sectionTitle}>🌐 Homepage Text & Media</h2>
-        <button onClick={handleSave} disabled={saving} style={saveBtn}>
-          <Save size={16} />
-          {saving ? 'Saving...' : saved ? '✓ Saved!' : 'Save All Changes'}
-        </button>
+        {canEditAny && (
+          <button onClick={handleSave} disabled={saving} style={saveBtn}>
+            <Save size={16} />
+            {saving ? 'Saving...' : saved ? '✓ Saved!' : 'Save All Changes'}
+          </button>
+        )}
       </div>
 
       {error && <div style={errorBox}>{error}</div>}
@@ -87,6 +97,7 @@ export const HomepageEditor: React.FC = () => {
       {SECTIONS.map((sec) => {
         const sectionData = content[sec.key] || {};
         const isOpen = openSection === sec.key;
+        const canEditSec = isSuperAdmin || !sec.permKey || hasPermission('homepage', sec.permKey);
 
         // Separate text fields from media fields
         const textFields = Object.entries(sectionData).filter(
@@ -103,7 +114,14 @@ export const HomepageEditor: React.FC = () => {
               onClick={() => setOpenSection(isOpen ? '' : sec.key)}
               style={accordionHeader}
             >
-              <span style={{ fontWeight: 700, fontSize: '1rem' }}>{sec.emoji} {sec.title}</span>
+              <span style={{ fontWeight: 700, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                {sec.emoji} {sec.title}
+                {!canEditSec && (
+                  <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#9CA3AF', background: '#F3F4F6', padding: '0.15rem 0.5rem', borderRadius: '12px' }}>
+                    <Lock size={10} style={{ display: 'inline', marginRight: '3px' }} /> Read Only
+                  </span>
+                )}
+              </span>
               {isOpen ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
             </button>
 
@@ -123,15 +141,28 @@ export const HomepageEditor: React.FC = () => {
                               <textarea
                                 rows={3}
                                 value={v as string}
+                                disabled={!canEditSec}
                                 onChange={(e) => updateField(sec.key, k, e.target.value)}
-                                style={{ ...inputS, resize: 'vertical', direction: k.endsWith('_ar') ? 'rtl' : 'ltr' }}
+                                style={{
+                                  ...inputS,
+                                  resize: 'vertical',
+                                  direction: k.endsWith('_ar') ? 'rtl' : 'ltr',
+                                  background: canEditSec ? '#fff' : '#F9FAFB',
+                                  cursor: canEditSec ? 'text' : 'not-allowed',
+                                }}
                               />
                             ) : (
                               <input
                                 type="text"
                                 value={v as string}
+                                disabled={!canEditSec}
                                 onChange={(e) => updateField(sec.key, k, e.target.value)}
-                                style={{ ...inputS, direction: k.endsWith('_ar') ? 'rtl' : 'ltr' }}
+                                style={{
+                                  ...inputS,
+                                  direction: k.endsWith('_ar') ? 'rtl' : 'ltr',
+                                  background: canEditSec ? '#fff' : '#F9FAFB',
+                                  cursor: canEditSec ? 'text' : 'not-allowed',
+                                }}
                               />
                             )}
                           </div>
@@ -177,17 +208,23 @@ export const HomepageEditor: React.FC = () => {
                 {mediaFields.length > 0 && (
                   <div>
                     <h4 style={subHeading}>🖼️ Media (Images & Videos)</h4>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                      {mediaFields.map(([k, v]) => (
-                        <MediaUploader
-                          key={k}
-                          label={fieldLabel(k)}
-                          currentUrl={v as string}
-                          accept={k.toLowerCase().includes('video') ? 'video' : 'image'}
-                          onUploaded={(url) => updateField(sec.key, k, url)}
-                        />
-                      ))}
-                    </div>
+                    {canUploadMedia ? (
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+                        {mediaFields.map(([k, v]) => (
+                          <MediaUploader
+                            key={k}
+                            label={fieldLabel(k)}
+                            currentUrl={v as string}
+                            accept={k.toLowerCase().includes('video') ? 'video' : 'image'}
+                            onUploaded={(url) => updateField(sec.key, k, url)}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <div style={{ padding: '0.85rem', background: '#F9FAFB', borderRadius: '8px', border: '1px solid #E5E7EB', color: '#6B7280', fontSize: '0.8125rem' }}>
+                        <Lock size={12} style={{ display: 'inline', marginRight: '4px' }} /> Media upload restricted for your role. Contact Super Admin to enable media upload privileges.
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Pencil, Trash2, X, Save, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Save, ChevronDown, ChevronUp, Eye } from 'lucide-react';
 import { MediaUploader } from './MediaUploader';
+import { useAdminAuth } from '../AdminAuthContext';
 
 interface Column {
   key: string;
@@ -22,11 +23,17 @@ interface CrudManagerProps {
   defaultItem: Record<string, any>;
   storageKey?: string;
   fallbackData?: any[];
+  moduleKey?: 'projects' | 'services' | 'sectors' | 'clients' | 'testimonials';
 }
 
 export const CrudManager: React.FC<CrudManagerProps> = ({
-  title, emoji, columns, fetchFn, createFn, updateFn, deleteFn, defaultItem, storageKey, fallbackData = [],
+  title, emoji, columns, fetchFn, createFn, updateFn, deleteFn, defaultItem, storageKey, fallbackData = [], moduleKey,
 }) => {
+  const { hasPermission, isSuperAdmin } = useAdminAuth();
+  const canCreate = !moduleKey || isSuperAdmin || hasPermission(moduleKey, 'create');
+  const canEdit = !moduleKey || isSuperAdmin || hasPermission(moduleKey, 'edit');
+  const canDelete = !moduleKey || isSuperAdmin || hasPermission(moduleKey, 'delete');
+  const canUpload = !moduleKey || isSuperAdmin || hasPermission(moduleKey, 'media' as any);
   const [items, setItems] = useState<any[]>(() => {
     if (storageKey) {
       try {
@@ -129,12 +136,14 @@ export const CrudManager: React.FC<CrudManagerProps> = ({
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
         <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#111827' }}>{emoji} {title}</h2>
-        <button
-          onClick={() => { setEditing({ ...defaultItem }); setIsNew(true); }}
-          style={addBtn}
-        >
-          <Plus size={16} /> Add New
-        </button>
+        {canCreate && (
+          <button
+            onClick={() => { setEditing({ ...defaultItem }); setIsNew(true); }}
+            style={addBtn}
+          >
+            <Plus size={16} /> Add New
+          </button>
+        )}
       </div>
 
       {feedback && <div style={successMsg}>{feedback}</div>}
@@ -182,15 +191,29 @@ export const CrudManager: React.FC<CrudManagerProps> = ({
               {columns.filter(c => c.type === 'media' || c.type === 'mediaArray').length > 0 && (
                 <>
                   <div style={fieldGroupHeader}>🖼️ Media (Images & Videos)</div>
-                  {columns.filter(c => c.type === 'media').map((col) => (
-                    <MediaUploader
-                      key={col.key}
-                      label={col.label}
-                      currentUrl={editing[col.key] || ''}
-                      accept={col.accept || 'both'}
-                      onUploaded={(url) => updateEditField(col.key, url)}
-                    />
-                  ))}
+                  {canUpload ? (
+                    columns.filter(c => c.type === 'media').map((col) => (
+                      <MediaUploader
+                        key={col.key}
+                        label={col.label}
+                        currentUrl={editing[col.key] || ''}
+                        accept={col.accept || 'both'}
+                        onUploaded={(url) => updateEditField(col.key, url)}
+                      />
+                    ))
+                  ) : (
+                    columns.filter(c => c.type === 'media').map((col) => (
+                      <div key={col.key} style={{ marginBottom: '1rem' }}>
+                        <label style={fieldLabel}>{col.label}</label>
+                        <input
+                          type="text"
+                          value={editing[col.key] || ''}
+                          disabled
+                          style={{ ...inputStyle, background: '#F9FAFB', cursor: 'not-allowed' }}
+                        />
+                      </div>
+                    ))
+                  )}
                   {columns.filter(c => c.type === 'mediaArray').map((col) => (
                     <div key={col.key}>
                       <label style={{ ...fieldLabel, marginBottom: '0.75rem' }}>{col.label}</label>
@@ -227,10 +250,12 @@ export const CrudManager: React.FC<CrudManagerProps> = ({
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #E5E7EB' }}>
-              <button onClick={() => setEditing(null)} style={cancelBtn}>Cancel</button>
-              <button onClick={handleSave} disabled={saving} style={saveBtn}>
-                <Save size={16} /> {saving ? 'Saving...' : 'Save'}
-              </button>
+              <button onClick={() => setEditing(null)} style={cancelBtn}>{canEdit || (isNew && canCreate) ? 'Cancel' : 'Close'}</button>
+              {(canEdit || (isNew && canCreate)) && (
+                <button onClick={handleSave} disabled={saving} style={saveBtn}>
+                  <Save size={16} /> {saving ? 'Saving...' : 'Save Changes'}
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -239,7 +264,7 @@ export const CrudManager: React.FC<CrudManagerProps> = ({
       {/* Items List */}
       {items.length === 0 ? (
         <div style={{ padding: '2rem', textAlign: 'center', color: '#9CA3AF', background: '#F9FAFB', borderRadius: '12px', border: '1px dashed #D1D5DB' }}>
-          No items yet. Click "Add New" to get started.
+          No items yet. {canCreate && 'Click "Add New" to get started.'}
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -277,19 +302,26 @@ export const CrudManager: React.FC<CrudManagerProps> = ({
                   </div>
 
                   <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
-                    <button onClick={() => setExpandedItem(isExpanded ? null : item._id)} style={expandBtn}>
+                    <button onClick={() => setExpandedItem(isExpanded ? null : item._id)} style={expandBtn} title="Expand preview">
                       {isExpanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
                     </button>
-                    <button onClick={() => { setEditing({ ...item }); setIsNew(false); }} style={editBtn}>
-                      <Pencil size={15} />
-                    </button>
                     <button
-                      onClick={() => { if (confirm('Delete this item?')) handleDelete(item._id); }}
-                      disabled={deleting === item._id}
-                      style={deleteBtn}
+                      onClick={() => { setEditing({ ...item }); setIsNew(false); }}
+                      style={editBtn}
+                      title={canEdit ? 'Edit Item' : 'View Details'}
                     >
-                      <Trash2 size={15} />
+                      {canEdit ? <Pencil size={15} /> : <Eye size={15} />}
                     </button>
+                    {canDelete && (
+                      <button
+                        onClick={() => { if (confirm('Delete this item?')) handleDelete(item._id); }}
+                        disabled={deleting === item._id}
+                        style={deleteBtn}
+                        title="Delete Item"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    )}
                   </div>
                 </div>
 

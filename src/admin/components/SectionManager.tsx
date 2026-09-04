@@ -26,7 +26,10 @@ const DEFAULT_SECTIONS: SectionItem[] = [
 ];
 
 export const SectionManager: React.FC = () => {
-  const { logActivity, canPerform } = useAdminAuth();
+  const { logActivity, hasPermission, isSuperAdmin } = useAdminAuth();
+  const canToggleVisibility = isSuperAdmin || hasPermission('sections', 'toggleVisibility');
+  const canReorder = isSuperAdmin || hasPermission('sections', 'reorder');
+  const canModify = canToggleVisibility || canReorder;
   const [sections, setSections] = useState<SectionItem[]>(() => {
     try {
       const cached = localStorage.getItem('60fw_section_order');
@@ -134,12 +137,16 @@ export const SectionManager: React.FC = () => {
           </p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <button onClick={handleReset} style={resetBtn}>
-            <RotateCcw size={15} /> Reset Order
-          </button>
-          <button onClick={handleSave} disabled={saving || !canPerform('canEditText')} style={saveBtn}>
-            <Save size={16} /> {saving ? 'Saving...' : saved ? '✓ Saved!' : 'Save Layout'}
-          </button>
+          {canReorder && (
+            <button onClick={handleReset} style={resetBtn}>
+              <RotateCcw size={15} /> Reset Order
+            </button>
+          )}
+          {canModify && (
+            <button onClick={handleSave} disabled={saving} style={saveBtn}>
+              <Save size={16} /> {saving ? 'Saving...' : saved ? '✓ Saved!' : 'Save Layout'}
+            </button>
+          )}
         </div>
       </div>
 
@@ -178,35 +185,45 @@ export const SectionManager: React.FC = () => {
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               {/* Order Buttons */}
-              <button
-                onClick={() => moveUp(idx)}
-                disabled={idx === 0}
-                style={{ ...iconBtn, opacity: idx === 0 ? 0.3 : 1 }}
-                title="Move Up"
-              >
-                <ArrowUp size={15} />
-              </button>
-              <button
-                onClick={() => moveDown(idx)}
-                disabled={idx === sections.length - 1}
-                style={{ ...iconBtn, opacity: idx === sections.length - 1 ? 0.3 : 1 }}
-                title="Move Down"
-              >
-                <ArrowDown size={15} />
-              </button>
+              {canReorder && (
+                <>
+                  <button
+                    onClick={() => moveUp(idx)}
+                    disabled={idx === 0}
+                    style={{ ...iconBtn, opacity: idx === 0 ? 0.3 : 1 }}
+                    title="Move Up"
+                  >
+                    <ArrowUp size={15} />
+                  </button>
+                  <button
+                    onClick={() => moveDown(idx)}
+                    disabled={idx === sections.length - 1}
+                    style={{ ...iconBtn, opacity: idx === sections.length - 1 ? 0.3 : 1 }}
+                    title="Move Down"
+                  >
+                    <ArrowDown size={15} />
+                  </button>
+                </>
+              )}
 
               {/* Visibility Toggle */}
-              <button
-                onClick={() => toggleSection(sec.id)}
-                style={{
-                  ...toggleBtn,
-                  background: sec.enabled ? '#ECFDF5' : '#FEF2F2',
-                  color: sec.enabled ? '#059669' : '#DC2626',
-                  borderColor: sec.enabled ? '#A7F3D0' : '#FECACA',
-                }}
-              >
-                {sec.enabled ? <><Eye size={14} /> Visible</> : <><EyeOff size={14} /> Hidden</>}
-              </button>
+              {canToggleVisibility ? (
+                <button
+                  onClick={() => toggleSection(sec.id)}
+                  style={{
+                    ...toggleBtn,
+                    background: sec.enabled ? '#ECFDF5' : '#FEF2F2',
+                    color: sec.enabled ? '#059669' : '#DC2626',
+                    borderColor: sec.enabled ? '#A7F3D0' : '#FECACA',
+                  }}
+                >
+                  {sec.enabled ? <><Eye size={14} /> Visible</> : <><EyeOff size={14} /> Hidden</>}
+                </button>
+              ) : (
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: sec.enabled ? '#059669' : '#DC2626', padding: '0.35rem 0.65rem' }}>
+                  {sec.enabled ? 'Visible' : 'Hidden'}
+                </span>
+              )}
 
               {/* Custom section deletion */}
               {sec.id.startsWith('custom_') && (

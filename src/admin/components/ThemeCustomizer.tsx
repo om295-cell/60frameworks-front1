@@ -7,7 +7,12 @@ import { DEFAULT_THEME, applyTheme, SiteTheme } from '../../utils/themeApplier';
 export { DEFAULT_THEME };
 
 export const ThemeCustomizer: React.FC = () => {
-  const { logActivity, canPerform } = useAdminAuth();
+  const { logActivity, hasPermission, isSuperAdmin } = useAdminAuth();
+  const canEditPalette = isSuperAdmin || hasPermission('theme', 'editPalette');
+  const canEditSections = isSuperAdmin || hasPermission('theme', 'editSections');
+  const canEditHeaderFooter = isSuperAdmin || hasPermission('theme', 'editHeaderFooter');
+  const canEditAny = canEditPalette || canEditSections || canEditHeaderFooter;
+
   const [theme, setTheme] = useState<SiteTheme>(() => {
     try {
       const cached = localStorage.getItem('60fw_theme_settings');
@@ -211,12 +216,16 @@ export const ThemeCustomizer: React.FC = () => {
           </p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <button onClick={handleReset} style={resetBtn}>
-            <RotateCcw size={15} /> Reset Brand Defaults
-          </button>
-          <button onClick={handleSave} disabled={saving || !canPerform('canEditColors')} style={saveBtn}>
-            <Save size={16} /> {saving ? 'Saving...' : saved ? '✓ Saved Live!' : 'Save All Colors'}
-          </button>
+          {canEditAny && (
+            <>
+              <button onClick={handleReset} style={resetBtn}>
+                <RotateCcw size={15} /> Reset Brand Defaults
+              </button>
+              <button onClick={handleSave} disabled={saving} style={saveBtn}>
+                <Save size={16} /> {saving ? 'Saving...' : saved ? '✓ Saved Live!' : 'Save All Colors'}
+              </button>
+            </>
+          )}
         </div>
       </div>
 
