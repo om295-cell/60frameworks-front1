@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { Upload, X, Film, Image as ImageIcon, Link } from 'lucide-react';
+import { Upload, X, Film, Image as ImageIcon, Link, Loader2 } from 'lucide-react';
+import { upload } from '@vercel/blob/client';
 import { adminApi } from '../adminApi';
 
 interface MediaUploaderProps {
@@ -8,6 +9,8 @@ interface MediaUploaderProps {
   accept?: string; // 'image' | 'video' | 'both'
   onUploaded: (url: string) => void;
 }
+
+const API = import.meta.env.VITE_API_BASE_URL || 'https://api.60frameworks.com/api/v1';
 
 export const MediaUploader: React.FC<MediaUploaderProps> = ({
   label,
@@ -25,34 +28,68 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
     accept === 'image'
       ? 'image/*'
       : accept === 'video'
-      ? 'video/*'
+      ? 'video/mp4,video/webm,video/quicktime,video/*'
       : 'image/*,video/*';
 
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     setUploading(true);
     setError('');
+
     try {
-      const reader = new FileReader();
-      reader.onload = async (ev) => {
-        const base64 = ev.target?.result as string;
-        const res = await adminApi.uploadMedia(
-          `${Date.now()}-${file.name}`,
-          base64,
-          file.type
-        );
-        if (res.success && res.data?.url) {
-          onUploaded(res.data.url);
-        } else {
-          setError('Upload failed. Check your Vercel Blob token.');
+      const sanitizedName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+
+      // 1. Attempt direct client-side stream upload to Vercel Blob (supports large videos up to 500MB)
+      try {
+        const newBlob = await upload(sanitizedName, file, {
+          access: 'public',
+          handleUploadUrl: `${API}/upload/blob-auth`,
+        });
+
+        if (newBlob && newBlob.url) {
+          onUploaded(newBlob.url);
+          setUploading(false);
+          if (fileRef.current) fileRef.current.value = '';
+          return;
         }
-        setUploading(false);
-      };
-      reader.readAsDataURL(file);
+      } catch (clientErr: any) {
+        console.warn('Direct Vercel Blob client upload notice:', clientErr?.message || clientErr);
+      }
+
+      // 2. Fallback to standard base64 upload if file is under 4MB
+      if (file.size < 4 * 1024 * 1024) {
+        const reader = new FileReader();
+        reader.onload = async (ev) => {
+          try {
+            const base64 = ev.target?.result as string;
+            const res = await adminApi.uploadMedia(sanitizedName, base64, file.type);
+            if (res.success && res.data?.url) {
+              onUploaded(res.data.url);
+            } else {
+              setError('Upload failed. Please check network or paste a direct video URL.');
+            }
+          } catch (serverErr: any) {
+            setError(serverErr.message || 'Server upload failed. Try pasting a video link in URL tab.');
+          } finally {
+            setUploading(false);
+            if (fileRef.current) fileRef.current.value = '';
+          }
+        };
+        reader.onerror = () => {
+          setError('Failed to read file.');
+          setUploading(false);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        throw new Error('Video upload failed. For large videos (>4MB), please paste the direct video URL in the "URL Link" tab, or check Vercel Blob settings.');
+      }
     } catch (err: any) {
-      setError(err.message || 'Upload failed');
+      console.error('Upload Error:', err);
+      setError(err.message || 'Upload failed. Please try pasting a direct video link in the URL tab.');
       setUploading(false);
+      if (fileRef.current) fileRef.current.value = '';
     }
   };
 
@@ -63,7 +100,13 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
     }
   };
 
-  const isVideo = currentUrl && (currentUrl.includes('.mp4') || currentUrl.includes('.webm') || currentUrl.includes('.mov'));
+  const isVideo =
+    currentUrl &&
+    (currentUrl.includes('.mp4') ||
+      currentUrl.includes('.webm') ||
+      currentUrl.includes('.mov') ||
+      currentUrl.includes('video') ||
+      currentUrl.startsWith('data:video/'));
 
   return (
     <div style={{ marginBottom: '0.75rem' }}>
@@ -106,7 +149,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <input
             type="url"
-            placeholder="https://... paste image or video URL"
+            placeholder="https://... paste image or video URL (e.g. MP4, S3, Cloudinary, YouTube)"
             value={urlInput}
             onChange={(e) => setUrlInput(e.target.value)}
             style={{ ...inputStyle, flex: 1 }}
@@ -118,12 +161,16 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
         <div>
           <input ref={fileRef} type="file" accept={acceptAttr} onChange={handleFile} style={{ display: 'none' }} />
           <button
+            type="button"
             onClick={() => fileRef.current?.click()}
             disabled={uploading}
-            style={{ ...uploadAreaStyle, opacity: uploading ? 0.6 : 1 }}
+            style={{ ...uploadAreaStyle, opacity: uploading ? 0.7 : 1 }}
           >
             {uploading ? (
-              <span>Uploading to Vercel Blob...</span>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                <Loader2 size={24} color="#F68621" style={{ animation: 'spin 1s linear infinite' }} />
+                <span style={{ fontSize: '0.8125rem', color: '#F68621', fontWeight: 600 }}>Streaming directly to Vercel Blob CDN...</span>
+              </div>
             ) : (
               <>
                 {accept === 'video' ? <Film size={20} color="#9CA3AF" /> : <ImageIcon size={20} color="#9CA3AF" />}

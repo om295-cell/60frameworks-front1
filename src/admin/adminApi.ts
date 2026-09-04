@@ -91,6 +91,11 @@ export const adminApi = {
     apiFetch<any>(`/contact/submissions/${id}`, { method: 'PUT', body: JSON.stringify({ status }) }),
 
   // Upload media
+  getUploadToken: (pathname: string) =>
+    apiFetch<any>('/upload/token', {
+      method: 'POST',
+      body: JSON.stringify({ pathname }),
+    }),
   uploadMedia: (filename: string, fileData: string, contentType: string) =>
     apiFetch<any>('/upload', {
       method: 'POST',
