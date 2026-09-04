@@ -427,37 +427,3 @@ select:focus-visible {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-orange-primary);
 }
-
-/* =========================================================
-   Signature Brand Wave Pattern (SVG Mask & Pure CSS)
-   Adapts dynamically to any CSS color / variable with zero SVG re-encoding
-   ========================================================= */
-.wave-pattern {
-  --wave-color: var(--color-orange-primary, #F68621);
-  --wave-height: 20px;
-  --wave-unit-width: 48px;
-  --wave-opacity: 1;
-
-  width: 100%;
-  height: var(--wave-height);
-  background-color: var(--wave-color);
-  opacity: var(--wave-opacity);
-  pointer-events: none;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 20'%3E%3Cpath d='M0 16 C6 16 6 4 12 4 C18 4 18 16 24 16 C30 16 30 4 36 4 C42 4 42 16 48 16' fill='none' stroke='%23000' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 20'%3E%3Cpath d='M0 16 C6 16 6 4 12 4 C18 4 18 16 24 16 C30 16 30 4 36 4 C42 4 42 16 48 16' fill='none' stroke='%23000' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  -webkit-mask-repeat: repeat-x;
-  mask-repeat: repeat-x;
-  -webkit-mask-size: var(--wave-unit-width) var(--wave-height);
-  mask-size: var(--wave-unit-width) var(--wave-height);
-  -webkit-mask-position: center;
-  mask-position: center;
-}
-
-.brand-wave-animated {
-  animation: brandWaveDrift 24s linear infinite;
-}
-
-@keyframes brandWaveDrift {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-48px); }
-}
