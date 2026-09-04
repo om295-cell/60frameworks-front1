@@ -227,7 +227,17 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <Phone size={16} color="var(--color-orange-primary)" />
-                <span dir="ltr">+966 11 829 4000 / +971 4 580 9200</span>
+                <a
+                  href="https://api.whatsapp.com/send/?phone=966553077467"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'inherit', textDecoration: 'none' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-orange-primary)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'inherit')}
+                  dir="ltr"
+                >
+                  +966 55 307 7467 (WhatsApp)
+                </a>
               </div>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
                 <MapPin size={16} color="var(--color-orange-primary)" style={{ marginTop: '2px', flexShrink: 0 }} />
