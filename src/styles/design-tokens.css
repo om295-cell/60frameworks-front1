@@ -1,0 +1,57 @@
+:root {
+  /* Brand Color Tokens */
+  --color-orange-primary: #F68621;
+  --color-orange-hover: #E07312;
+  --color-orange-subtle: #FFF3EB;
+  --color-gray-structure: #E6E7E8;
+  --color-gray-light: #F8F9FA;
+  --color-yellow-energy: #FFD400;
+  --color-peach-warmth: #F79E7D;
+  --color-blush-softness: #F4D3C9;
+  --color-blush-subtle: #FDF7F5;
+  --color-charcoal-dark: #242424;
+  --color-charcoal-card: #2F2F2F;
+  --color-charcoal-hover: #3A3A3A;
+  --color-body-gray: #5F6368;
+  --color-body-light: #80868B;
+  --color-white: #FFFFFF;
+  --color-border: #E6E7E8;
+  --color-border-dark: #383838;
+
+  /* Typography Scale */
+  --font-family-primary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-family-arabic: 'Cairo', 'Tajawal', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  
+  --font-size-hero: clamp(2.75rem, 5.5vw, 4.5rem);       /* 44px - 72px */
+  --font-size-h1: clamp(2.25rem, 4.5vw, 3.5rem);         /* 36px - 56px */
+  --font-size-h2: clamp(1.75rem, 3.2vw, 2.75rem);        /* 28px - 44px */
+  --font-size-h3: clamp(1.25rem, 2vw, 1.75rem);          /* 20px - 28px */
+  --font-size-body-lg: 1.125rem;                          /* 18px */
+  --font-size-body: 1rem;                                 /* 16px */
+  --font-size-body-sm: 0.875rem;                          /* 14px */
+  --font-size-eyebrow: 0.8125rem;                         /* 13px */
+
+  /* Spacing */
+  --section-padding-y: clamp(5rem, 8vw, 8.5rem);
+  --container-max-width: 1320px;
+  --container-padding-x: clamp(1.25rem, 4vw, 2.5rem);
+
+  /* Shadows & Elevation */
+  --shadow-sm: 0 2px 8px rgba(36, 36, 36, 0.04);
+  --shadow-md: 0 8px 24px rgba(36, 36, 36, 0.08);
+  --shadow-lg: 0 16px 40px rgba(36, 36, 36, 0.12);
+  --shadow-orange: 0 10px 25px rgba(246, 134, 33, 0.25);
+  --shadow-dark-card: 0 12px 30px rgba(0, 0, 0, 0.35);
+
+  /* Border Radii */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
