@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { adminApi } from './adminApi';
+import { getDeviceFingerprint } from '../utils/deviceFingerprint';
 
 export interface ModulePermissions {
   projects: {
@@ -86,6 +87,10 @@ export interface AdminUser {
   isSuperAdmin: boolean;
   permissions: UserPermissions;
   loggedInAt: number;
+  /** Fingerprint of the device registered on first login */
+  registeredDeviceId?: string;
+  /** Whether device lock is enabled for this user */
+  deviceLockEnabled?: boolean;
 }
 
 export const FULL_MODULE_PERMISSIONS: ModulePermissions = {
@@ -247,7 +252,7 @@ export const SUPER_ADMIN_DEFAULT_USER: AdminUser = {
 
 interface AdminAuthContextType {
   user: AdminUser | null;
-  login: (password: string, email?: string) => Promise<boolean>;
+  login: (password: string, email?: string) => Promise<{ ok: boolean; deviceBlocked?: boolean }>;
   logout: () => void;
   isAuthenticated: boolean;
   isSuperAdmin: boolean;
@@ -302,28 +307,42 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
     adminApi.createLog(entry).catch(() => {});
   };
 
-  const login = async (password: string, email?: string): Promise<boolean> => {
+  const login = async (password: string, email?: string): Promise<{ ok: boolean; deviceBlocked?: boolean }> => {
     const cleanEmail = (email || 'admin@60frameworks.com').toLowerCase().trim();
+    const deviceId = getDeviceFingerprint();
 
-    // 1. Direct Super Admin Password Match
+    // 1. Direct Super Admin Password Match — exempt from device locking
     if (password === 'admin60fw2024!' && (cleanEmail === 'admin@60frameworks.com' || !email)) {
       const superUser: AdminUser = {
         ...SUPER_ADMIN_DEFAULT_USER,
         loggedInAt: Date.now(),
+        deviceLockEnabled: false,
       };
       setUser(superUser);
       localStorage.setItem('60fw_admin_session', JSON.stringify(superUser));
       logActivity('SUPER_ADMIN_LOGIN', 'auth', 'Authentication', 'Master Super Admin logged in');
-      return true;
+      return { ok: true };
     }
 
-    // 2. Check local users store
+    // 2. Check local users store (includes device check)
     try {
       const localUsers: any[] = JSON.parse(localStorage.getItem('60fw_users') || '[]');
       const localMatch = localUsers.find(
         u => u.email.toLowerCase() === cleanEmail && u.password === password
       );
       if (localMatch) {
+        // Device lock check for local users
+        if (localMatch.deviceLockEnabled !== false && !localMatch.isSuperAdmin) {
+          if (!localMatch.registeredDeviceId) {
+            // First login — register device
+            localMatch.registeredDeviceId = deviceId;
+            localStorage.setItem('60fw_users', JSON.stringify(localUsers));
+          } else if (localMatch.registeredDeviceId !== deviceId) {
+            // Wrong device
+            return { ok: false, deviceBlocked: true };
+          }
+        }
+
         const loggedUser: AdminUser = {
           _id: localMatch._id,
           name: localMatch.name,
@@ -332,31 +351,45 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
           isSuperAdmin: !!localMatch.isSuperAdmin,
           permissions: normalizePermissions(localMatch.permissions, localMatch.role),
           loggedInAt: Date.now(),
+          registeredDeviceId: localMatch.registeredDeviceId,
+          deviceLockEnabled: localMatch.deviceLockEnabled !== false,
         };
         setUser(loggedUser);
         localStorage.setItem('60fw_admin_session', JSON.stringify(loggedUser));
         logActivity('USER_LOGIN', 'auth', 'Authentication', `User ${loggedUser.name} (${loggedUser.email}) logged in`);
-        return true;
+        return { ok: true };
       }
     } catch {}
 
-    // 3. Check Remote API
+    // 3. Check Remote API (device check enforced server-side)
     try {
-      const res = await adminApi.login(cleanEmail, password);
+      const res = await adminApi.login(cleanEmail, password, deviceId);
       if (res && res.success && res.data) {
         const loggedUser: AdminUser = {
           ...res.data,
           permissions: normalizePermissions(res.data.permissions, res.data.role),
           loggedInAt: Date.now(),
+          registeredDeviceId: res.data.registeredDeviceId || '',
+          deviceLockEnabled: res.data.deviceLockEnabled !== false,
         };
         setUser(loggedUser);
         localStorage.setItem('60fw_admin_session', JSON.stringify(loggedUser));
         logActivity('USER_LOGIN', 'auth', 'Authentication', `User ${loggedUser.name} (${loggedUser.email}) logged in via API`);
-        return true;
+        return { ok: true };
       }
-    } catch {}
+    } catch (err: any) {
+      // Handle device-blocked response from API (403 with deviceBlocked flag)
+      if (err?.message?.includes('registered device') || err?.message?.includes('deviceBlocked')) {
+        return { ok: false, deviceBlocked: true };
+      }
+      // Also handle the case where the API returns a 403 response body
+      try {
+        const parsed = JSON.parse(err?.message || '{}');
+        if (parsed?.deviceBlocked) return { ok: false, deviceBlocked: true };
+      } catch {}
+    }
 
-    return false;
+    return { ok: false };
   };
 
   const logout = () => {

@@ -12,10 +12,10 @@ async function apiFetch<T>(path: string, opts?: RequestInit): Promise<T> {
 
 export const adminApi = {
   // Authentication & Users
-  login: (email?: string, password?: string) =>
+  login: (email?: string, password?: string, deviceId?: string) =>
     apiFetch<any>('/admin-users/login', {
       method: 'POST',
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, deviceId }),
     }),
   getUsers: () => apiFetch<any>('/admin-users'),
   createUser: (data: any) =>
@@ -24,6 +24,9 @@ export const adminApi = {
     apiFetch<any>(`/admin-users/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteUser: (id: string) =>
     apiFetch<any>(`/admin-users/${id}`, { method: 'DELETE' }),
+  /** Clears a user's registered device fingerprint so they can re-register from any device */
+  resetUserDevice: (id: string) =>
+    apiFetch<any>(`/admin-users/${id}`, { method: 'PUT', body: JSON.stringify({ resetDevice: true }) }),
 
   // Theme & Section Colors
   getTheme: () => apiFetch<any>('/theme'),

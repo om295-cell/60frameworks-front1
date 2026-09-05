@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Lock, LogIn, User } from 'lucide-react';
+import { Eye, EyeOff, Lock, LogIn, MonitorX, User } from 'lucide-react';
 import { useAdminAuth } from './AdminAuthContext';
 
 export const AdminLogin: React.FC = () => {
@@ -8,15 +8,23 @@ export const AdminLogin: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPwd, setShowPwd] = useState(false);
   const [error, setError] = useState('');
+  const [deviceBlocked, setDeviceBlocked] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setDeviceBlocked(false);
     try {
-      const ok = await login(password, email || undefined);
-      if (!ok) setError('Invalid credentials. Access denied.');
+      const result = await login(password, email || undefined);
+      if (!result.ok) {
+        if (result.deviceBlocked) {
+          setDeviceBlocked(true);
+        } else {
+          setError('Invalid credentials. Access denied.');
+        }
+      }
     } catch {
       setError('Login failed. Please try again.');
     }
@@ -45,6 +53,78 @@ export const AdminLogin: React.FC = () => {
           <h1 style={{ fontSize: '1.625rem', fontWeight: 800, color: '#fff', marginBottom: '0.35rem' }}>Control Panel</h1>
           <p style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.5)' }}>Enter your admin credentials to continue</p>
         </div>
+
+        {/* ── Device Blocked State ── */}
+        {deviceBlocked ? (
+          <div style={{ textAlign: 'center' }}>
+            {/* Icon */}
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              width: '72px', height: '72px', borderRadius: '50%', margin: '0 auto 1.25rem',
+              background: 'linear-gradient(135deg, rgba(239,68,68,0.2), rgba(246,134,33,0.15))',
+              border: '2px solid rgba(239,68,68,0.4)',
+              boxShadow: '0 0 32px rgba(239,68,68,0.2)',
+            }}>
+              <MonitorX size={32} color="#F87171" />
+            </div>
+
+            {/* Warning heading */}
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#F87171', marginBottom: '0.5rem' }}>
+              Unrecognized Device
+            </h2>
+            <p style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.55)', marginBottom: '1.5rem', lineHeight: 1.6 }}>
+              This account is locked to a specific device.
+            </p>
+
+            {/* Warning box */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(239,68,68,0.1), rgba(246,134,33,0.08))',
+              border: '1px solid rgba(239,68,68,0.3)',
+              borderRadius: '14px', padding: '1.25rem 1.5rem',
+              textAlign: 'left', marginBottom: '1.5rem',
+            }}>
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                <span style={{ fontSize: '1.25rem', lineHeight: 1 }}>🔒</span>
+                <div>
+                  <p style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#FBBF24', marginBottom: '0.35rem' }}>
+                    Device Access Restricted
+                  </p>
+                  <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.65, margin: 0 }}>
+                    Your account can only be accessed from the device you used to first log in.
+                    Please switch to your registered device and try again.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact box */}
+            <div style={{
+              background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: '12px', padding: '1rem 1.25rem', marginBottom: '1.5rem', textAlign: 'left',
+            }}>
+              <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', margin: 0, lineHeight: 1.65 }}>
+                📧 If you need access from a new device, contact your{' '}
+                <strong style={{ color: 'rgba(255,255,255,0.8)' }}>Super Administrator</strong>{' '}
+                to reset your device registration.
+              </p>
+            </div>
+
+            {/* Try again button */}
+            <button
+              type="button"
+              onClick={() => { setDeviceBlocked(false); setError(''); setPassword(''); }}
+              style={{
+                width: '100%', padding: '0.875rem',
+                background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
+                borderRadius: '12px', color: 'rgba(255,255,255,0.7)', fontWeight: 700,
+                fontSize: '0.9rem', cursor: 'pointer', fontFamily: 'inherit',
+                transition: 'all 0.2s',
+              }}
+            >
+              ← Try Different Account
+            </button>
+          </div>
+        ) : (
 
         <form onSubmit={handleSubmit}>
           {/* Email Field */}
@@ -120,6 +200,7 @@ export const AdminLogin: React.FC = () => {
             {loading ? 'Verifying...' : 'Access Admin Panel'}
           </button>
         </form>
+        )} {/* end deviceBlocked ternary */}
 
         <p style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.75rem', color: 'rgba(255,255,255,0.25)' }}>
           60FRAMEWORKS © {new Date().getFullYear()} — Restricted Access

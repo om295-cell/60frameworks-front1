@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   UserPlus, Shield, ShieldCheck, Lock, Trash2, Pencil, X, Save, Check,
-  CheckCircle2, XCircle, Sliders
+  CheckCircle2, XCircle, Sliders, RotateCcw, MonitorSmartphone
 } from 'lucide-react';
 import { adminApi } from '../adminApi';
 import {
@@ -24,6 +24,10 @@ interface UserData {
   permissions?: UserPermissions;
   lastLoginAt?: string;
   createdAt?: string;
+  /** Fingerprint of the first device used to log in. Empty = not yet registered. */
+  registeredDeviceId?: string;
+  /** When false, device locking is disabled for this user (superadmins only). */
+  deviceLockEnabled?: boolean;
 }
 
 const DEFAULT_USERS_LIST: UserData[] = [
@@ -416,6 +420,26 @@ export const UserManager: React.FC = () => {
     setTimeout(() => setFeedback(''), 3000);
   };
 
+  const handleResetDevice = async (id: string, name: string) => {
+    if (!confirm(`Reset device lock for ${name}? They will be able to log in from any device, and their next login will register as the new device.`)) return;
+
+    // Update local state immediately
+    const updated = users.map(u =>
+      u._id === id ? { ...u, registeredDeviceId: '' } : u
+    );
+    setUsers(updated);
+    localStorage.setItem('60fw_users', JSON.stringify(updated));
+
+    // Persist to API
+    try {
+      await adminApi.resetUserDevice(id);
+    } catch {}
+
+    logActivity('DEVICE_RESET', 'users', 'Team & Access', `Reset device lock for ${name} — next login will register new device`);
+    setFeedback(`Device lock for ${name} has been reset. They can now log in from any device.`);
+    setTimeout(() => setFeedback(''), 4000);
+  };
+
   if (!isSuperAdmin) {
     return (
       <div style={{ padding: '3.5rem', textAlign: 'center', background: '#fff', borderRadius: '16px', border: '1px solid #E5E7EB' }}>
@@ -472,6 +496,8 @@ export const UserManager: React.FC = () => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', marginBottom: '2.5rem' }}>
         {users.map(u => {
           const isMaster = u.isSuperAdmin || u.email === 'admin@60frameworks.com';
+          const isDeviceRegistered = !!(u.registeredDeviceId);
+          const isDeviceLockExempt = isMaster || u.deviceLockEnabled === false;
           return (
             <div
               key={u._id}
@@ -507,11 +533,25 @@ export const UserManager: React.FC = () => {
                 </div>
 
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
                     <span style={{ fontWeight: 800, color: '#111827', fontSize: '1.05rem' }}>{u.name}</span>
                     {isMaster && (
                       <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.2rem 0.6rem', background: '#FFF3E0', color: '#C2410C', borderRadius: '20px', fontSize: '0.6875rem', fontWeight: 800 }}>
                         <Lock size={11} /> ROOT SUPER ADMIN
+                      </span>
+                    )}
+                    {/* Device lock badge */}
+                    {isDeviceLockExempt ? (
+                      <span title="Superadmin — device lock exempt" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.2rem 0.55rem', background: '#F0FDF4', color: '#166534', border: '1px solid #BBF7D0', borderRadius: '20px', fontSize: '0.625rem', fontWeight: 700 }}>
+                        <MonitorSmartphone size={10} /> ANY DEVICE
+                      </span>
+                    ) : isDeviceRegistered ? (
+                      <span title={`Locked to device: ${u.registeredDeviceId}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.2rem 0.55rem', background: '#EFF6FF', color: '#1D4ED8', border: '1px solid #BFDBFE', borderRadius: '20px', fontSize: '0.625rem', fontWeight: 700 }}>
+                        <Lock size={10} /> DEVICE LOCKED
+                      </span>
+                    ) : (
+                      <span title="No device registered yet — will lock on first login" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.2rem 0.55rem', background: '#FFFBEB', color: '#92400E', border: '1px solid #FDE68A', borderRadius: '20px', fontSize: '0.625rem', fontWeight: 700 }}>
+                        <MonitorSmartphone size={10} /> UNREGISTERED
                       </span>
                     )}
                   </div>
@@ -527,10 +567,28 @@ export const UserManager: React.FC = () => {
               </div>
 
               {/* Action Buttons */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
                 <button onClick={() => handleEdit(u)} style={editBtn} title="Customize Granular Permissions">
                   <Pencil size={14} /> Edit Permissions
                 </button>
+                {/* Reset Device button — only for superadmin, only on non-master users */}
+                {!isMaster && isSuperAdmin && (
+                  <button
+                    onClick={() => handleResetDevice(u._id, u.name)}
+                    title={isDeviceRegistered ? 'Reset device lock — allow login from any device' : 'No device registered yet'}
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+                      padding: '0.45rem 0.75rem', borderRadius: '8px', border: '1px solid #E5E7EB',
+                      background: isDeviceRegistered ? '#EFF6FF' : '#F9FAFB',
+                      color: isDeviceRegistered ? '#2563EB' : '#9CA3AF',
+                      fontSize: '0.75rem', fontWeight: 700, cursor: isDeviceRegistered ? 'pointer' : 'default',
+                    }}
+                    disabled={!isDeviceRegistered}
+                  >
+                    <RotateCcw size={13} />
+                    {isDeviceRegistered ? 'Reset Device' : 'No Device'}
+                  </button>
+                )}
                 {!isMaster && (
                   <button onClick={() => handleDeleteUser(u._id, u.name)} style={deleteBtn} title="Revoke & Delete">
                     <Trash2 size={15} />
