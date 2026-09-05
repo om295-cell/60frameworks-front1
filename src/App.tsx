@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
+import { LatestEvent } from './components/LatestEvent';
 import { About } from './components/About';
 import { Services } from './components/Services';
 import { Clients } from './components/Clients';
@@ -162,6 +163,9 @@ export const App: React.FC = () => {
           onViewWork={handleViewWork}
           content={homeContent?.hero}
         />
+
+        {/* 2.5 Latest Event Showcase */}
+        <LatestEvent content={homeContent?.latestEvent} />
 
         {/* 3. About Us */}
         <About

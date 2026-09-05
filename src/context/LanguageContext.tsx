@@ -45,6 +45,17 @@ export const translations: Translations = {
   trustProtocol: { en: '+XX', ar: '+XX' },
   trustProtocolDesc: { en: 'Brands & Destinations Trusted Us', ar: 'علامة وجهة وثقت بنا' },
 
+  // Latest Event
+  latestEventEyebrow: { en: 'LATEST EVENT', ar: 'أحدث فعالياتنا' },
+  latestEventTitle: { en: 'Our Latest Event Experience', ar: 'فعاليتنا الأخيرة: تجربة استثنائية' },
+  latestEventSubtitle: {
+    en: 'Click the image below to view comprehensive coverage, high-definition captures, and documentation directly on Google Drive.',
+    ar: 'انقر على الصورة للاطلاع على التغطية الشاملة، الصور التوثيقية، وملفات الفعالية مباشرة عبر Google Drive.',
+  },
+  latestEventBadge: { en: 'Google Drive File', ar: 'ملف التوثيق عبر Google Drive' },
+  latestEventCta: { en: 'View on Google Drive', ar: 'فتح الملف في Google Drive' },
+  latestEventTag: { en: 'Exclusive Event Documentation', ar: 'ملف التوثيق والتغطية الحصرية' },
+
   // About
   aboutEyebrow: { en: 'ABOUT OUR AGENCY', ar: 'عن وكالتنا' },
   aboutHeading: { en: 'We Turn Ideas Into Experiences People Remember.', ar: 'نحول الأفكار الملهمة إلى تجارب حية تخلد في الذاكرة.' },
