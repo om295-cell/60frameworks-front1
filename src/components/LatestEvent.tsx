@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ExternalLink, Sparkles, FolderOpen, ArrowUpRight } from 'lucide-react';
+import { Sparkles, ArrowUpRight } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface LatestEventProps {
@@ -164,7 +164,7 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
                 }}
               />
 
-              {/* Top Google Drive Badge */}
+              {/* Top Event Badge */}
               <div
                 style={{
                   position: 'absolute',
@@ -197,58 +197,12 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
                     color: 'var(--color-orange-primary, #F68621)',
                   }}
                 >
-                  <FolderOpen size={14} />
+                  <ArrowUpRight size={14} />
                 </div>
-                <span>{t('latestEventBadge')}</span>
+                <span>{t('latestEventCta')}</span>
               </div>
 
-              {/* Hover Center Indicator */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: `translate(-50%, -50%) scale(${isHovered ? 1 : 0.85})`,
-                  opacity: isHovered ? 1 : 0,
-                  transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
-                  pointerEvents: 'none',
-                  zIndex: 3,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '0.75rem',
-                }}
-              >
-                <div
-                  style={{
-                    width: '64px',
-                    height: '64px',
-                    borderRadius: '50%',
-                    backgroundColor: 'var(--color-orange-primary, #F68621)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#FFFFFF',
-                    boxShadow: '0 0 30px rgba(246, 134, 33, 0.6), 0 10px 25px rgba(0, 0, 0, 0.4)',
-                  }}
-                >
-                  <ExternalLink size={26} />
-                </div>
-                <span
-                  style={{
-                    backgroundColor: 'rgba(11, 15, 25, 0.85)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.15)',
-                    color: '#FFFFFF',
-                    padding: '0.45rem 1.1rem',
-                    borderRadius: '100px',
-                    fontSize: '0.875rem',
-                    fontWeight: 600,
-                  }}
-                >
-                  {t('latestEventCta')}
-                </span>
-              </div>
+
 
               {/* Bottom Card Bar: Title & External Action */}
               <div

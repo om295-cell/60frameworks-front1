@@ -309,9 +309,9 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   const login = async (password: string, email?: string): Promise<{ ok: boolean; deviceBlocked?: boolean }> => {
     const cleanEmail = (email || 'admin@60frameworks.com').toLowerCase().trim();
-    const deviceId = getDeviceFingerprint();
+    const deviceId = getDeviceFingerprint().toUpperCase().trim();
 
-    // 1. Direct Super Admin Password Match — exempt from device locking
+    // 1. Direct Super Admin Password Match — permanently exempt from device locking
     if (password === 'admin60fw2024!' && (cleanEmail === 'admin@60frameworks.com' || !email)) {
       const superUser: AdminUser = {
         ...SUPER_ADMIN_DEFAULT_USER,
@@ -324,21 +324,61 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
       return { ok: true };
     }
 
-    // 2. Check local users store (includes device check)
+    // 2. Primary: Authenticate via Remote Backend API (database-backed device check)
+    let apiError: any = null;
+    try {
+      const res = await adminApi.login(cleanEmail, password, deviceId);
+      if (res && res.success && res.data) {
+        const userData = res.data;
+
+        // Client-side verification: if account is locked to a different device, deny
+        if (!userData.isSuperAdmin && userData.deviceLockEnabled !== false) {
+          const registered = (userData.registeredDeviceId || '').trim().toUpperCase();
+          if (registered && registered !== deviceId) {
+            return { ok: false, deviceBlocked: true };
+          }
+        }
+
+        const loggedUser: AdminUser = {
+          ...userData,
+          permissions: normalizePermissions(userData.permissions, userData.role),
+          loggedInAt: Date.now(),
+          registeredDeviceId: userData.registeredDeviceId || deviceId,
+          deviceLockEnabled: userData.deviceLockEnabled !== false,
+        };
+        setUser(loggedUser);
+        localStorage.setItem('60fw_admin_session', JSON.stringify(loggedUser));
+        logActivity('USER_LOGIN', 'auth', 'Authentication', `User ${loggedUser.name} (${loggedUser.email}) logged in [Device: ${deviceId}]`);
+        return { ok: true };
+      }
+    } catch (err: any) {
+      apiError = err;
+      // If server specifically blocked this device, reject immediately!
+      if (
+        err?.deviceBlocked ||
+        err?.message?.includes('registered device') ||
+        err?.message?.includes('Access denied: Please log in from your registered device')
+      ) {
+        return { ok: false, deviceBlocked: true };
+      }
+    }
+
+    // 3. Fallback: Check local users store only if API failed or offline
     try {
       const localUsers: any[] = JSON.parse(localStorage.getItem('60fw_users') || '[]');
       const localMatch = localUsers.find(
         u => u.email.toLowerCase() === cleanEmail && u.password === password
       );
       if (localMatch) {
-        // Device lock check for local users
+        // Device lock check for local user
         if (localMatch.deviceLockEnabled !== false && !localMatch.isSuperAdmin) {
-          if (!localMatch.registeredDeviceId) {
+          const reg = (localMatch.registeredDeviceId || '').trim().toUpperCase();
+          if (!reg) {
             // First login — register device
             localMatch.registeredDeviceId = deviceId;
             localStorage.setItem('60fw_users', JSON.stringify(localUsers));
-          } else if (localMatch.registeredDeviceId !== deviceId) {
-            // Wrong device
+          } else if (reg !== deviceId) {
+            // Unrecognized device
             return { ok: false, deviceBlocked: true };
           }
         }
@@ -351,42 +391,19 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
           isSuperAdmin: !!localMatch.isSuperAdmin,
           permissions: normalizePermissions(localMatch.permissions, localMatch.role),
           loggedInAt: Date.now(),
-          registeredDeviceId: localMatch.registeredDeviceId,
+          registeredDeviceId: localMatch.registeredDeviceId || deviceId,
           deviceLockEnabled: localMatch.deviceLockEnabled !== false,
         };
         setUser(loggedUser);
         localStorage.setItem('60fw_admin_session', JSON.stringify(loggedUser));
-        logActivity('USER_LOGIN', 'auth', 'Authentication', `User ${loggedUser.name} (${loggedUser.email}) logged in`);
+        logActivity('USER_LOGIN', 'auth', 'Authentication', `User ${loggedUser.name} (${loggedUser.email}) logged in locally [Device: ${deviceId}]`);
         return { ok: true };
       }
     } catch {}
 
-    // 3. Check Remote API (device check enforced server-side)
-    try {
-      const res = await adminApi.login(cleanEmail, password, deviceId);
-      if (res && res.success && res.data) {
-        const loggedUser: AdminUser = {
-          ...res.data,
-          permissions: normalizePermissions(res.data.permissions, res.data.role),
-          loggedInAt: Date.now(),
-          registeredDeviceId: res.data.registeredDeviceId || '',
-          deviceLockEnabled: res.data.deviceLockEnabled !== false,
-        };
-        setUser(loggedUser);
-        localStorage.setItem('60fw_admin_session', JSON.stringify(loggedUser));
-        logActivity('USER_LOGIN', 'auth', 'Authentication', `User ${loggedUser.name} (${loggedUser.email}) logged in via API`);
-        return { ok: true };
-      }
-    } catch (err: any) {
-      // Handle device-blocked response from API (403 with deviceBlocked flag)
-      if (err?.message?.includes('registered device') || err?.message?.includes('deviceBlocked')) {
-        return { ok: false, deviceBlocked: true };
-      }
-      // Also handle the case where the API returns a 403 response body
-      try {
-        const parsed = JSON.parse(err?.message || '{}');
-        if (parsed?.deviceBlocked) return { ok: false, deviceBlocked: true };
-      } catch {}
+    // Check if error was due to device blockage
+    if (apiError?.deviceBlocked) {
+      return { ok: false, deviceBlocked: true };
     }
 
     return { ok: false };

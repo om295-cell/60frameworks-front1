@@ -6,7 +6,13 @@ async function apiFetch<T>(path: string, opts?: RequestInit): Promise<T> {
     ...opts,
   });
   const json = await res.json();
-  if (!res.ok) throw new Error(json.message || 'API error');
+  if (!res.ok) {
+    const error = new Error(json.message || 'API error') as any;
+    error.status = res.status;
+    error.deviceBlocked = !!json.deviceBlocked;
+    error.registeredDeviceId = json.registeredDeviceId;
+    throw error;
+  }
   return json;
 }
 

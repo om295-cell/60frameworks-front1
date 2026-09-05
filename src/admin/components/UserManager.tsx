@@ -540,24 +540,36 @@ export const UserManager: React.FC = () => {
                         <Lock size={11} /> ROOT SUPER ADMIN
                       </span>
                     )}
-                    {/* Device lock badge */}
-                    {isDeviceLockExempt ? (
-                      <span title="Superadmin — device lock exempt" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.2rem 0.55rem', background: '#F0FDF4', color: '#166534', border: '1px solid #BBF7D0', borderRadius: '20px', fontSize: '0.625rem', fontWeight: 700 }}>
-                        <MonitorSmartphone size={10} /> ANY DEVICE
-                      </span>
-                    ) : isDeviceRegistered ? (
-                      <span title={`Locked to device: ${u.registeredDeviceId}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.2rem 0.55rem', background: '#EFF6FF', color: '#1D4ED8', border: '1px solid #BFDBFE', borderRadius: '20px', fontSize: '0.625rem', fontWeight: 700 }}>
-                        <Lock size={10} /> DEVICE LOCKED
-                      </span>
-                    ) : (
-                      <span title="No device registered yet — will lock on first login" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.2rem 0.55rem', background: '#FFFBEB', color: '#92400E', border: '1px solid #FDE68A', borderRadius: '20px', fontSize: '0.625rem', fontWeight: 700 }}>
-                        <MonitorSmartphone size={10} /> UNREGISTERED
-                      </span>
-                    )}
                   </div>
                   <div style={{ fontSize: '0.8125rem', color: '#6B7280', marginTop: '0.15rem' }}>
                     {u.email}
                   </div>
+
+                  {/* Device Lock & MAC Address status */}
+                  {isDeviceLockExempt ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.35rem' }}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.15rem 0.55rem', background: '#F0FDF4', color: '#166534', border: '1px solid #BBF7D0', borderRadius: '6px', fontSize: '0.6875rem', fontWeight: 700 }}>
+                        <ShieldCheck size={11} /> ANY DEVICE
+                      </span>
+                      <span style={{ color: '#6B7280', fontSize: '0.6875rem' }}>Exempt from device locking</span>
+                    </div>
+                  ) : isDeviceRegistered ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.35rem', flexWrap: 'wrap' }}>
+                      <span title={`Device MAC: ${u.registeredDeviceId}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.15rem 0.55rem', background: '#EFF6FF', color: '#1D4ED8', border: '1px solid #BFDBFE', borderRadius: '6px', fontSize: '0.6875rem', fontWeight: 700, fontFamily: 'monospace' }}>
+                        <Lock size={11} color="#2563EB" /> MAC: {u.registeredDeviceId}
+                      </span>
+                      <span style={{ color: '#059669', fontWeight: 700, fontSize: '0.6875rem', display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
+                        <CheckCircle2 size={11} color="#059669" /> Locked to 1 Device
+                      </span>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.35rem', flexWrap: 'wrap' }}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.15rem 0.55rem', background: '#FFFBEB', color: '#92400E', border: '1px solid #FDE68A', borderRadius: '6px', fontSize: '0.6875rem', fontWeight: 700 }}>
+                        <MonitorSmartphone size={11} color="#D97706" /> NO DEVICE REGISTERED
+                      </span>
+                      <span style={{ color: '#6B7280', fontSize: '0.6875rem' }}>Will lock to first login device</span>
+                    </div>
+                  )}
                 </div>
               </div>
 

@@ -52,8 +52,8 @@ export const translations: Translations = {
     en: 'Click the image below to view comprehensive coverage, high-definition captures, and documentation directly on Google Drive.',
     ar: 'انقر على الصورة للاطلاع على التغطية الشاملة، الصور التوثيقية، وملفات الفعالية مباشرة عبر Google Drive.',
   },
-  latestEventBadge: { en: 'Google Drive File', ar: 'ملف التوثيق عبر Google Drive' },
-  latestEventCta: { en: 'View on Google Drive', ar: 'فتح الملف في Google Drive' },
+  latestEventBadge: { en: 'Google Drive', ar: 'Google Drive' },
+  latestEventCta: { en: 'View Event', ar: 'استعراض الفعالية' },
   latestEventTag: { en: 'Exclusive Event Documentation', ar: 'ملف التوثيق والتغطية الحصرية' },
 
   // About

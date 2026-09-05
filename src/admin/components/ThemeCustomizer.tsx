@@ -485,7 +485,18 @@ interface ColorFieldProps {
 }
 
 const ColorField: React.FC<ColorFieldProps> = ({ label, value, onChange }) => {
-  const safeHex = value?.startsWith('#') && value.length === 7 ? value : '#F68621';
+  // Derive a valid 6-digit hex for the color-picker swatch.
+  // Accepts #RGB (expands), #RRGGBB, #RRGGBBAA (strips alpha). Falls back to brand orange.
+  const toPickerHex = (v: string): string => {
+    if (!v) return '#F68621';
+    const s = v.trim();
+    if (/^#[0-9A-Fa-f]{6}$/.test(s)) return s;
+    if (/^#[0-9A-Fa-f]{3}$/.test(s)) {
+      return '#' + s[1] + s[1] + s[2] + s[2] + s[3] + s[3];
+    }
+    if (/^#[0-9A-Fa-f]{8}$/.test(s)) return s.slice(0, 7);
+    return '#F68621'; // rgba() or unknown — swatch shows orange but text field stays correct
+  };
 
   return (
     <div>
@@ -495,9 +506,9 @@ const ColorField: React.FC<ColorFieldProps> = ({ label, value, onChange }) => {
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#F9FAFB', border: '1px solid #D1D5DB', borderRadius: '8px', padding: '0.25rem 0.5rem' }}>
         <input
           type="color"
-          value={safeHex}
+          value={toPickerHex(value)}
           onChange={e => onChange(e.target.value)}
-          style={{ width: '34px', height: '34px', border: 'none', borderRadius: '6px', cursor: 'pointer', background: 'none' }}
+          style={{ width: '34px', height: '34px', border: 'none', borderRadius: '6px', cursor: 'pointer', background: 'none', flexShrink: 0 }}
         />
         <input
           type="text"
