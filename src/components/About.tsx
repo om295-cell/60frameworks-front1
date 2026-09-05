@@ -167,20 +167,12 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
                 marginBottom: '2.5rem',
               }}
             >
-              {(language === 'ar'
-                ? [
-                    'نمذجة العائد الاستثماري الدقيق',
-                    'الهندسة المعمارية المكانية 3D',
-                    'الإدارة والتشغيل الشامل للفعالية',
-                    'إتقان البروتوكول والمراسم السيادية',
-                  ]
-                : [
-                    'Strategic ROI Modeling',
-                    'Spatial Architecture & 3D',
-                    'Turnkey Global Staging',
-                    'Diplomatic Protocol Mastery',
-                  ]
-              ).map((item, idx) => (
+              {[
+                t('aboutPillar1'),
+                t('aboutPillar2'),
+                t('aboutPillar3'),
+                t('aboutPillar4'),
+              ].map((item, idx) => (
                 <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
                   <CheckCircle2 size={18} color="var(--color-sec-about-accent, var(--color-orange-primary))" />
                   <span style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--color-sec-about-text, var(--color-charcoal-dark))' }}>

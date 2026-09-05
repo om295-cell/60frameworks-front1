@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Globe, Award, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Briefcase, TrendingUp, Building2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface HeroProps {
@@ -199,91 +199,232 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
             </button>
           </div>
 
-          {/* Trust Highlights Strip */}
+          {/* Impact Numbers Section */}
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '1.5rem',
               paddingTop: '2rem',
               borderTop: '1px solid rgba(255, 255, 255, 0.15)',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
+            {/* Header: Title & Subtitle */}
+            <div style={{ marginBottom: '1.25rem' }}>
               <div
                 style={{
-                  width: '42px',
-                  height: '42px',
-                  borderRadius: '50%',
-                  backgroundColor: 'rgba(246, 134, 33, 0.15)',
-                  display: 'flex',
+                  display: 'inline-flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'var(--color-sec-hero-accent, var(--color-orange-primary))',
-                  flexShrink: 0,
+                  gap: '0.625rem',
+                  marginBottom: '0.35rem',
                 }}
               >
-                <Globe size={20} />
+                <span
+                  style={{
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    backgroundColor: 'var(--color-sec-hero-accent, var(--color-orange-primary))',
+                    display: 'inline-block',
+                    boxShadow: '0 0 12px var(--color-orange-primary)',
+                  }}
+                />
+                <h3
+                  style={{
+                    fontSize: '1.25rem',
+                    fontWeight: 800,
+                    color: 'var(--color-sec-hero-text, var(--color-white))',
+                    fontFamily: 'var(--font-heading)',
+                    margin: 0,
+                    letterSpacing: '-0.01em',
+                  }}
+                >
+                  {t('impactTitle')}
+                </h3>
               </div>
-              <div>
-                <span style={{ display: 'block', fontWeight: 700, fontSize: '0.9375rem', color: 'var(--color-sec-hero-text, var(--color-white))' }}>
-                  {t('trustGlobalReach')}
-                </span>
-                <span style={{ display: 'block', fontSize: '0.8125rem', color: 'var(--color-sec-hero-subtitle, rgba(255, 255, 255, 0.65))' }}>
-                  {t('trustGlobalDesc')}
-                </span>
-              </div>
+              <p
+                style={{
+                  fontSize: '0.9375rem',
+                  color: 'var(--color-sec-hero-subtitle, rgba(255, 255, 255, 0.75))',
+                  margin: 0,
+                  fontWeight: 400,
+                }}
+              >
+                {t('impactSubtitle')}
+              </p>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
+            {/* Body: Stat Cards */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '1.25rem',
+              }}
+            >
+              {/* Stat 1 */}
               <div
                 style={{
-                  width: '42px',
-                  height: '42px',
-                  borderRadius: '50%',
-                  backgroundColor: 'rgba(255, 212, 0, 0.15)',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'var(--color-yellow-energy)',
-                  flexShrink: 0,
+                  gap: '1rem',
+                  padding: '0.875rem 1.25rem',
+                  backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  backdropFilter: 'blur(8px)',
                 }}
               >
-                <Award size={20} />
+                <div
+                  style={{
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '10px',
+                    backgroundColor: 'rgba(246, 134, 33, 0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--color-sec-hero-accent, var(--color-orange-primary))',
+                    flexShrink: 0,
+                  }}
+                >
+                  <Briefcase size={22} />
+                </div>
+                <div>
+                  <span
+                    style={{
+                      display: 'block',
+                      fontWeight: 800,
+                      fontSize: '1.5rem',
+                      lineHeight: 1.1,
+                      fontFamily: 'var(--font-heading)',
+                      color: 'var(--color-sec-hero-text, var(--color-white))',
+                      letterSpacing: '-0.02em',
+                    }}
+                  >
+                    {t('impactStat1Value')}
+                  </span>
+                  <span
+                    style={{
+                      display: 'block',
+                      fontSize: '0.8125rem',
+                      fontWeight: 500,
+                      color: 'var(--color-sec-hero-subtitle, rgba(255, 255, 255, 0.7))',
+                      marginTop: '0.25rem',
+                    }}
+                  >
+                    {t('impactStat1Label')}
+                  </span>
+                </div>
               </div>
-              <div>
-                <span style={{ display: 'block', fontWeight: 700, fontSize: '0.9375rem', color: 'var(--color-sec-hero-text, var(--color-white))' }}>
-                  {t('trustAward')}
-                </span>
-                <span style={{ display: 'block', fontSize: '0.8125rem', color: 'var(--color-sec-hero-subtitle, rgba(255, 255, 255, 0.65))' }}>
-                  {t('trustAwardDesc')}
-                </span>
-              </div>
-            </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
+              {/* Stat 2 */}
               <div
                 style={{
-                  width: '42px',
-                  height: '42px',
-                  borderRadius: '50%',
-                  backgroundColor: 'rgba(247, 158, 125, 0.15)',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'var(--color-peach-warmth)',
-                  flexShrink: 0,
+                  gap: '1rem',
+                  padding: '0.875rem 1.25rem',
+                  backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  backdropFilter: 'blur(8px)',
                 }}
               >
-                <ShieldCheck size={20} />
+                <div
+                  style={{
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '10px',
+                    backgroundColor: 'rgba(255, 212, 0, 0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--color-yellow-energy)',
+                    flexShrink: 0,
+                  }}
+                >
+                  <TrendingUp size={22} />
+                </div>
+                <div>
+                  <span
+                    style={{
+                      display: 'block',
+                      fontWeight: 800,
+                      fontSize: '1.5rem',
+                      lineHeight: 1.1,
+                      fontFamily: 'var(--font-heading)',
+                      color: 'var(--color-sec-hero-text, var(--color-white))',
+                      letterSpacing: '-0.02em',
+                    }}
+                  >
+                    {t('impactStat2Value')}
+                  </span>
+                  <span
+                    style={{
+                      display: 'block',
+                      fontSize: '0.8125rem',
+                      fontWeight: 500,
+                      color: 'var(--color-sec-hero-subtitle, rgba(255, 255, 255, 0.7))',
+                      marginTop: '0.25rem',
+                    }}
+                  >
+                    {t('impactStat2Label')}
+                  </span>
+                </div>
               </div>
-              <div>
-                <span style={{ display: 'block', fontWeight: 700, fontSize: '0.9375rem', color: 'var(--color-sec-hero-text, var(--color-white))' }}>
-                  {t('trustProtocol')}
-                </span>
-                <span style={{ display: 'block', fontSize: '0.8125rem', color: 'var(--color-sec-hero-subtitle, rgba(255, 255, 255, 0.65))' }}>
-                  {t('trustProtocolDesc')}
-                </span>
+
+              {/* Stat 3 */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1rem',
+                  padding: '0.875rem 1.25rem',
+                  backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  backdropFilter: 'blur(8px)',
+                }}
+              >
+                <div
+                  style={{
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '10px',
+                    backgroundColor: 'rgba(247, 158, 125, 0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--color-peach-warmth)',
+                    flexShrink: 0,
+                  }}
+                >
+                  <Building2 size={22} />
+                </div>
+                <div>
+                  <span
+                    style={{
+                      display: 'block',
+                      fontWeight: 800,
+                      fontSize: '1.5rem',
+                      lineHeight: 1.1,
+                      fontFamily: 'var(--font-heading)',
+                      color: 'var(--color-sec-hero-text, var(--color-white))',
+                      letterSpacing: '-0.02em',
+                    }}
+                  >
+                    {t('impactStat3Value')}
+                  </span>
+                  <span
+                    style={{
+                      display: 'block',
+                      fontSize: '0.8125rem',
+                      fontWeight: 500,
+                      color: 'var(--color-sec-hero-subtitle, rgba(255, 255, 255, 0.7))',
+                      marginTop: '0.25rem',
+                    }}
+                  >
+                    {t('impactStat3Label')}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
