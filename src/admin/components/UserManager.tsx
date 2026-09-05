@@ -211,12 +211,36 @@ export const UserManager: React.FC = () => {
     try {
       const res = await adminApi.getUsers();
       if (res?.data && Array.isArray(res.data) && res.data.length > 0) {
-        const normalized = res.data.map((u: any) => ({
-          ...u,
-          permissions: normalizePermissions(u.permissions, u.role),
-        }));
-        setUsers(normalized);
-        localStorage.setItem('60fw_users', JSON.stringify(normalized));
+        // Retrieve local cache to retain passwords and prevent accidental local user loss
+        const localCached: any[] = (() => {
+          try {
+            const raw = localStorage.getItem('60fw_users');
+            return raw ? JSON.parse(raw) : [];
+          } catch { return []; }
+        })();
+
+        const localUserMap = new Map(localCached.map((u: any) => [u.email?.toLowerCase(), u]));
+
+        // Normalize users returned from the remote API
+        const remoteUsers = res.data.map((u: any) => {
+          const localMatch = localUserMap.get(u.email?.toLowerCase());
+          return {
+            ...u,
+            // Preserve stored password for offline / fallback login
+            password: localMatch?.password || u.password,
+            permissions: normalizePermissions(u.permissions, u.role),
+          };
+        });
+
+        // Retain any locally created accounts that haven't synced to remote yet
+        const remoteEmails = new Set(remoteUsers.map((u: any) => u.email?.toLowerCase()));
+        const unmergedLocal = localCached.filter(
+          (u: any) => u.email && !remoteEmails.has(u.email.toLowerCase()) && u.role !== 'superadmin'
+        );
+
+        const merged = [...remoteUsers, ...unmergedLocal];
+        setUsers(merged);
+        localStorage.setItem('60fw_users', JSON.stringify(merged));
       }
     } catch {}
   };
@@ -361,12 +385,17 @@ export const UserManager: React.FC = () => {
         };
 
         const res = await adminApi.createUser(payload);
-        const newUser: UserData = res?.data || {
-          _id: `user_${Date.now()}`,
-          ...payload,
+        const newUser: UserData = {
+          ...(res?.data || {}),
+          _id: res?.data?._id || `user_${Date.now()}`,
+          name: payload.name,
+          email: payload.email,
+          role: payload.role as any,
+          permissions: payload.permissions,
+          password: passwordInput,
         };
 
-        const updated = [...users, newUser];
+        const updated = [...users.filter(u => u.email.toLowerCase() !== payload.email), newUser];
         setUsers(updated);
         localStorage.setItem('60fw_users', JSON.stringify(updated));
 
@@ -407,7 +436,7 @@ export const UserManager: React.FC = () => {
 
     if (!confirm(`Are you sure you want to delete user ${name}? All access will be revoked immediately.`)) return;
 
-    const updated = users.filter(u => u._id !== id);
+    const updated = users.filter(u => u._id !== id && u.email.toLowerCase() !== target?.email.toLowerCase());
     setUsers(updated);
     localStorage.setItem('60fw_users', JSON.stringify(updated));
 

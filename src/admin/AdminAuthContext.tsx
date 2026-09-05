@@ -377,6 +377,7 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
             // First login — register device
             localMatch.registeredDeviceId = deviceId;
             localStorage.setItem('60fw_users', JSON.stringify(localUsers));
+            adminApi.updateUser(localMatch._id, { registeredDeviceId: deviceId }).catch(() => {});
           } else if (reg !== deviceId) {
             // Unrecognized device
             return { ok: false, deviceBlocked: true };
