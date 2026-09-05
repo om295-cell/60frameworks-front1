@@ -14,13 +14,17 @@ interface Section {
 
 const SECTIONS: Section[] = [
   { key: 'hero', title: 'Hero Section', emoji: '🎬', permKey: 'editHero' },
+  { key: 'latestEvent', title: 'Latest Event (Drive Link & Picture)', emoji: '🎯' },
   { key: 'about', title: 'About Section', emoji: '🏢', permKey: 'editAbout' },
   { key: 'whyUs', title: 'Why Us Section', emoji: '⭐', permKey: 'editAbout' },
   { key: 'finalCta', title: 'Final CTA Section', emoji: '📣', permKey: 'editFinalCTA' },
 ];
 
-const fieldLabel = (k: string) =>
-  k.replace(/_en$/, ' (English)').replace(/_ar$/, ' (Arabic)').replace(/_/g, ' ');
+const fieldLabel = (k: string) => {
+  if (k === 'driveUrl') return 'Google Drive Link / File URL';
+  if (k === 'imageUrl') return 'Event Showcase Picture';
+  return k.replace(/_en$/, ' (English)').replace(/_ar$/, ' (Arabic)').replace(/_/g, ' ');
+};
 
 export const HomepageEditor: React.FC = () => {
   const { hasPermission, isSuperAdmin } = useAdminAuth();
@@ -95,16 +99,19 @@ export const HomepageEditor: React.FC = () => {
       {saved && <div style={successBox}>✓ Homepage content saved successfully!</div>}
 
       {SECTIONS.map((sec) => {
-        const sectionData = content[sec.key] || {};
+        const sectionData = {
+          ...((FALLBACK_HOMEPAGE_CONTENT as any)[sec.key] || {}),
+          ...(content[sec.key] || {}),
+        };
         const isOpen = openSection === sec.key;
         const canEditSec = isSuperAdmin || !sec.permKey || hasPermission('homepage', sec.permKey);
 
         // Separate text fields from media fields
         const textFields = Object.entries(sectionData).filter(
-          ([k]) => !['backdropImage', 'backdropVideo', 'image', 'videoUrl', 'stats'].includes(k)
+          ([k]) => !['backdropImage', 'backdropVideo', 'image', 'videoUrl', 'imageUrl', 'stats'].includes(k)
         );
         const mediaFields = Object.entries(sectionData).filter(
-          ([k]) => ['backdropImage', 'backdropVideo', 'image', 'videoUrl'].includes(k)
+          ([k]) => ['backdropImage', 'backdropVideo', 'image', 'videoUrl', 'imageUrl'].includes(k)
         );
         const stats = sectionData.stats;
 
@@ -127,6 +134,22 @@ export const HomepageEditor: React.FC = () => {
 
             {isOpen && (
               <div style={{ padding: '1.5rem' }}>
+                {sec.key === 'latestEvent' && (
+                  <div
+                    style={{
+                      background: 'rgba(246, 134, 33, 0.08)',
+                      border: '1px solid rgba(246, 134, 33, 0.25)',
+                      borderRadius: '8px',
+                      padding: '0.875rem 1rem',
+                      marginBottom: '1.25rem',
+                      fontSize: '0.875rem',
+                      color: '#9A3412',
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    💡 <strong>Google Drive Integration:</strong> Paste your Google Drive shareable link in the <strong>Google Drive Link / File URL</strong> field below. Clicking the picture on the website will open this Drive link. You can also upload or replace the event image in the Media section below.
+                  </div>
+                )}
                 {/* Text Fields */}
                 {textFields.length > 0 && (
                   <div style={{ marginBottom: '1.5rem' }}>

@@ -150,6 +150,18 @@ export const App: React.FC = () => {
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const isSectionEnabled = (id: string) => {
+    try {
+      const cached = localStorage.getItem('60fw_section_order');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        const sec = parsed.find((s: any) => s.id === id);
+        if (sec && sec.enabled === false) return false;
+      }
+    } catch {}
+    return true;
+  };
+
   return (
     <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* 1. Sticky Premium Header/Navigation */}
@@ -165,7 +177,7 @@ export const App: React.FC = () => {
         />
 
         {/* 2.5 Latest Event Showcase */}
-        <LatestEvent content={homeContent?.latestEvent} />
+        {isSectionEnabled('latestEvent') && <LatestEvent content={homeContent?.latestEvent} />}
 
         {/* 3. About Us */}
         <About
