@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sparkles, ArrowUpRight, Volume2, VolumeX } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -24,7 +24,6 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [activeIdx, setActiveIdx] = useState(0);
   const [muted, setMuted] = useState(content?.videosMuted !== false);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   const eyebrow = (language === 'ar' ? content?.eyebrow_ar : content?.eyebrow_en) || t('latestEventEyebrow');
   const title = (language === 'ar' ? content?.title_ar : content?.title_en) || t('latestEventTitle');
@@ -34,35 +33,23 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const videos = content?.videos?.filter(Boolean) || [];
   const driveUrl = content?.driveUrl || 'https://drive.google.com';
 
-  // Sync muted state when content changes
   useEffect(() => { setMuted(content?.videosMuted !== false); }, [content?.videosMuted]);
 
-  // Auto-advance to next video when current ends
   const handleVideoEnded = () => {
     if (videos.length > 1) setActiveIdx((i) => (i + 1) % videos.length);
   };
-
-  // Reset video when switching
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.load();
-      videoRef.current.play().catch(() => {});
-    }
-  }, [activeIdx]);
 
   const showVideo = videos.length > 0;
   const currentVideo = videos[activeIdx] || '';
 
   return (
     <section id="latest-event" className="section" style={{ padding: '4.5rem 0', position: 'relative', overflow: 'hidden', backgroundColor: 'var(--color-sec-latestEvent-bg, #FFFFFF)' }}>
-      <div
-        style={{
-          position: 'absolute', top: '20%', left: '50%', transform: 'translateX(-50%)',
-          width: '600px', height: '350px',
-          background: 'radial-gradient(ellipse at center, rgba(246, 134, 33, 0.08) 0%, rgba(246, 134, 33, 0) 70%)',
-          filter: 'blur(60px)', pointerEvents: 'none', zIndex: 0,
-        }}
-      />
+      <div style={{
+        position: 'absolute', top: '20%', left: '50%', transform: 'translateX(-50%)',
+        width: '600px', height: '350px',
+        background: 'radial-gradient(ellipse at center, rgba(246, 134, 33, 0.08) 0%, rgba(246, 134, 33, 0) 70%)',
+        filter: 'blur(60px)', pointerEvents: 'none', zIndex: 0,
+      }} />
 
       <div className="container" style={{ position: 'relative', zIndex: 1 }}>
         {/* Section Header */}
@@ -99,14 +86,15 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
               boxShadow: isHovered ? '0 25px 60px -15px rgba(246, 134, 33, 0.25), 0 10px 30px rgba(0,0,0,0.15)' : '0 20px 45px -10px rgba(0,0,0,0.12)',
               transition: 'all 0.45s cubic-bezier(0.16, 1, 0.3, 1)',
               transform: isHovered ? 'translateY(-5px)' : 'translateY(0)',
-              backgroundColor: '#0A0F1D',
+              backgroundColor: 'var(--color-sec-latestEvent-card-bg, #0A0F1D)',
             }}
           >
-            <div style={{ position: 'relative', width: '100%', paddingTop: 'clamp(50%, 42vw, 56.25%)', overflow: 'hidden', backgroundColor: 'var(--color-sec-latestEvent-card-bg, #0A0F1D)' }}>
+            <div style={{ position: 'relative', width: '100%', paddingTop: 'clamp(50%, 42vw, 56.25%)', overflow: 'hidden' }}>
+
               {/* Media: video or image */}
               {showVideo ? (
                 <video
-                  ref={videoRef}
+                  key={currentVideo}
                   src={currentVideo}
                   autoPlay
                   loop={videos.length === 1}
@@ -204,23 +192,6 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
               </div>
             </div>
           </a>
-
-          {/* Video pagination dots (only when multiple videos) */}
-          {videos.length > 1 && (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', marginTop: '1.25rem' }}>
-              {videos.map((_, i) => (
-                <div
-                  key={i}
-                  style={{
-                    width: i === activeIdx ? '24px' : '8px', height: '8px',
-                    borderRadius: '9999px',
-                    backgroundColor: i === activeIdx ? 'var(--color-orange-primary, #F68621)' : 'rgba(0,0,0,0.2)',
-                    transition: 'all 0.3s ease',
-                  }}
-                />
-              ))}
-            </div>
-          )}
         </div>
       </div>
     </section>
