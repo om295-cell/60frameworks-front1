@@ -17,7 +17,17 @@ interface ServicesProps {
   onSelectService: (serviceName: string) => void;
 }
 
-export const Services: React.FC<ServicesProps> = ({ services, onSelectService }) => {
+interface ServicesHeaderProps {
+  eyebrow_en?: string; eyebrow_ar?: string;
+  heading_en?: string; heading_ar?: string;
+  subtitle_en?: string; subtitle_ar?: string;
+}
+
+interface ServicesPropsExtended extends ServicesProps {
+  content?: ServicesHeaderProps;
+}
+
+export const Services: React.FC<ServicesPropsExtended> = ({ services, onSelectService, content }) => {
   const { language, t, dir } = useLanguage();
 
   const getIcon = (iconName: string) => {
@@ -45,13 +55,13 @@ export const Services: React.FC<ServicesProps> = ({ services, onSelectService })
         {/* Section Header */}
         <div style={{ maxWidth: '720px', marginBottom: '3.5rem' }}>
           <span className="type-eyebrow" style={{ color: 'var(--color-sec-services-accent, var(--color-orange-primary))' }}>
-            {t('servicesEyebrow')}
+            {(language === 'ar' ? content?.eyebrow_ar : content?.eyebrow_en) || t('servicesEyebrow')}
           </span>
           <h2 className="type-h1" style={{ color: 'var(--color-sec-services-text, var(--color-charcoal-dark))', marginBottom: '1rem' }}>
-            {t('servicesHeading')}
+            {(language === 'ar' ? content?.heading_ar : content?.heading_en) || t('servicesHeading')}
           </h2>
           <p className="type-body-lg" style={{ color: 'var(--color-sec-services-subtitle, var(--color-body-gray))', lineHeight: 1.7 }}>
-            {t('servicesSubtitle')}
+            {(language === 'ar' ? content?.subtitle_ar : content?.subtitle_en) || t('servicesSubtitle')}
           </p>
         </div>
 

@@ -16,7 +16,12 @@ const SECTIONS: Section[] = [
   { key: 'hero', title: 'Hero Section', emoji: '🎬', permKey: 'editHero' },
   { key: 'latestEvent', title: 'Latest Event (Drive Link & Picture)', emoji: '🎯' },
   { key: 'about', title: 'About Section', emoji: '🏢', permKey: 'editAbout' },
+  { key: 'services', title: 'Services Section', emoji: '⚙️' },
+  { key: 'clients', title: 'Clients Section', emoji: '🤝' },
+  { key: 'sectors', title: 'Sectors Section', emoji: '🏭' },
+  { key: 'caseStudies', title: 'Case Studies Section', emoji: '🎯' },
   { key: 'whyUs', title: 'Why Us Section', emoji: '⭐', permKey: 'editAbout' },
+  { key: 'testimonials', title: 'Testimonials Section', emoji: '💬' },
   { key: 'finalCta', title: 'Final CTA Section', emoji: '📣', permKey: 'editFinalCTA' },
 ];
 

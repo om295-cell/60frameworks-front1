@@ -5,9 +5,10 @@ import { useLanguage } from '../context/LanguageContext';
 
 interface TestimonialsProps {
   testimonials: Testimonial[];
+  content?: { eyebrow_en?: string; eyebrow_ar?: string; heading_en?: string; heading_ar?: string; subtitle_en?: string; subtitle_ar?: string; };
 }
 
-export const Testimonials: React.FC<TestimonialsProps> = ({ testimonials }) => {
+export const Testimonials: React.FC<TestimonialsProps> = ({ testimonials, content }) => {
   const { language, t } = useLanguage();
 
   return (
@@ -16,13 +17,13 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ testimonials }) => {
         {/* Section Header */}
         <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 3.5rem auto' }}>
           <span className="type-eyebrow" style={{ color: 'var(--color-sec-testimonials-accent, var(--color-orange-primary))' }}>
-            {t('testEyebrow')}
+            {(language === 'ar' ? content?.eyebrow_ar : content?.eyebrow_en) || t('testEyebrow')}
           </span>
           <h2 className="type-h1" style={{ color: 'var(--color-sec-testimonials-text, var(--color-charcoal-dark))', marginBottom: '1rem' }}>
-            {t('testHeading')}
+            {(language === 'ar' ? content?.heading_ar : content?.heading_en) || t('testHeading')}
           </h2>
           <p className="type-body-lg" style={{ color: 'var(--color-sec-testimonials-subtitle, rgba(36,36,36,0.85))', lineHeight: 1.7 }}>
-            {t('testSubtitle')}
+            {(language === 'ar' ? content?.subtitle_ar : content?.subtitle_en) || t('testSubtitle')}
           </p>
         </div>
 

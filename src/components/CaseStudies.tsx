@@ -6,9 +6,10 @@ import { useLanguage } from '../context/LanguageContext';
 interface CaseStudiesProps {
   projects: Project[];
   onSelectProject: (project: Project) => void;
+  content?: { eyebrow_en?: string; eyebrow_ar?: string; heading_en?: string; heading_ar?: string; subtitle_en?: string; subtitle_ar?: string; };
 }
 
-export const CaseStudies: React.FC<CaseStudiesProps> = ({ projects, onSelectProject }) => {
+export const CaseStudies: React.FC<CaseStudiesProps> = ({ projects, onSelectProject, content }) => {
   const { language, t, dir } = useLanguage();
   const [selectedCategoryKey, setSelectedCategoryKey] = useState<string>('All');
 
@@ -42,13 +43,13 @@ export const CaseStudies: React.FC<CaseStudiesProps> = ({ projects, onSelectProj
         >
           <div style={{ maxWidth: '650px' }}>
             <span className="type-eyebrow" style={{ color: 'var(--color-sec-caseStudies-accent, var(--color-orange-primary))' }}>
-              {t('storiesEyebrow')}
+              {(language === 'ar' ? content?.eyebrow_ar : content?.eyebrow_en) || t('storiesEyebrow')}
             </span>
             <h2 className="type-h1" style={{ color: 'var(--color-sec-caseStudies-text, var(--color-white))', marginBottom: '0.75rem' }}>
-              {t('storiesHeading')}
+              {(language === 'ar' ? content?.heading_ar : content?.heading_en) || t('storiesHeading')}
             </h2>
             <p className="type-body-lg" style={{ color: 'var(--color-sec-caseStudies-subtitle, rgba(255,255,255,0.75))', lineHeight: 1.7 }}>
-              {t('storiesSubtitle')}
+              {(language === 'ar' ? content?.subtitle_ar : content?.subtitle_en) || t('storiesSubtitle')}
             </p>
           </div>
 

@@ -17,9 +17,10 @@ import { useLanguage } from '../context/LanguageContext';
 interface SectorsProps {
   sectors: Sector[];
   onOpenContact: (sectorName: string) => void;
+  content?: { eyebrow_en?: string; eyebrow_ar?: string; heading_en?: string; heading_ar?: string; subtitle_en?: string; subtitle_ar?: string; };
 }
 
-export const Sectors: React.FC<SectorsProps> = ({ sectors, onOpenContact }) => {
+export const Sectors: React.FC<SectorsProps> = ({ sectors, onOpenContact, content }) => {
   const { language, t, dir } = useLanguage();
   const [activeSectorIndex, setActiveSectorIndex] = useState(0);
 
@@ -60,13 +61,13 @@ export const Sectors: React.FC<SectorsProps> = ({ sectors, onOpenContact }) => {
         {/* Section Header */}
         <div style={{ maxWidth: '750px', marginBottom: '3.5rem' }}>
           <span className="type-eyebrow" style={{ color: 'var(--color-sec-sectors-accent, var(--color-orange-primary))' }}>
-            {t('sectorsEyebrow')}
+            {(language === 'ar' ? content?.eyebrow_ar : content?.eyebrow_en) || t('sectorsEyebrow')}
           </span>
           <h2 className="type-h1" style={{ color: 'var(--color-sec-sectors-text, var(--color-charcoal-dark))', marginBottom: '1rem' }}>
-            {t('sectorsHeading')}
+            {(language === 'ar' ? content?.heading_ar : content?.heading_en) || t('sectorsHeading')}
           </h2>
           <p className="type-body-lg" style={{ color: 'var(--color-sec-sectors-subtitle, var(--color-charcoal-dark))', lineHeight: 1.7 }}>
-            {t('sectorsSubtitle')}
+            {(language === 'ar' ? content?.subtitle_ar : content?.subtitle_en) || t('sectorsSubtitle')}
           </p>
         </div>
 

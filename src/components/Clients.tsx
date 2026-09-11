@@ -4,9 +4,10 @@ import { useLanguage } from '../context/LanguageContext';
 
 interface ClientsProps {
   clients: ClientItem[];
+  content?: { eyebrow_en?: string; eyebrow_ar?: string; heading_en?: string; heading_ar?: string; subtitle_en?: string; subtitle_ar?: string; };
 }
 
-export const Clients: React.FC<ClientsProps> = ({ clients }) => {
+export const Clients: React.FC<ClientsProps> = ({ clients, content }) => {
   const { language, t } = useLanguage();
 
   return (
@@ -15,13 +16,13 @@ export const Clients: React.FC<ClientsProps> = ({ clients }) => {
         {/* Section Header */}
         <div style={{ textAlign: 'center', maxWidth: '680px', margin: '0 auto 3rem auto' }}>
           <span className="type-eyebrow" style={{ color: 'var(--color-sec-clients-accent, var(--color-orange-primary))' }}>
-            {t('clientsEyebrow')}
+            {(language === 'ar' ? content?.eyebrow_ar : content?.eyebrow_en) || t('clientsEyebrow')}
           </span>
           <h2 className="type-h2" style={{ color: 'var(--color-sec-clients-text, var(--color-charcoal-dark))', marginBottom: '0.75rem' }}>
-            {t('clientsHeading')}
+            {(language === 'ar' ? content?.heading_ar : content?.heading_en) || t('clientsHeading')}
           </h2>
           <p className="type-body" style={{ color: 'var(--color-sec-clients-subtitle, var(--color-body-gray))', lineHeight: 1.7 }}>
-            {t('clientsSubtitle')}
+            {(language === 'ar' ? content?.subtitle_ar : content?.subtitle_en) || t('clientsSubtitle')}
           </p>
         </div>
 
