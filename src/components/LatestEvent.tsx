@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Sparkles, ArrowUpRight, Volume2, VolumeX } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -23,7 +23,7 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const { t, dir, language } = useLanguage();
   const [isHovered, setIsHovered] = useState(false);
   const [activeIdx, setActiveIdx] = useState(0);
-  const [muted, setMuted] = useState(content?.videosMuted !== false);
+  const [muted, setMuted] = useState(true);
 
   const eyebrow = (language === 'ar' ? content?.eyebrow_ar : content?.eyebrow_en) || t('latestEventEyebrow');
   const title = (language === 'ar' ? content?.title_ar : content?.title_en) || t('latestEventTitle');
@@ -33,7 +33,22 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const videos = content?.videos?.filter(Boolean) || [];
   const driveUrl = content?.driveUrl || 'https://drive.google.com';
 
-  useEffect(() => { setMuted(content?.videosMuted !== false); }, [content?.videosMuted]);
+  useEffect(() => {
+    setMuted(content?.videosMuted !== false);
+  }, [content?.videosMuted]);
+
+  // Callback ref: called every time the video element mounts (including on key change)
+  const videoCallbackRef = useCallback((node: HTMLVideoElement | null) => {
+    if (node) {
+      node.muted = muted;
+      node.play().catch(() => {
+        // If play fails (e.g. sound blocked), force muted and retry
+        node.muted = true;
+        setMuted(true);
+        node.play().catch(() => {});
+      });
+    }
+  }, [activeIdx]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleVideoEnded = () => {
     if (videos.length > 1) setActiveIdx((i) => (i + 1) % videos.length);
@@ -91,15 +106,14 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
           >
             <div style={{ position: 'relative', width: '100%', paddingTop: 'clamp(50%, 42vw, 56.25%)', overflow: 'hidden' }}>
 
-              {/* Media: video or image */}
               {showVideo ? (
                 <video
                   key={currentVideo}
+                  ref={videoCallbackRef}
                   src={currentVideo}
-                  autoPlay
-                  loop={videos.length === 1}
                   muted={muted}
                   playsInline
+                  loop={videos.length === 1}
                   onEnded={handleVideoEnded}
                   style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                 />
@@ -143,7 +157,7 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
                 <span>{t('latestEventCta')}</span>
               </div>
 
-              {/* Mute/Unmute button (only when video) */}
+              {/* Mute/Unmute button */}
               {showVideo && (
                 <button
                   onClick={(e) => { e.preventDefault(); e.stopPropagation(); setMuted((m) => !m); }}
