@@ -37,11 +37,7 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
     if (videoRef.current) videoRef.current.muted = muted;
   }, [muted]);
 
-  const handleMuteToggle = () => {
-    const next = !muted;
-    wantsUnmutedRef.current = !next; // true when user wants sound
-    setMuted(next);
-  };
+  const handleMuteToggle = () => setMuted((m) => !m);
 
   // Callback ref — fires on every video mount (key change forces remount)
   const videoCallbackRef = useCallback((node: HTMLVideoElement | null) => {
