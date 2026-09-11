@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Sparkles, Volume2, VolumeX } from 'lucide-react';
+import { Sparkles, ArrowUpRight, Volume2, VolumeX } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface LatestEventProps {
@@ -20,9 +20,9 @@ interface LatestEventProps {
 }
 
 export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
-  const { t, language } = useLanguage();
+  const { t, dir, language } = useLanguage();
   const [activeIdx, setActiveIdx] = useState(0);
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const eyebrow = (language === 'ar' ? content?.eyebrow_ar : content?.eyebrow_en) || t('latestEventEyebrow');
@@ -30,24 +30,33 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const subtitle = (language === 'ar' ? content?.subtitle_ar : content?.subtitle_en) || t('latestEventSubtitle');
   const imageUrl = content?.imageUrl || 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1600&auto=format&fit=crop';
   const videos = content?.videos?.filter(Boolean) || [];
+  const driveUrl = content?.driveUrl || 'https://drive.google.com';
 
-  useEffect(() => {
-    setMuted(content?.videosMuted === true);
-  }, [content?.videosMuted]);
-
-  // Sync muted state to video element whenever it changes
+  // Sync muted state to live video element
   useEffect(() => {
     if (videoRef.current) videoRef.current.muted = muted;
   }, [muted]);
 
-  // Callback ref: called every time the video element mounts (including on key change)
+  const handleMuteToggle = () => {
+    const next = !muted;
+    wantsUnmutedRef.current = !next; // true when user wants sound
+    setMuted(next);
+  };
+
+  // Callback ref — fires on every video mount (key change forces remount)
   const videoCallbackRef = useCallback((node: HTMLVideoElement | null) => {
     videoRef.current = node;
-    if (node) {
-      node.muted = muted;
-      node.play().catch(() => {
+    if (!node) return;
+    // Always start muted so browser allows autoplay
+    node.muted = true;
+    const playPromise = node.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        // Playback started — now honour the user's mute preference
+        node.muted = muted;
+      }).catch(() => {
+        // Autoplay blocked entirely — stay muted and retry
         node.muted = true;
-        setMuted(true);
         node.play().catch(() => {});
       });
     }
@@ -118,12 +127,37 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
                 />
               )}
 
-              {/* Mute/Unmute button — left side */}
+              {/* استعراض الفعالية — left side button */}
+              <a
+                href={driveUrl} target="_blank" rel="noopener noreferrer"
+                style={{
+                  position: 'absolute', top: '1.5rem',
+                  ...(dir === 'rtl' ? { right: '1.5rem' } : { left: '1.5rem' }),
+                  display: 'flex', alignItems: 'center', gap: '0.625rem',
+                  padding: '0.6rem 1.125rem', borderRadius: '100px',
+                  backgroundColor: 'rgba(11,15,25,0.82)', backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255,255,255,0.15)', color: '#FFFFFF',
+                  fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.3)', zIndex: 2,
+                }}
+              >
+                <div style={{
+                  width: '26px', height: '26px', borderRadius: '50%',
+                  backgroundColor: 'rgba(246,134,33,0.2)', display: 'flex', alignItems: 'center',
+                  justifyContent: 'center', color: 'var(--color-orange-primary, #F68621)',
+                }}>
+                  <ArrowUpRight size={14} />
+                </div>
+                <span>{t('latestEventCta')}</span>
+              </a>
+
+              {/* Mute/Unmute button — opposite side */}
               {showVideo && (
                 <button
-                  onClick={() => setMuted((m) => !m)}
+                  onClick={handleMuteToggle}
                   style={{
-                    position: 'absolute', top: '1.5rem', left: '1.5rem',
+                    position: 'absolute', top: '1.5rem',
+                    ...(dir === 'rtl' ? { left: '1.5rem' } : { right: '1.5rem' }),
                     zIndex: 3, background: 'rgba(11,15,25,0.82)', backdropFilter: 'blur(12px)',
                     border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%',
                     width: '42px', height: '42px', display: 'flex', alignItems: 'center',
