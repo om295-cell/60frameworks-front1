@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, ArrowUpRight, Volume2, VolumeX, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Sparkles, ArrowUpRight, Volume2, VolumeX } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface LatestEventProps {
@@ -208,30 +208,17 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
           {/* Video pagination dots (only when multiple videos) */}
           {videos.length > 1 && (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', marginTop: '1.25rem' }}>
-              <button
-                onClick={() => setActiveIdx((i) => (i - 1 + videos.length) % videos.length)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-orange-primary, #F68621)', padding: '0.25rem' }}
-              >
-                <ChevronLeft size={20} />
-              </button>
               {videos.map((_, i) => (
-                <button
+                <div
                   key={i}
-                  onClick={() => setActiveIdx(i)}
                   style={{
                     width: i === activeIdx ? '24px' : '8px', height: '8px',
-                    borderRadius: '9999px', border: 'none', cursor: 'pointer',
+                    borderRadius: '9999px',
                     backgroundColor: i === activeIdx ? 'var(--color-orange-primary, #F68621)' : 'rgba(0,0,0,0.2)',
-                    transition: 'all 0.3s ease', padding: 0,
+                    transition: 'all 0.3s ease',
                   }}
                 />
               ))}
-              <button
-                onClick={() => setActiveIdx((i) => (i + 1) % videos.length)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-orange-primary, #F68621)', padding: '0.25rem' }}
-              >
-                <ChevronRight size={20} />
-              </button>
             </div>
           )}
         </div>
