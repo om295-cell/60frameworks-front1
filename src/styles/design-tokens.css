@@ -92,6 +92,13 @@
   --color-sec-testimonials-card-bg: #FFFFFF;
   --color-sec-testimonials-card-text: #242424;
 
+  --color-sec-latestEvent-bg: #FFFFFF;
+  --color-sec-latestEvent-text: #0B0F19;
+  --color-sec-latestEvent-subtitle: #5A6275;
+  --color-sec-latestEvent-accent: #F68621;
+  --color-sec-latestEvent-card-bg: #0A0F1D;
+  --color-sec-latestEvent-card-text: #FFFFFF;
+
   --color-sec-finalCta-bg: #F68621;
   --color-sec-finalCta-text: #FFFFFF;
   --color-sec-finalCta-subtitle: #FFF3E0;

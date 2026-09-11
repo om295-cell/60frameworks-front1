@@ -54,7 +54,7 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const currentVideo = videos[activeIdx] || '';
 
   return (
-    <section id="latest-event" className="section" style={{ padding: '4.5rem 0', position: 'relative', overflow: 'hidden' }}>
+    <section id="latest-event" className="section" style={{ padding: '4.5rem 0', position: 'relative', overflow: 'hidden', backgroundColor: 'var(--color-sec-latestEvent-bg, #FFFFFF)' }}>
       <div
         style={{
           position: 'absolute', top: '20%', left: '50%', transform: 'translateX(-50%)',
@@ -71,16 +71,16 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
             display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
             padding: '0.4rem 1rem', borderRadius: '9999px',
             backgroundColor: 'rgba(246, 134, 33, 0.1)', border: '1px solid rgba(246, 134, 33, 0.25)',
-            color: 'var(--color-orange-primary, #F68621)', fontSize: '0.8125rem', fontWeight: 700,
+            color: 'var(--color-sec-latestEvent-accent, #F68621)', fontSize: '0.8125rem', fontWeight: 700,
             letterSpacing: '0.08em', marginBottom: '1rem',
           }}>
             <Sparkles size={15} />
             <span>{eyebrow}</span>
           </div>
-          <h2 className="type-h2" style={{ marginBottom: '0.875rem', color: 'var(--color-charcoal-dark, #0B0F19)', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
+          <h2 className="type-h2" style={{ marginBottom: '0.875rem', color: 'var(--color-sec-latestEvent-text, #0B0F19)', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
             {title}
           </h2>
-          <p className="type-body-lg" style={{ color: 'var(--color-body-gray, #5A6275)', margin: '0 auto', lineHeight: 1.7, fontSize: '1.0625rem' }}>
+          <p className="type-body-lg" style={{ color: 'var(--color-sec-latestEvent-subtitle, #5A6275)', margin: '0 auto', lineHeight: 1.7, fontSize: '1.0625rem' }}>
             {subtitle}
           </p>
         </div>
@@ -102,7 +102,7 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
               backgroundColor: '#0A0F1D',
             }}
           >
-            <div style={{ position: 'relative', width: '100%', paddingTop: 'clamp(50%, 42vw, 56.25%)', overflow: 'hidden' }}>
+            <div style={{ position: 'relative', width: '100%', paddingTop: 'clamp(50%, 42vw, 56.25%)', overflow: 'hidden', backgroundColor: 'var(--color-sec-latestEvent-card-bg, #0A0F1D)' }}>
               {/* Media: video or image */}
               {showVideo ? (
                 <video

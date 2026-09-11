@@ -195,6 +195,16 @@ export const ThemeCustomizer: React.FC = () => {
       defaultCardText: '#242424',
     },
     {
+      key: 'latestEvent',
+      label: '🎯 Latest Event (Video Showcase)',
+      defaultBg: '#FFFFFF',
+      defaultText: '#0B0F19',
+      defaultSubtitle: '#5A6275',
+      defaultAccent: '#F68621',
+      defaultCardBg: '#0A0F1D',
+      defaultCardText: '#FFFFFF',
+    },
+    {
       key: 'finalCta',
       label: '📣 Final Call-to-Action (Footer Banner)',
       defaultBg: '#F68621',

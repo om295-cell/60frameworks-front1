@@ -43,6 +43,7 @@ export interface ThemeSections {
   caseStudies: SectionTheme;
   whyUs: SectionTheme;
   testimonials: SectionTheme;
+  latestEvent: SectionTheme;
   finalCta: SectionTheme;
   [key: string]: SectionTheme;
 }
@@ -142,6 +143,14 @@ export const DEFAULT_THEME: SiteTheme = {
       cardBackgroundColor: '#FFFFFF',
       cardTextColor: '#242424',
     },
+    latestEvent: {
+      backgroundColor: '#FFFFFF',
+      textColor: '#0B0F19',
+      subtitleColor: '#5A6275',
+      accentColor: '#F68621',
+      cardBackgroundColor: '#0A0F1D',
+      cardTextColor: '#FFFFFF',
+    },
     finalCta: {
       backgroundColor: '#F68621',
       textColor: '#FFFFFF',
@@ -198,6 +207,7 @@ export function applyTheme(theme: Partial<SiteTheme> | null | undefined): void {
       caseStudies: { ...DEFAULT_THEME.sections.caseStudies, ...(theme?.sections?.caseStudies || {}) },
       whyUs: { ...DEFAULT_THEME.sections.whyUs, ...(theme?.sections?.whyUs || {}) },
       testimonials: { ...DEFAULT_THEME.sections.testimonials, ...(theme?.sections?.testimonials || {}) },
+      latestEvent: { ...DEFAULT_THEME.sections.latestEvent, ...(theme?.sections?.latestEvent || {}) },
       finalCta: { ...DEFAULT_THEME.sections.finalCta, ...(theme?.sections?.finalCta || {}) },
     },
   };
@@ -236,7 +246,7 @@ export function applyTheme(theme: Partial<SiteTheme> | null | undefined): void {
   root.style.setProperty('--color-footer-border', t.footer.borderColor || 'rgba(255, 255, 255, 0.08)');
 
   // 4. Section by Section Variables (with intelligent contrast guards)
-  const sectionKeys = ['hero', 'about', 'services', 'clients', 'sectors', 'caseStudies', 'whyUs', 'testimonials', 'finalCta'] as const;
+  const sectionKeys = ['hero', 'about', 'services', 'clients', 'sectors', 'caseStudies', 'whyUs', 'testimonials', 'latestEvent', 'finalCta'] as const;
 
   for (const secKey of sectionKeys) {
     const sec = t.sections[secKey];
