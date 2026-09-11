@@ -40,7 +40,7 @@ export const Services: React.FC<ServicesProps> = ({ services, onSelectService })
   };
 
   return (
-    <section id="services" className="section bg-gray-structure">
+    <section id="services" className="section" style={{ backgroundColor: 'var(--color-sec-services-bg, #E6E7E8)' }}>
       <div className="container">
         {/* Section Header */}
         <div style={{ maxWidth: '720px', marginBottom: '3.5rem' }}>

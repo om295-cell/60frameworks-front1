@@ -10,7 +10,7 @@ export const Clients: React.FC<ClientsProps> = ({ clients }) => {
   const { language, t } = useLanguage();
 
   return (
-    <section id="clients" className="section bg-white-space" style={{ borderBottom: '1px solid var(--color-border)' }}>
+    <section id="clients" className="section" style={{ backgroundColor: 'var(--color-sec-clients-bg, #FFFFFF)', borderBottom: '1px solid var(--color-border)' }}>
       <div className="container">
         {/* Section Header */}
         <div style={{ textAlign: 'center', maxWidth: '680px', margin: '0 auto 3rem auto' }}>

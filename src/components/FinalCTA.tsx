@@ -25,7 +25,7 @@ export const FinalCTA: React.FC<FinalCTAProps> = ({ onOpenContact, content }) =>
   const buttonText = (language === 'ar' ? content?.buttonText_ar : content?.buttonText_en) || t('finalCtaButton');
 
   return (
-    <section className="section bg-orange-brand" style={{ position: 'relative', overflow: 'hidden' }}>
+    <section className="section" style={{ position: 'relative', overflow: 'hidden', backgroundColor: 'var(--color-sec-finalCta-bg, #F68621)' }}>
       {/* Decorative Radial Lighting Overlays */}
       <div
         style={{

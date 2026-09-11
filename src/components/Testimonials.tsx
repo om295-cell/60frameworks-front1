@@ -11,7 +11,7 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ testimonials }) => {
   const { language, t } = useLanguage();
 
   return (
-    <section id="testimonials" className="section bg-blush-softness">
+    <section id="testimonials" className="section" style={{ backgroundColor: 'var(--color-sec-testimonials-bg, #F4D3C9)' }}>
       <div className="container">
         {/* Section Header */}
         <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 3.5rem auto' }}>

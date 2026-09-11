@@ -27,7 +27,7 @@ export const CaseStudies: React.FC<CaseStudiesProps> = ({ projects, onSelectProj
       : projects.filter((p) => p.category.toLowerCase().includes(selectedCategoryKey.toLowerCase()));
 
   return (
-    <section id="stories" className="section bg-charcoal-dark">
+    <section id="stories" className="section" style={{ backgroundColor: 'var(--color-sec-caseStudies-bg, #242424)' }}>
       <div className="container">
         {/* Section Header */}
         <div

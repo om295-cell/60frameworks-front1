@@ -54,7 +54,7 @@ export const WhyUs: React.FC<WhyUsProps> = ({ onOpenContact, content }) => {
   ];
 
   return (
-    <section id="why-us" className="section bg-white-space">
+    <section id="why-us" className="section" style={{ backgroundColor: 'var(--color-sec-whyUs-bg, #FFFFFF)' }}>
       <div className="container">
         {/* Split Image / Content Layout */}
         <div

@@ -68,7 +68,7 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
       ];
 
   return (
-    <section id="about" ref={sectionRef} className="section bg-white-space">
+    <section id="about" ref={sectionRef} className="section" style={{ backgroundColor: 'var(--color-sec-about-bg, #FFFFFF)' }}>
       <div className="container">
         {/* Split Editorial Layout */}
         <div

@@ -55,7 +55,7 @@ export const Sectors: React.FC<SectorsProps> = ({ sectors, onOpenContact }) => {
     : activeSector?.capabilities;
 
   return (
-    <section id="sectors" className="section bg-blush-softness">
+    <section id="sectors" className="section" style={{ backgroundColor: 'var(--color-sec-sectors-bg, #F4D3C9)' }}>
       <div className="container">
         {/* Section Header */}
         <div style={{ maxWidth: '750px', marginBottom: '3.5rem' }}>
