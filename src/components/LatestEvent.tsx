@@ -11,6 +11,7 @@ interface LatestEventProps {
     subtitle_en?: string;
     subtitle_ar?: string;
     imageUrl?: string;
+    videoUrl?: string;
     driveUrl?: string;
     tag_en?: string;
     tag_ar?: string;
@@ -29,7 +30,8 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   
   // Default high-impact event photo (cinematic luxury summit/activation)
   const imageUrl = content?.imageUrl || 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1600&auto=format&fit=crop';
-  
+  const videoUrl = content?.videoUrl || '';
+
   // Google Drive destination link
   const driveUrl = content?.driveUrl || 'https://drive.google.com';
 
@@ -135,22 +137,40 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
                 overflow: 'hidden',
               }}
             >
-              {/* Event Image */}
-              <img
-                src={imageUrl}
-                alt={title}
-                loading="lazy"
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  transform: isHovered ? 'scale(1.05)' : 'scale(1)',
-                  transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-                }}
-              />
+              {/* Event Video or Image */}
+              {videoUrl ? (
+                <video
+                  src={videoUrl}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                  }}
+                />
+              ) : (
+                <img
+                  src={imageUrl}
+                  alt={title}
+                  loading="lazy"
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+                    transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+                  }}
+                />
+              )}
 
               {/* Dynamic Gradient Overlay */}
               <div

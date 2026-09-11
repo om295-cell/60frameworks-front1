@@ -14,6 +14,11 @@ interface HeroProps {
     subtitle_ar?: string;
     backdropImage?: string;
     backdropVideo?: string;
+    impactTitle_en?: string;
+    impactTitle_ar?: string;
+    impactSubtitle_en?: string;
+    impactSubtitle_ar?: string;
+    heroStats?: { value_en?: string; value_ar?: string; label_en?: string; label_ar?: string }[];
   };
 }
 
@@ -25,6 +30,21 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
   const subtitle = (language === 'ar' ? content?.subtitle_ar : content?.subtitle_en) || t('heroSubtitle');
   const backdropImage = content?.backdropImage || 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2000&auto=format&fit=crop';
   const backdropVideo = content?.backdropVideo;
+
+  const impactTitle = (language === 'ar' ? content?.impactTitle_ar : content?.impactTitle_en) || t('impactTitle');
+  const impactSubtitle = (language === 'ar' ? content?.impactSubtitle_ar : content?.impactSubtitle_en) || t('impactSubtitle');
+
+  const defaultStats = [
+    { value: t('impactStat1Value'), label: t('impactStat1Label') },
+    { value: t('impactStat2Value'), label: t('impactStat2Label') },
+    { value: t('impactStat3Value'), label: t('impactStat3Label') },
+  ];
+  const heroStats = content?.heroStats && content.heroStats.length > 0
+    ? content.heroStats.map((s, i) => ({
+        value: (language === 'ar' ? s.value_ar : s.value_en) || defaultStats[i]?.value || '',
+        label: (language === 'ar' ? s.label_ar : s.label_en) || defaultStats[i]?.label || '',
+      }))
+    : defaultStats;
 
   return (
     <section
@@ -236,7 +256,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
                     letterSpacing: '-0.01em',
                   }}
                 >
-                  {t('impactTitle')}
+                  {impactTitle}
                 </h3>
               </div>
               <p
@@ -247,7 +267,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
                   fontWeight: 400,
                 }}
               >
-                {t('impactSubtitle')}
+                {impactSubtitle}
               </p>
             </div>
 
@@ -259,173 +279,68 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
                 gap: '1.25rem',
               }}
             >
-              {/* Stat 1 */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1rem',
-                  padding: '0.875rem 1.25rem',
-                  backgroundColor: 'rgba(255, 255, 255, 0.04)',
-                  borderRadius: '12px',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  backdropFilter: 'blur(8px)',
-                }}
-              >
-                <div
-                  style={{
-                    width: '44px',
-                    height: '44px',
-                    borderRadius: '10px',
-                    backgroundColor: 'rgba(246, 134, 33, 0.15)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'var(--color-sec-hero-accent, var(--color-orange-primary))',
-                    flexShrink: 0,
-                  }}
-                >
-                  <Briefcase size={22} />
-                </div>
-                <div>
-                  <span
+              {heroStats.map((stat, idx) => {
+                const icons = [<Briefcase size={22} />, <TrendingUp size={22} />, <Building2 size={22} />];
+                const iconBgs = ['rgba(246, 134, 33, 0.15)', 'rgba(255, 212, 0, 0.15)', 'rgba(247, 158, 125, 0.15)'];
+                const iconColors = ['var(--color-sec-hero-accent, var(--color-orange-primary))', 'var(--color-yellow-energy)', 'var(--color-peach-warmth)'];
+                return (
+                  <div
+                    key={idx}
                     style={{
-                      display: 'block',
-                      fontWeight: 800,
-                      fontSize: '1.5rem',
-                      lineHeight: 1.1,
-                      fontFamily: 'var(--font-heading)',
-                      color: 'var(--color-sec-hero-text, var(--color-white))',
-                      letterSpacing: '-0.02em',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '1rem',
+                      padding: '0.875rem 1.25rem',
+                      backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                      borderRadius: '12px',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
+                      backdropFilter: 'blur(8px)',
                     }}
                   >
-                    {t('impactStat1Value')}
-                  </span>
-                  <span
-                    style={{
-                      display: 'block',
-                      fontSize: '0.8125rem',
-                      fontWeight: 500,
-                      color: 'var(--color-sec-hero-subtitle, rgba(255, 255, 255, 0.7))',
-                      marginTop: '0.25rem',
-                    }}
-                  >
-                    {t('impactStat1Label')}
-                  </span>
-                </div>
-              </div>
-
-              {/* Stat 2 */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1rem',
-                  padding: '0.875rem 1.25rem',
-                  backgroundColor: 'rgba(255, 255, 255, 0.04)',
-                  borderRadius: '12px',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  backdropFilter: 'blur(8px)',
-                }}
-              >
-                <div
-                  style={{
-                    width: '44px',
-                    height: '44px',
-                    borderRadius: '10px',
-                    backgroundColor: 'rgba(255, 212, 0, 0.15)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'var(--color-yellow-energy)',
-                    flexShrink: 0,
-                  }}
-                >
-                  <TrendingUp size={22} />
-                </div>
-                <div>
-                  <span
-                    style={{
-                      display: 'block',
-                      fontWeight: 800,
-                      fontSize: '1.5rem',
-                      lineHeight: 1.1,
-                      fontFamily: 'var(--font-heading)',
-                      color: 'var(--color-sec-hero-text, var(--color-white))',
-                      letterSpacing: '-0.02em',
-                    }}
-                  >
-                    {t('impactStat2Value')}
-                  </span>
-                  <span
-                    style={{
-                      display: 'block',
-                      fontSize: '0.8125rem',
-                      fontWeight: 500,
-                      color: 'var(--color-sec-hero-subtitle, rgba(255, 255, 255, 0.7))',
-                      marginTop: '0.25rem',
-                    }}
-                  >
-                    {t('impactStat2Label')}
-                  </span>
-                </div>
-              </div>
-
-              {/* Stat 3 */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1rem',
-                  padding: '0.875rem 1.25rem',
-                  backgroundColor: 'rgba(255, 255, 255, 0.04)',
-                  borderRadius: '12px',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  backdropFilter: 'blur(8px)',
-                }}
-              >
-                <div
-                  style={{
-                    width: '44px',
-                    height: '44px',
-                    borderRadius: '10px',
-                    backgroundColor: 'rgba(247, 158, 125, 0.15)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'var(--color-peach-warmth)',
-                    flexShrink: 0,
-                  }}
-                >
-                  <Building2 size={22} />
-                </div>
-                <div>
-                  <span
-                    style={{
-                      display: 'block',
-                      fontWeight: 800,
-                      fontSize: '1.5rem',
-                      lineHeight: 1.1,
-                      fontFamily: 'var(--font-heading)',
-                      color: 'var(--color-sec-hero-text, var(--color-white))',
-                      letterSpacing: '-0.02em',
-                    }}
-                  >
-                    {t('impactStat3Value')}
-                  </span>
-                  <span
-                    style={{
-                      display: 'block',
-                      fontSize: '0.8125rem',
-                      fontWeight: 500,
-                      color: 'var(--color-sec-hero-subtitle, rgba(255, 255, 255, 0.7))',
-                      marginTop: '0.25rem',
-                    }}
-                  >
-                    {t('impactStat3Label')}
-                  </span>
-                </div>
-              </div>
+                    <div
+                      style={{
+                        width: '44px',
+                        height: '44px',
+                        borderRadius: '10px',
+                        backgroundColor: iconBgs[idx] || iconBgs[0],
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: iconColors[idx] || iconColors[0],
+                        flexShrink: 0,
+                      }}
+                    >
+                      {icons[idx] || icons[0]}
+                    </div>
+                    <div>
+                      <span
+                        style={{
+                          display: 'block',
+                          fontWeight: 800,
+                          fontSize: '1.5rem',
+                          lineHeight: 1.1,
+                          fontFamily: 'var(--font-heading)',
+                          color: 'var(--color-sec-hero-text, var(--color-white))',
+                          letterSpacing: '-0.02em',
+                        }}
+                      >
+                        {stat.value}
+                      </span>
+                      <span
+                        style={{
+                          display: 'block',
+                          fontSize: '0.8125rem',
+                          fontWeight: 500,
+                          color: 'var(--color-sec-hero-subtitle, rgba(255, 255, 255, 0.7))',
+                          marginTop: '0.25rem',
+                        }}
+                      >
+                        {stat.label}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

@@ -23,6 +23,9 @@ const SECTIONS: Section[] = [
 const fieldLabel = (k: string) => {
   if (k === 'driveUrl') return 'Google Drive Link / File URL';
   if (k === 'imageUrl') return 'Event Showcase Picture';
+  if (k === 'videoUrl') return 'Event Showcase Video (overrides image if set)';
+  if (k === 'backdropVideo') return 'Hero Background Video';
+  if (k === 'backdropImage') return 'Hero Background Image';
   return k.replace(/_en$/, ' (English)').replace(/_ar$/, ' (Arabic)').replace(/_/g, ' ');
 };
 
@@ -108,12 +111,13 @@ export const HomepageEditor: React.FC = () => {
 
         // Separate text fields from media fields
         const textFields = Object.entries(sectionData).filter(
-          ([k]) => !['backdropImage', 'backdropVideo', 'image', 'videoUrl', 'imageUrl', 'stats'].includes(k)
+          ([k]) => !['backdropImage', 'backdropVideo', 'image', 'videoUrl', 'imageUrl', 'stats', 'heroStats'].includes(k)
         );
         const mediaFields = Object.entries(sectionData).filter(
           ([k]) => ['backdropImage', 'backdropVideo', 'image', 'videoUrl', 'imageUrl'].includes(k)
         );
         const stats = sectionData.stats;
+        const heroStats = sec.key === 'hero' ? sectionData.heroStats : null;
 
         return (
           <div key={sec.key} style={accordionCard}>
@@ -147,7 +151,7 @@ export const HomepageEditor: React.FC = () => {
                       lineHeight: 1.5,
                     }}
                   >
-                    💡 <strong>Google Drive Integration:</strong> Paste your Google Drive shareable link in the <strong>Google Drive Link / File URL</strong> field below. Clicking the picture on the website will open this Drive link. You can also upload or replace the event image in the Media section below.
+                    💡 <strong>Google Drive Integration:</strong> Paste your Google Drive shareable link in the <strong>Google Drive Link / File URL</strong> field. Upload a <strong>video</strong> to show a video showcase, or an <strong>image</strong> as fallback. If both are set, video takes priority.
                   </div>
                 )}
                 {/* Text Fields */}
@@ -195,7 +199,40 @@ export const HomepageEditor: React.FC = () => {
                   </div>
                 )}
 
-                {/* Stats (About section) */}
+                {/* Hero Stats */}
+                {heroStats && (
+                  <div style={{ marginBottom: '1.5rem' }}>
+                    <h4 style={subHeading}>📊 Impact Stats (Hero Section)</h4>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+                      {heroStats.map((stat: any, idx: number) => (
+                        <div key={idx} style={{ background: '#F9FAFB', borderRadius: '8px', padding: '1rem', border: '1px solid #E5E7EB' }}>
+                          <p style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9CA3AF', marginBottom: '0.5rem' }}>STAT #{idx + 1}</p>
+                          {Object.entries(stat).filter(([k]) => k !== '_id').map(([k, v]) => (
+                            <div key={k} style={{ marginBottom: '0.5rem' }}>
+                              <label style={fieldLbl}>{fieldLabel(k)}</label>
+                              <input
+                                type="text"
+                                value={v as string}
+                                disabled={!canEditSec}
+                                onChange={(e) => {
+                                  const newStats = [...heroStats];
+                                  newStats[idx] = { ...newStats[idx], [k]: e.target.value };
+                                  setContent((prev: any) => ({
+                                    ...prev,
+                                    hero: { ...prev.hero, heroStats: newStats },
+                                  }));
+                                }}
+                                style={{ ...inputS, direction: k.endsWith('_ar') ? 'rtl' : 'ltr' }}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* About Stats */}
                 {stats && (
                   <div style={{ marginBottom: '1.5rem' }}>
                     <h4 style={subHeading}>📊 Statistics</h4>

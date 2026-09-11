@@ -15,6 +15,15 @@ export const FALLBACK_HOMEPAGE_CONTENT = {
     backdropImage:
       'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2000&auto=format&fit=crop',
     backdropVideo: '',
+    impactTitle_en: 'Our Impact in Numbers',
+    impactTitle_ar: 'أثرنا بالأرقام',
+    impactSubtitle_en: 'Because real impact… is measured.',
+    impactSubtitle_ar: 'لأن الأثر الحقيقي… يُقاس.',
+    heroStats: [
+      { value_en: '+XX', value_ar: '+XX', label_en: 'Projects & Campaigns', label_ar: 'مشروع وحملة' },
+      { value_en: '+XXM', value_ar: '+XXM', label_en: 'Views & Reach', label_ar: 'مشاهدة ووصول' },
+      { value_en: '+XX', value_ar: '+XX', label_en: 'Brands & Destinations Trusted Us', label_ar: 'علامة وجهة وثقت بنا' },
+    ],
   },
   about: {
     eyebrow_en: 'ABOUT OUR AGENCY',
@@ -80,6 +89,7 @@ export const FALLBACK_HOMEPAGE_CONTENT = {
       'انقر على الصورة للاطلاع على التغطية الشاملة، الصور التوثيقية، وملفات الفعالية مباشرة عبر Google Drive.',
     imageUrl:
       'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1600&auto=format&fit=crop',
+    videoUrl: '',
     driveUrl: 'https://drive.google.com',
     tag_en: 'Exclusive Event Documentation',
     tag_ar: 'ملف التوثيق والتغطية الحصرية',
