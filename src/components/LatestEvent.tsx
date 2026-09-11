@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Sparkles, ArrowUpRight, Volume2, VolumeX } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -25,51 +25,48 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const [muted, setMuted] = useState(false);
   const [btnHovered, setBtnHovered] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const mutedRef = useRef(false); // tracks muted without closure issues
 
   const eyebrow = (language === 'ar' ? content?.eyebrow_ar : content?.eyebrow_en) || t('latestEventEyebrow');
-  const title = (language === 'ar' ? content?.title_ar : content?.title_en) || t('latestEventTitle');
+  const title   = (language === 'ar' ? content?.title_ar   : content?.title_en)   || t('latestEventTitle');
   const subtitle = (language === 'ar' ? content?.subtitle_ar : content?.subtitle_en) || t('latestEventSubtitle');
   const imageUrl = content?.imageUrl || 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1600&auto=format&fit=crop';
-  const videos = content?.videos?.filter(Boolean) || [];
+  const videos   = content?.videos?.filter(Boolean) || [];
   const driveUrl = content?.driveUrl || 'https://drive.google.com';
 
+  const showVideo   = videos.length > 0;
+  const currentVideo = videos[activeIdx] || '';
+
+  // Play video whenever the src changes (activeIdx changes → key remounts → this effect fires)
+  useEffect(() => {
+    const node = videoRef.current;
+    if (!node) return;
+    node.muted = true; // must start muted for browser autoplay policy
+    node.load();
+    const playPromise = node.play();
+    if (playPromise) {
+      playPromise
+        .then(() => { node.muted = muted; }) // unmute after play starts (honours user pref)
+        .catch(() => {}); // blocked silently
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentVideo]);
+
   const handleMuteToggle = () => {
-    const next = !mutedRef.current;
-    mutedRef.current = next;
+    const next = !muted;
     setMuted(next);
     if (videoRef.current) videoRef.current.muted = next;
   };
 
-  // Callback ref — fires on every video mount (key change forces remount)
-  const videoCallbackRef = useCallback((node: HTMLVideoElement | null) => {
-    videoRef.current = node;
-    if (!node) return;
-    // Must start muted for browser autoplay policy
-    node.muted = true;
-    node.play()
-      .then(() => {
-        // Play succeeded — now apply the user's preference from the ref (not closure)
-        node.muted = mutedRef.current;
-      })
-      .catch(() => {
-        // Autoplay blocked — stay muted silently
-      });
-  }, [activeIdx]); // eslint-disable-line react-hooks/exhaustive-deps
-
   const handleVideoEnded = () => {
     if (videos.length > 1) setActiveIdx((i) => (i + 1) % videos.length);
   };
-
-  const showVideo = videos.length > 0;
-  const currentVideo = videos[activeIdx] || '';
 
   return (
     <section id="latest-event" className="section" style={{ padding: '4.5rem 0', position: 'relative', overflow: 'hidden', backgroundColor: 'var(--color-sec-latestEvent-bg, #FFFFFF)' }}>
       <div style={{
         position: 'absolute', top: '20%', left: '50%', transform: 'translateX(-50%)',
         width: '600px', height: '350px',
-        background: 'radial-gradient(ellipse at center, rgba(246, 134, 33, 0.08) 0%, rgba(246, 134, 33, 0) 70%)',
+        background: 'radial-gradient(ellipse at center, rgba(246,134,33,0.08) 0%, rgba(246,134,33,0) 70%)',
         filter: 'blur(60px)', pointerEvents: 'none', zIndex: 0,
       }} />
 
@@ -79,7 +76,7 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
             padding: '0.4rem 1rem', borderRadius: '9999px',
-            backgroundColor: 'rgba(246, 134, 33, 0.1)', border: '1px solid rgba(246, 134, 33, 0.25)',
+            backgroundColor: 'rgba(246,134,33,0.1)', border: '1px solid rgba(246,134,33,0.25)',
             color: 'var(--color-sec-latestEvent-accent, #F68621)', fontSize: '0.8125rem', fontWeight: 700,
             letterSpacing: '0.08em', marginBottom: '1rem',
           }}>
@@ -98,16 +95,16 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
         <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
           <div style={{
             position: 'relative', borderRadius: '24px', overflow: 'hidden',
-            border: '1.5px solid rgba(246, 134, 33, 0.2)',
+            border: '1.5px solid rgba(246,134,33,0.2)',
             boxShadow: '0 20px 45px -10px rgba(0,0,0,0.12)',
             backgroundColor: 'var(--color-sec-latestEvent-card-bg, #0A0F1D)',
           }}>
-            <div style={{ position: 'relative', width: '100%', paddingTop: 'clamp(50%, 42vw, 56.25%)', overflow: 'hidden' }}>
+            <div style={{ position: 'relative', width: '100%', paddingTop: 'clamp(50%, 42vw, 56.25%)' }}>
 
               {showVideo ? (
                 <video
                   key={currentVideo}
-                  ref={videoCallbackRef}
+                  ref={videoRef}
                   src={currentVideo}
                   playsInline
                   loop={videos.length === 1}
@@ -127,7 +124,7 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
                   onClick={handleMuteToggle}
                   style={{
                     position: 'absolute', top: '1.5rem', right: '1.5rem', zIndex: 3,
-                    background: 'rgba(11,15,25,0.82)', backdropFilter: 'blur(12px)',
+                    background: 'rgba(11,15,25,0.5)', backdropFilter: 'blur(12px)',
                     border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%',
                     width: '42px', height: '42px', display: 'flex', alignItems: 'center',
                     justifyContent: 'center', color: '#FFFFFF', cursor: 'pointer',
@@ -148,13 +145,13 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
                   position: 'absolute', bottom: '1.5rem', left: '1.5rem', zIndex: 2,
                   display: 'inline-flex', alignItems: 'center', gap: '0.625rem',
                   padding: '0.75rem 1.4rem', borderRadius: '100px',
-                  backgroundColor: btnHovered ? 'var(--color-orange-primary, #F68621)' : 'rgba(11,15,25,0.82)',
-                  backdropFilter: 'blur(12px)',
+                  backgroundColor: btnHovered ? 'var(--color-orange-primary, #F68621)' : 'rgba(11,15,25,0.45)',
+                  backdropFilter: 'blur(14px)',
                   border: '1px solid rgba(255,255,255,0.2)',
                   color: '#FFFFFF', fontSize: '0.9375rem', fontWeight: 700,
                   textDecoration: 'none',
-                  boxShadow: btnHovered ? '0 10px 25px rgba(246,134,33,0.4)' : '0 8px 24px rgba(0,0,0,0.3)',
-                  transition: 'all 0.3s ease',
+                  boxShadow: btnHovered ? '0 10px 25px rgba(246,134,33,0.4)' : '0 4px 16px rgba(0,0,0,0.25)',
+                  transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
                 }}
               >
                 <span>{t('latestEventCta')}</span>
