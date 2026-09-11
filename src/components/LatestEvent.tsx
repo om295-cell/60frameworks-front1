@@ -66,15 +66,15 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
             padding: '0.4rem 1rem', borderRadius: '9999px',
             backgroundColor: 'rgba(246,134,33,0.1)', border: '1px solid rgba(246,134,33,0.25)',
             color: 'var(--color-sec-latestEvent-accent, #F68621)', fontSize: '0.8125rem', fontWeight: 700,
-            letterSpacing: '0.08em', marginBottom: '1rem',
+            letterSpacing: '0.08em', marginBottom: '1rem', transition: 'color 0.3s',
           }}>
             <Sparkles size={15} />
             <span>{eyebrow}</span>
           </div>
-          <h2 className="type-h2" style={{ marginBottom: '0.875rem', color: 'var(--color-sec-latestEvent-text, #0B0F19)', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em' }}>
+          <h2 className="type-h2" style={{ marginBottom: '0.875rem', color: 'var(--color-sec-latestEvent-text, #0B0F19)', fontFamily: 'var(--font-heading)', letterSpacing: '-0.02em', transition: 'color 0.3s' }}>
             {title}
           </h2>
-          <p className="type-body-lg" style={{ color: 'var(--color-sec-latestEvent-subtitle, #5A6275)', margin: '0 auto', lineHeight: 1.7, fontSize: '1.0625rem' }}>
+          <p className="type-body-lg" style={{ color: 'var(--color-sec-latestEvent-subtitle, #5A6275)', margin: '0 auto', lineHeight: 1.7, fontSize: '1.0625rem', transition: 'color 0.3s' }}>
             {subtitle}
           </p>
         </div>
