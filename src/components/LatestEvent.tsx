@@ -20,9 +20,9 @@ interface LatestEventProps {
 }
 
 export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
-  const { t, dir, language } = useLanguage();
+  const { t, language } = useLanguage();
   const [activeIdx, setActiveIdx] = useState(0);
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const eyebrow = (language === 'ar' ? content?.eyebrow_ar : content?.eyebrow_en) || t('latestEventEyebrow');
@@ -40,18 +40,16 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const handleMuteToggle = () => setMuted((m) => !m);
 
   // Callback ref — fires on every video mount (key change forces remount)
+  // Always start muted so browser allows autoplay, then unmute immediately after play starts
   const videoCallbackRef = useCallback((node: HTMLVideoElement | null) => {
     videoRef.current = node;
     if (!node) return;
-    // Always start muted so browser allows autoplay
     node.muted = true;
     const playPromise = node.play();
     if (playPromise !== undefined) {
       playPromise.then(() => {
-        // Playback started — now honour the user's mute preference
-        node.muted = muted;
+        node.muted = muted; // honour user preference (default: false = sound on)
       }).catch(() => {
-        // Autoplay blocked entirely — stay muted and retry
         node.muted = true;
         node.play().catch(() => {});
       });
@@ -123,12 +121,29 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
                 />
               )}
 
-              {/* استعراض الفعالية — left side button */}
+              {/* Mute/Unmute button — top right */}
+              {showVideo && (
+                <button
+                  onClick={handleMuteToggle}
+                  style={{
+                    position: 'absolute', top: '1.5rem', right: '1.5rem',
+                    zIndex: 3, background: 'rgba(11,15,25,0.82)', backdropFilter: 'blur(12px)',
+                    border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%',
+                    width: '42px', height: '42px', display: 'flex', alignItems: 'center',
+                    justifyContent: 'center', color: '#FFFFFF', cursor: 'pointer',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                  }}
+                  aria-label={muted ? 'Unmute video' : 'Mute video'}
+                >
+                  {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+                </button>
+              )}
+
+              {/* استعراض الفعالية — bottom left */}
               <a
                 href={driveUrl} target="_blank" rel="noopener noreferrer"
                 style={{
-                  position: 'absolute', top: '1.5rem',
-                  ...(dir === 'rtl' ? { right: '1.5rem' } : { left: '1.5rem' }),
+                  position: 'absolute', bottom: '1.5rem', left: '1.5rem',
                   display: 'flex', alignItems: 'center', gap: '0.625rem',
                   padding: '0.6rem 1.125rem', borderRadius: '100px',
                   backgroundColor: 'rgba(11,15,25,0.82)', backdropFilter: 'blur(12px)',
@@ -147,24 +162,6 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
                 <span>{t('latestEventCta')}</span>
               </a>
 
-              {/* Mute/Unmute button — opposite side */}
-              {showVideo && (
-                <button
-                  onClick={handleMuteToggle}
-                  style={{
-                    position: 'absolute', top: '1.5rem',
-                    ...(dir === 'rtl' ? { left: '1.5rem' } : { right: '1.5rem' }),
-                    zIndex: 3, background: 'rgba(11,15,25,0.82)', backdropFilter: 'blur(12px)',
-                    border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%',
-                    width: '42px', height: '42px', display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', color: '#FFFFFF', cursor: 'pointer',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-                  }}
-                  aria-label={muted ? 'Unmute video' : 'Mute video'}
-                >
-                  {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-                </button>
-              )}
             </div>
           </div>
         </div>
