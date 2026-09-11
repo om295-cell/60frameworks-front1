@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Sparkles, ArrowUpRight, Volume2, VolumeX } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -26,31 +26,33 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const [btnHovered, setBtnHovered] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  const eyebrow = (language === 'ar' ? content?.eyebrow_ar : content?.eyebrow_en) || t('latestEventEyebrow');
-  const title   = (language === 'ar' ? content?.title_ar   : content?.title_en)   || t('latestEventTitle');
+  const eyebrow  = (language === 'ar' ? content?.eyebrow_ar  : content?.eyebrow_en)  || t('latestEventEyebrow');
+  const title    = (language === 'ar' ? content?.title_ar    : content?.title_en)    || t('latestEventTitle');
   const subtitle = (language === 'ar' ? content?.subtitle_ar : content?.subtitle_en) || t('latestEventSubtitle');
   const imageUrl = content?.imageUrl || 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1600&auto=format&fit=crop';
   const videos   = content?.videos?.filter(Boolean) || [];
   const driveUrl = content?.driveUrl || 'https://drive.google.com';
-
-  const showVideo   = videos.length > 0;
+  const showVideo    = videos.length > 0;
   const currentVideo = videos[activeIdx] || '';
 
-  // Play video whenever the src changes (activeIdx changes → key remounts → this effect fires)
+  // Capture the video node the moment it mounts/remounts
+  const setVideoRef = useCallback((node: HTMLVideoElement | null) => {
+    videoRef.current = node;
+  }, []);
+
+  // Trigger play whenever the video src changes (covers initial load + index change)
   useEffect(() => {
     const node = videoRef.current;
-    if (!node) return;
-    node.muted = true; // must start muted for browser autoplay policy
+    if (!node || !currentVideo) return;
+    node.muted = true; // required by browser autoplay policy
     node.load();
-    const playPromise = node.play();
-    if (playPromise) {
-      playPromise
-        .then(() => { node.muted = muted; }) // unmute after play starts (honours user pref)
-        .catch(() => {}); // blocked silently
-    }
+    node.play()
+      .then(() => { node.muted = muted; })
+      .catch(() => { /* blocked silently */ });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentVideo]);
 
+  // Sync muted toggle to live element
   const handleMuteToggle = () => {
     const next = !muted;
     setMuted(next);
@@ -104,7 +106,7 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
               {showVideo ? (
                 <video
                   key={currentVideo}
-                  ref={videoRef}
+                  ref={setVideoRef}
                   src={currentVideo}
                   playsInline
                   loop={videos.length === 1}
@@ -124,11 +126,11 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
                   onClick={handleMuteToggle}
                   style={{
                     position: 'absolute', top: '1.5rem', right: '1.5rem', zIndex: 3,
-                    background: 'rgba(11,15,25,0.5)', backdropFilter: 'blur(12px)',
-                    border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%',
+                    background: 'rgba(0,0,0,0.25)', backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.2)', borderRadius: '50%',
                     width: '42px', height: '42px', display: 'flex', alignItems: 'center',
                     justifyContent: 'center', color: '#FFFFFF', cursor: 'pointer',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
                   }}
                   aria-label={muted ? 'Unmute video' : 'Mute video'}
                 >
@@ -145,12 +147,12 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
                   position: 'absolute', bottom: '1.5rem', left: '1.5rem', zIndex: 2,
                   display: 'inline-flex', alignItems: 'center', gap: '0.625rem',
                   padding: '0.75rem 1.4rem', borderRadius: '100px',
-                  backgroundColor: btnHovered ? 'var(--color-orange-primary, #F68621)' : 'rgba(11,15,25,0.45)',
+                  backgroundColor: btnHovered ? 'var(--color-orange-primary, #F68621)' : 'rgba(0,0,0,0.25)',
                   backdropFilter: 'blur(14px)',
-                  border: '1px solid rgba(255,255,255,0.2)',
+                  border: '1px solid rgba(255,255,255,0.25)',
                   color: '#FFFFFF', fontSize: '0.9375rem', fontWeight: 700,
                   textDecoration: 'none',
-                  boxShadow: btnHovered ? '0 10px 25px rgba(246,134,33,0.4)' : '0 4px 16px rgba(0,0,0,0.25)',
+                  boxShadow: btnHovered ? '0 10px 25px rgba(246,134,33,0.4)' : '0 2px 8px rgba(0,0,0,0.2)',
                   transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
                 }}
               >
