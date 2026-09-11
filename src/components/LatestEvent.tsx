@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { Sparkles, ArrowUpRight, Volume2, VolumeX } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -23,7 +23,9 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const { t, language } = useLanguage();
   const [activeIdx, setActiveIdx] = useState(0);
   const [muted, setMuted] = useState(false);
+  const [btnHovered, setBtnHovered] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const mutedRef = useRef(false); // tracks muted without closure issues
 
   const eyebrow = (language === 'ar' ? content?.eyebrow_ar : content?.eyebrow_en) || t('latestEventEyebrow');
   const title = (language === 'ar' ? content?.title_ar : content?.title_en) || t('latestEventTitle');
@@ -32,28 +34,27 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const videos = content?.videos?.filter(Boolean) || [];
   const driveUrl = content?.driveUrl || 'https://drive.google.com';
 
-  // Sync muted state to live video element
-  useEffect(() => {
-    if (videoRef.current) videoRef.current.muted = muted;
-  }, [muted]);
-
-  const handleMuteToggle = () => setMuted((m) => !m);
+  const handleMuteToggle = () => {
+    const next = !mutedRef.current;
+    mutedRef.current = next;
+    setMuted(next);
+    if (videoRef.current) videoRef.current.muted = next;
+  };
 
   // Callback ref — fires on every video mount (key change forces remount)
-  // Always start muted so browser allows autoplay, then unmute immediately after play starts
   const videoCallbackRef = useCallback((node: HTMLVideoElement | null) => {
     videoRef.current = node;
     if (!node) return;
+    // Must start muted for browser autoplay policy
     node.muted = true;
-    const playPromise = node.play();
-    if (playPromise !== undefined) {
-      playPromise.then(() => {
-        node.muted = muted; // honour user preference (default: false = sound on)
-      }).catch(() => {
-        node.muted = true;
-        node.play().catch(() => {});
+    node.play()
+      .then(() => {
+        // Play succeeded — now apply the user's preference from the ref (not closure)
+        node.muted = mutedRef.current;
+      })
+      .catch(() => {
+        // Autoplay blocked — stay muted silently
       });
-    }
   }, [activeIdx]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleVideoEnded = () => {
@@ -94,7 +95,7 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
         </div>
 
         {/* Showcase Card */}
-        <div style={{ maxWidth: '1080px', margin: '0 auto', position: 'relative' }}>
+        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
           <div style={{
             position: 'relative', borderRadius: '24px', overflow: 'hidden',
             border: '1.5px solid rgba(246, 134, 33, 0.2)',
@@ -108,7 +109,6 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
                   key={currentVideo}
                   ref={videoCallbackRef}
                   src={currentVideo}
-                  muted={muted}
                   playsInline
                   loop={videos.length === 1}
                   onEnded={handleVideoEnded}
@@ -121,13 +121,13 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
                 />
               )}
 
-              {/* Mute/Unmute button — top right */}
+              {/* Mute/Unmute — top right */}
               {showVideo && (
                 <button
                   onClick={handleMuteToggle}
                   style={{
-                    position: 'absolute', top: '1.5rem', right: '1.5rem',
-                    zIndex: 3, background: 'rgba(11,15,25,0.82)', backdropFilter: 'blur(12px)',
+                    position: 'absolute', top: '1.5rem', right: '1.5rem', zIndex: 3,
+                    background: 'rgba(11,15,25,0.82)', backdropFilter: 'blur(12px)',
                     border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%',
                     width: '42px', height: '42px', display: 'flex', alignItems: 'center',
                     justifyContent: 'center', color: '#FFFFFF', cursor: 'pointer',
@@ -142,24 +142,23 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
               {/* استعراض الفعالية — bottom left */}
               <a
                 href={driveUrl} target="_blank" rel="noopener noreferrer"
+                onMouseEnter={() => setBtnHovered(true)}
+                onMouseLeave={() => setBtnHovered(false)}
                 style={{
-                  position: 'absolute', bottom: '1.5rem', left: '1.5rem',
-                  display: 'flex', alignItems: 'center', gap: '0.625rem',
-                  padding: '0.6rem 1.125rem', borderRadius: '100px',
-                  backgroundColor: 'rgba(11,15,25,0.82)', backdropFilter: 'blur(12px)',
-                  border: '1px solid rgba(255,255,255,0.15)', color: '#FFFFFF',
-                  fontSize: '0.875rem', fontWeight: 600, textDecoration: 'none',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.3)', zIndex: 2,
+                  position: 'absolute', bottom: '1.5rem', left: '1.5rem', zIndex: 2,
+                  display: 'inline-flex', alignItems: 'center', gap: '0.625rem',
+                  padding: '0.75rem 1.4rem', borderRadius: '100px',
+                  backgroundColor: btnHovered ? 'var(--color-orange-primary, #F68621)' : 'rgba(11,15,25,0.82)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                  color: '#FFFFFF', fontSize: '0.9375rem', fontWeight: 700,
+                  textDecoration: 'none',
+                  boxShadow: btnHovered ? '0 10px 25px rgba(246,134,33,0.4)' : '0 8px 24px rgba(0,0,0,0.3)',
+                  transition: 'all 0.3s ease',
                 }}
               >
-                <div style={{
-                  width: '26px', height: '26px', borderRadius: '50%',
-                  backgroundColor: 'rgba(246,134,33,0.2)', display: 'flex', alignItems: 'center',
-                  justifyContent: 'center', color: 'var(--color-orange-primary, #F68621)',
-                }}>
-                  <ArrowUpRight size={14} />
-                </div>
                 <span>{t('latestEventCta')}</span>
+                <ArrowUpRight size={18} style={{ transition: 'transform 0.3s ease', transform: btnHovered ? 'translate(3px,-3px)' : 'none' }} />
               </a>
 
             </div>
