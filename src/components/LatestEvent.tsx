@@ -22,11 +22,9 @@ interface LatestEventProps {
 export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const { t, language } = useLanguage();
   const [activeIdx, setActiveIdx] = useState(0);
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(true);
   const [btnHovered, setBtnHovered] = useState(false);
   const videoElRef = useRef<HTMLVideoElement | null>(null);
-  // Keep muted in a ref so the callback ref always reads the latest value
-  const mutedRef = useRef(false);
 
   const eyebrow  = (language === 'ar' ? content?.eyebrow_ar  : content?.eyebrow_en)  || t('latestEventEyebrow');
   const title    = (language === 'ar' ? content?.title_ar    : content?.title_en)    || t('latestEventTitle');
@@ -37,24 +35,12 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const showVideo    = videos.length > 0;
   const currentVideo = videos[activeIdx] || '';
 
-  // Called by React every time the <video> mounts (key change forces full remount)
-  const videoCallbackRef = useCallback((node: HTMLVideoElement | null) => {
+  const videoRef = useCallback((node: HTMLVideoElement | null) => {
     videoElRef.current = node;
-    if (!node) return;
-    node.muted = true; // start muted — required for autoplay
-    node.load();
-    node.play()
-      .then(() => {
-        node.muted = mutedRef.current; // unmute after play starts (default false = sound on)
-      })
-      .catch(() => {
-        // autoplay blocked by browser — stay muted silently
-      });
-  }, []); // stable — key prop handles remount per video
+  }, []);
 
   const handleMuteToggle = () => {
-    const next = !mutedRef.current;
-    mutedRef.current = next;
+    const next = !muted;
     setMuted(next);
     if (videoElRef.current) videoElRef.current.muted = next;
   };
@@ -106,11 +92,17 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
               {showVideo ? (
                 <video
                   key={currentVideo}
-                  ref={videoCallbackRef}
+                  ref={videoRef}
                   src={currentVideo}
+                  autoPlay
+                  muted
                   playsInline
                   loop={videos.length === 1}
                   onEnded={handleVideoEnded}
+                  onPlay={() => {
+                    // Once playing, apply the actual muted state
+                    if (videoElRef.current) videoElRef.current.muted = muted;
+                  }}
                   style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               ) : (
