@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, ChevronDown, ChevronUp, Lock } from 'lucide-react';
+import { Save, ChevronDown, ChevronUp, Lock, Plus, Trash2, Volume2, VolumeX } from 'lucide-react';
 import { adminApi } from '../adminApi';
 import { MediaUploader } from './MediaUploader';
 import { FALLBACK_HOMEPAGE_CONTENT } from '../../services/api';
@@ -111,13 +111,14 @@ export const HomepageEditor: React.FC = () => {
 
         // Separate text fields from media fields
         const textFields = Object.entries(sectionData).filter(
-          ([k]) => !['backdropImage', 'backdropVideo', 'image', 'videoUrl', 'imageUrl', 'stats', 'heroStats'].includes(k)
+          ([k]) => !['backdropImage', 'backdropVideo', 'image', 'videoUrl', 'videos', 'videosMuted', 'imageUrl', 'stats', 'heroStats'].includes(k)
         );
         const mediaFields = Object.entries(sectionData).filter(
-          ([k]) => ['backdropImage', 'backdropVideo', 'image', 'videoUrl', 'imageUrl'].includes(k)
+          ([k]) => ['backdropImage', 'backdropVideo', 'image', 'imageUrl'].includes(k)
         );
         const stats = sectionData.stats;
         const heroStats = sec.key === 'hero' ? sectionData.heroStats : null;
+        const isLatestEvent = sec.key === 'latestEvent';
 
         return (
           <div key={sec.key} style={accordionCard}>
@@ -196,6 +197,74 @@ export const HomepageEditor: React.FC = () => {
                         );
                       })}
                     </div>
+                  </div>
+                )}
+
+                {/* Latest Event: multi-video manager + mute toggle */}
+                {isLatestEvent && (
+                  <div style={{ marginBottom: '1.5rem' }}>
+                    <h4 style={subHeading}>🎬 Event Videos</h4>
+
+                    {/* Mute toggle */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem', padding: '0.75rem 1rem', background: '#F9FAFB', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
+                      <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#374151', flex: 1 }}>Video Sound on Website</span>
+                      <button
+                        onClick={() => setContent((prev: any) => ({ ...prev, latestEvent: { ...prev.latestEvent, videosMuted: !sectionData.videosMuted } }))}
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: '0.5rem',
+                          padding: '0.5rem 1rem', borderRadius: '8px', border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: '0.8125rem',
+                          background: sectionData.videosMuted ? '#F3F4F6' : '#F68621',
+                          color: sectionData.videosMuted ? '#6B7280' : '#fff',
+                          transition: 'all 0.2s',
+                        }}
+                      >
+                        {sectionData.videosMuted ? <><VolumeX size={15} /> Muted (click to enable)</> : <><Volume2 size={15} /> Sound ON (click to mute)</>}
+                      </button>
+                    </div>
+
+                    {/* Video list */}
+                    {canUploadMedia ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {(sectionData.videos || []).map((url: string, idx: number) => (
+                          <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: '#F9FAFB', borderRadius: '8px', padding: '0.75rem', border: '1px solid #E5E7EB' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9CA3AF', minWidth: '24px' }}>#{idx + 1}</span>
+                            <MediaUploader
+                              label={`Video ${idx + 1}`}
+                              currentUrl={url}
+                              accept="video"
+                              onUploaded={(newUrl) => {
+                                const newVideos = [...(sectionData.videos || [])];
+                                newVideos[idx] = newUrl;
+                                setContent((prev: any) => ({ ...prev, latestEvent: { ...prev.latestEvent, videos: newVideos } }));
+                              }}
+                            />
+                            <button
+                              onClick={() => {
+                                const newVideos = (sectionData.videos || []).filter((_: string, i: number) => i !== idx);
+                                setContent((prev: any) => ({ ...prev, latestEvent: { ...prev.latestEvent, videos: newVideos } }));
+                              }}
+                              style={{ background: '#FEE2E2', border: 'none', borderRadius: '8px', padding: '0.5rem', cursor: 'pointer', color: '#B91C1C', flexShrink: 0 }}
+                              title="Remove video"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        ))}
+                        <button
+                          onClick={() => {
+                            const newVideos = [...(sectionData.videos || []), ''];
+                            setContent((prev: any) => ({ ...prev, latestEvent: { ...prev.latestEvent, videos: newVideos } }));
+                          }}
+                          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1rem', background: '#F0FDF4', border: '1.5px dashed #86EFAC', borderRadius: '8px', color: '#16A34A', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer' }}
+                        >
+                          <Plus size={16} /> Add Video
+                        </button>
+                      </div>
+                    ) : (
+                      <div style={{ padding: '0.85rem', background: '#F9FAFB', borderRadius: '8px', border: '1px solid #E5E7EB', color: '#6B7280', fontSize: '0.8125rem' }}>
+                        <Lock size={12} style={{ display: 'inline', marginRight: '4px' }} /> Media upload restricted for your role.
+                      </div>
+                    )}
                   </div>
                 )}
 
