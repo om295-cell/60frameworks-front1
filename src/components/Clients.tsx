@@ -117,9 +117,31 @@ export const Clients: React.FC<ClientsProps> = ({ clients, content }) => {
     });
   }, [categorizedClients, selectedFilter, searchQuery]);
 
-  // Marquee split rows
-  const marqueeRow1 = useMemo(() => effectiveClients.slice(0, Math.ceil(effectiveClients.length / 2)), [effectiveClients]);
-  const marqueeRow2 = useMemo(() => effectiveClients.slice(Math.ceil(effectiveClients.length / 2)), [effectiveClients]);
+  // Curated Main Brands for the moving bar
+  const marqueeRow1 = useMemo(() => {
+    // Row 1: Sovereign Authorities, Ministries & National Mega-Events
+    const keys = [
+      'saudi-electricity', 'ministry-transport', 'ministry-industry', 'ministry-sport',
+      'hrsd-ministry', 'king-faisal-hospital', 'diriyah-season', 'umm-al-qura',
+      'translation-forum', 'film-criticism', 'mrsool-park'
+    ];
+    const matches = effectiveClients.filter(c => 
+      keys.some(k => (c.logoUrl || '').includes(k) || (c.name || '').toLowerCase().includes(k))
+    );
+    return matches.length >= 6 ? matches : effectiveClients.slice(0, Math.ceil(effectiveClients.length / 2));
+  }, [effectiveClients]);
+
+  const marqueeRow2 = useMemo(() => {
+    // Row 2: Global Mobility, Tech, Enterprise & Investment Titans
+    const keys = [
+      'toyota', 'lexus', 'mg-cars', 'huawei', 'bing', 'vox-cinemas',
+      'abyan-capital', 'hexagon', 'logiscool', 'saed', 'almajlis-alkhaleeji'
+    ];
+    const matches = effectiveClients.filter(c => 
+      keys.some(k => (c.logoUrl || '').includes(k) || (c.name || '').toLowerCase().includes(k))
+    );
+    return matches.length >= 6 ? matches : effectiveClients.slice(Math.ceil(effectiveClients.length / 2));
+  }, [effectiveClients]);
 
   const eyebrowText = (language === 'ar' 
     ? (content?.eyebrow_ar && content.eyebrow_ar !== 'ثقة كبرى الكيانات والرواد' ? content.eyebrow_ar : 'شركاؤنا') 
@@ -252,44 +274,36 @@ export const Clients: React.FC<ClientsProps> = ({ clients, content }) => {
           </p>
         </div>
 
-        {/* Dynamic Continuous Marquee Ticker */}
-        <div style={{ marginBottom: '3.5rem' }}>
+        {/* Dynamic Continuous Marquee Ticker - Premium Brand Ribbon */}
+        <div className="brand-ribbon-wrapper">
+          <div className="brand-ribbon-header">
+            <span className="brand-ribbon-line" />
+            <span className="brand-ribbon-badge">
+              <Sparkles size={13} color="var(--color-sec-clients-accent, #F68621)" />
+              {language === 'ar' ? 'شراكات استراتيجية وعلامات عالمية رائدة' : 'STRATEGIC ALLIANCES & GLOBAL BRANDS'}
+            </span>
+            <span className="brand-ribbon-line" />
+          </div>
+
           {/* Row 1 - Left */}
           <div className="marquee-container" style={{ marginBottom: '1.25rem' }}>
             <div className="marquee-track-left">
               {[...marqueeRow1, ...marqueeRow1].map((client, idx) => (
                 <div
                   key={`m1-${client.name}-${idx}`}
-                  style={{
-                    backgroundColor: 'var(--color-sec-clients-card-bg, #F8FAFC)',
-                    border: '1px solid rgba(0, 0, 0, 0.06)',
-                    borderRadius: '16px',
-                    padding: '1rem 1.75rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    minWidth: '220px',
-                    height: '90px',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
-                    transition: 'all 0.3s ease',
-                  }}
+                  className="marquee-brand-item"
+                  title={language === 'ar' && client.name_ar ? client.name_ar : client.name}
                 >
                   {client.logoUrl ? (
                     <img
                       src={client.logoUrl}
                       alt={language === 'ar' && client.name_ar ? client.name_ar : client.name}
-                      style={{
-                        maxHeight: '48px',
-                        maxWidth: '160px',
-                        width: 'auto',
-                        height: 'auto',
-                        objectFit: 'contain',
-                        filter: 'grayscale(10%) contrast(105%)',
-                      }}
-                      loading="lazy"
+                      className="marquee-brand-logo"
+                      loading="eager"
+                      draggable={false}
                     />
                   ) : (
-                    <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>
+                    <span className="marquee-brand-text">
                       {language === 'ar' && client.name_ar ? client.name_ar : client.name}
                     </span>
                   )}
@@ -304,36 +318,19 @@ export const Clients: React.FC<ClientsProps> = ({ clients, content }) => {
               {[...marqueeRow2, ...marqueeRow2].map((client, idx) => (
                 <div
                   key={`m2-${client.name}-${idx}`}
-                  style={{
-                    backgroundColor: 'var(--color-sec-clients-card-bg, #F8FAFC)',
-                    border: '1px solid rgba(0, 0, 0, 0.06)',
-                    borderRadius: '16px',
-                    padding: '1rem 1.75rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    minWidth: '220px',
-                    height: '90px',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
-                    transition: 'all 0.3s ease',
-                  }}
+                  className="marquee-brand-item"
+                  title={language === 'ar' && client.name_ar ? client.name_ar : client.name}
                 >
                   {client.logoUrl ? (
                     <img
                       src={client.logoUrl}
                       alt={language === 'ar' && client.name_ar ? client.name_ar : client.name}
-                      style={{
-                        maxHeight: '48px',
-                        maxWidth: '160px',
-                        width: 'auto',
-                        height: 'auto',
-                        objectFit: 'contain',
-                        filter: 'grayscale(10%) contrast(105%)',
-                      }}
-                      loading="lazy"
+                      className="marquee-brand-logo"
+                      loading="eager"
+                      draggable={false}
                     />
                   ) : (
-                    <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>
+                    <span className="marquee-brand-text">
                       {language === 'ar' && client.name_ar ? client.name_ar : client.name}
                     </span>
                   )}
