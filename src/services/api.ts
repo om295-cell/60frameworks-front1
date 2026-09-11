@@ -90,7 +90,7 @@ export const FALLBACK_HOMEPAGE_CONTENT = {
     imageUrl:
       'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1600&auto=format&fit=crop',
     videos: [],
-    videosMuted: true,
+    videosMuted: false,
     driveUrl: 'https://drive.google.com',
     tag_en: 'Exclusive Event Documentation',
     tag_ar: 'ملف التوثيق والتغطية الحصرية',

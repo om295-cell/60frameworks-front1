@@ -23,7 +23,7 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const { t, dir, language } = useLanguage();
   const [isHovered, setIsHovered] = useState(false);
   const [activeIdx, setActiveIdx] = useState(0);
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(false);
 
   const eyebrow = (language === 'ar' ? content?.eyebrow_ar : content?.eyebrow_en) || t('latestEventEyebrow');
   const title = (language === 'ar' ? content?.title_ar : content?.title_en) || t('latestEventTitle');
@@ -34,7 +34,7 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const driveUrl = content?.driveUrl || 'https://drive.google.com';
 
   useEffect(() => {
-    setMuted(content?.videosMuted !== false);
+    setMuted(content?.videosMuted === true);
   }, [content?.videosMuted]);
 
   // Callback ref: called every time the video element mounts (including on key change)
