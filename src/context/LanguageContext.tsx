@@ -88,12 +88,20 @@ export const translations: Translations = {
   serviceCta: { en: 'Request Service Brief', ar: 'طلب ملف الخدمة والقدرات' },
 
   // Clients
-  clientsEyebrow: { en: 'TRUSTED BY INDUSTRY TITANS', ar: 'ثقة كبرى الكيانات والرواد' },
-  clientsHeading: { en: 'Trusted by Sovereign Entities & Global Enterprises.', ar: 'شركاء النجاح للهيئات السيادية والمؤسسات العالمية.' },
+  clientsEyebrow: { en: 'OUR PARTNERS', ar: 'شركاؤنا' },
+  clientsHeading: { en: 'Partners in Success', ar: 'شركاء النجاح' },
   clientsSubtitle: {
-    en: 'We architect experiences for organizations where precision, security, and world-class prestige are non-negotiable.',
-    ar: 'نصنع الفعاليات للجهات التي تضع الدقة الفائقة والأمان المطلق والهيبة العالمية في صدارة أولوياتها.',
+    en: 'Trust That Created Impact',
+    ar: 'ثقة صنعت أثرًا:',
   },
+  clientsTagline: {
+    en: 'Proud to collaborate with sovereign entities and market-leading enterprises to deliver landmark experiences.',
+    ar: 'نفخر بمسيرتنا مع كبرى الهيئات والمؤسسات لنصنع تجارب استثنائية وبصمة فارقة تخلد في الذاكرة.',
+  },
+  clientsFilterAll: { en: 'All Partners', ar: 'جميع الشركاء' },
+  clientsFilterGov: { en: 'Government & Sovereign', ar: 'جهات حكومية وسيادية' },
+  clientsFilterCorp: { en: 'Enterprise & Mobility', ar: 'شركات كبرى ونقل' },
+  clientsFilterLifestyle: { en: 'Culture & Hospitality', ar: 'ثقافة وترفيه وضيافة' },
 
   // Sectors
   sectorsEyebrow: { en: 'INDUSTRY VERTICALS', ar: 'القطاعات المتخصصة' },
@@ -217,7 +225,15 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>('en');
+  const [language, setLanguageState] = useState<Language>(() => {
+    if (typeof window !== 'undefined') {
+      const urlLang = new URLSearchParams(window.location.search).get('lang') as Language;
+      if (urlLang === 'en' || urlLang === 'ar') return urlLang;
+      const saved = localStorage.getItem('agency_lang') as Language;
+      if (saved === 'en' || saved === 'ar') return saved;
+    }
+    return 'ar';
+  });
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
@@ -225,9 +241,10 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   useEffect(() => {
-    const saved = localStorage.getItem('agency_lang') as Language;
-    if (saved && (saved === 'en' || saved === 'ar')) {
-      setLanguageState(saved);
+    const urlLang = new URLSearchParams(window.location.search).get('lang') as Language;
+    if (urlLang && (urlLang === 'en' || urlLang === 'ar')) {
+      setLanguageState(urlLang);
+      localStorage.setItem('agency_lang', urlLang);
     }
   }, []);
 

@@ -61,6 +61,7 @@ export interface ClientItem {
   name: string;
   name_ar?: string;
   logoSvg: string;
+  logoUrl?: string;
   industry: string;
   industry_ar?: string;
   tier: 'featured' | 'enterprise' | 'global';

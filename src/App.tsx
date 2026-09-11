@@ -33,6 +33,8 @@ export const App: React.FC = () => {
     );
   }
 
+  const isClientsOnly = new URLSearchParams(window.location.search).get('view') === 'clients';
+
   // Application Data States (synced with localStorage & REST API)
   const [services, setServices] = useState<Service[]>(() => {
     try {
@@ -55,7 +57,13 @@ export const App: React.FC = () => {
   const [clients, setClients] = useState<ClientItem[]>(() => {
     try {
       const c = localStorage.getItem('60fw_clients');
-      return c ? JSON.parse(c) : FALLBACK_CLIENTS;
+      if (c) {
+        const parsed = JSON.parse(c);
+        if (Array.isArray(parsed) && parsed.length > 0 && parsed.some((x: any) => x.logoUrl)) {
+          return parsed;
+        }
+      }
+      return FALLBACK_CLIENTS;
     } catch { return FALLBACK_CLIENTS; }
   });
   const [testimonials, setTestimonials] = useState<Testimonial[]>(() => {
@@ -162,6 +170,18 @@ export const App: React.FC = () => {
     return true;
   };
 
+  if (isClientsOnly) {
+    return (
+      <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Header onOpenContact={() => handleOpenContact()} />
+        <main style={{ flex: 1 }}>
+          <Clients clients={clients} content={homeContent?.clients} />
+        </main>
+        <Footer onOpenContact={() => handleOpenContact()} />
+      </div>
+    );
+  }
+
   return (
     <div className="app-layout" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* 1. Sticky Premium Header/Navigation */}
@@ -189,21 +209,24 @@ export const App: React.FC = () => {
         <Services
           services={services}
           onSelectService={(serviceTitle) => handleOpenContact(`Service: ${serviceTitle}`)}
+          content={homeContent?.services}
         />
 
         {/* 5. Trusted Clients */}
-        <Clients clients={clients} />
+        <Clients clients={clients} content={homeContent?.clients} />
 
         {/* 6. Sectors */}
         <Sectors
           sectors={sectors}
           onOpenContact={(sectorTopic) => handleOpenContact(sectorTopic)}
+          content={homeContent?.sectors}
         />
 
         {/* 7. Case Studies / Stories */}
         <CaseStudies
           projects={projects}
           onSelectProject={(project) => setSelectedProject(project)}
+          content={homeContent?.caseStudies}
         />
 
         {/* 8. Why Us */}
@@ -213,7 +236,7 @@ export const App: React.FC = () => {
         />
 
         {/* 9. Testimonials / Impact */}
-        <Testimonials testimonials={testimonials} />
+        <Testimonials testimonials={testimonials} content={homeContent?.testimonials} />
 
         {/* 10. Final CTA */}
         <FinalCTA
