@@ -22,17 +22,18 @@ interface LatestEventProps {
 export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const { t, language } = useLanguage();
   const [activeIdx, setActiveIdx] = useState(0);
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(content?.videosMuted !== false);
   const [btnHovered, setBtnHovered] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   const videoElRef = useRef<HTMLVideoElement | null>(null);
 
   const eyebrow  = (language === 'ar' ? content?.eyebrow_ar  : content?.eyebrow_en)  || t('latestEventEyebrow');
   const title    = (language === 'ar' ? content?.title_ar    : content?.title_en)    || t('latestEventTitle');
   const subtitle = (language === 'ar' ? content?.subtitle_ar : content?.subtitle_en) || t('latestEventSubtitle');
   const imageUrl = content?.imageUrl || 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1600&auto=format&fit=crop';
-  const videos   = content?.videos?.filter(Boolean) || [];
+  const videos   = (content?.videos?.filter(Boolean) || []) as string[];
   const driveUrl = content?.driveUrl || 'https://drive.google.com';
-  const showVideo    = videos.length > 0;
+  const showVideo    = videos.length > 0 && !videoError;
   const currentVideo = videos[activeIdx] || '';
 
   const videoRef = useCallback((node: HTMLVideoElement | null) => {
@@ -47,6 +48,16 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
 
   const handleVideoEnded = () => {
     if (videos.length > 1) setActiveIdx((i) => (i + 1) % videos.length);
+  };
+
+  const handleVideoError = () => {
+    // Try next video; if we've cycled through all, fall back to image
+    const nextIdx = (activeIdx + 1) % videos.length;
+    if (nextIdx === 0 || videos.length <= 1) {
+      setVideoError(true); // all videos failed, show image
+    } else {
+      setActiveIdx(nextIdx);
+    }
   };
 
   return (
@@ -99,6 +110,7 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
                   playsInline
                   loop={videos.length === 1}
                   onEnded={handleVideoEnded}
+                  onError={handleVideoError}
                   onPlay={() => {
                     // Once playing, apply the actual muted state
                     if (videoElRef.current) videoElRef.current.muted = muted;

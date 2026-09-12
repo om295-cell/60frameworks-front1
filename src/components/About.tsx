@@ -29,6 +29,7 @@ interface AboutProps {
 export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
   const { language, t, dir } = useLanguage();
   const [inView, setInView] = useState(false);
+  const [imgSrc, setImgSrc] = useState<string | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -52,7 +53,9 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
   const para1 = (language === 'ar' ? content?.para1_ar : content?.para1_en) || t('aboutPara1');
   const para2 = (language === 'ar' ? content?.para2_ar : content?.para2_en) || t('aboutPara2');
   const badgeText = (language === 'ar' ? content?.badgeText_ar : content?.badgeText_en) || t('aboutBadge');
-  const image = content?.image || 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1200&auto=format&fit=crop';
+  const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1200&auto=format&fit=crop';
+  const imagePreferred = content?.image || FALLBACK_IMAGE;
+  const image = imgSrc !== null ? imgSrc : imagePreferred;
 
   const stats = content?.stats && content.stats.length > 0
     ? content.stats.map(s => ({
@@ -94,6 +97,11 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
               <img
                 src={image}
                 alt="Strategic Experiential Production Arena"
+                onError={() => {
+                  if (image !== 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1200&auto=format&fit=crop') {
+                    setImgSrc('https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1200&auto=format&fit=crop');
+                  }
+                }}
                 style={{
                   width: '100%',
                   height: '100%',

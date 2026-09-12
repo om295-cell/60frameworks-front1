@@ -24,6 +24,7 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }) => {
   const { t, dir, language } = useLanguage();
+  const [videoFailed, setVideoFailed] = React.useState(false);
 
   const headlinePrefix = (language === 'ar' ? content?.headlinePrefix_ar : content?.headlinePrefix_en) || t('heroHeadlinePrefix');
   const headlineHighlight = (language === 'ar' ? content?.headlineHighlight_ar : content?.headlineHighlight_en) || t('heroHeadlineHighlight');
@@ -72,13 +73,14 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
           zIndex: 1,
         }}
       >
-        {backdropVideo ? (
+        {backdropVideo && !videoFailed ? (
           <video
             src={backdropVideo}
             autoPlay
             loop
             muted
             playsInline
+            onError={() => setVideoFailed(true)}
             style={{
               width: '100%',
               height: '100%',
