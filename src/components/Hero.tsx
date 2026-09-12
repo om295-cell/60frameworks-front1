@@ -25,12 +25,21 @@ interface HeroProps {
 export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }) => {
   const { t, dir, language } = useLanguage();
   const [videoFailed, setVideoFailed] = React.useState(false);
+  const heroVideoRef = React.useRef<HTMLVideoElement | null>(null);
 
   const headlinePrefix = (language === 'ar' ? content?.headlinePrefix_ar : content?.headlinePrefix_en) || t('heroHeadlinePrefix');
   const headlineHighlight = (language === 'ar' ? content?.headlineHighlight_ar : content?.headlineHighlight_en) || t('heroHeadlineHighlight');
   const subtitle = (language === 'ar' ? content?.subtitle_ar : content?.subtitle_en) || t('heroSubtitle');
   const backdropImage = content?.backdropImage || 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2000&auto=format&fit=crop';
   const backdropVideo = content?.backdropVideo;
+
+  React.useEffect(() => {
+    if (heroVideoRef.current) {
+      heroVideoRef.current.defaultMuted = true;
+      heroVideoRef.current.muted = true;
+      heroVideoRef.current.play().catch(() => {});
+    }
+  }, [backdropVideo]);
 
   const impactTitle = (language === 'ar' ? content?.impactTitle_ar : content?.impactTitle_en) || t('impactTitle');
   const impactSubtitle = (language === 'ar' ? content?.impactSubtitle_ar : content?.impactSubtitle_en) || t('impactSubtitle');
@@ -75,12 +84,17 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
       >
         {backdropVideo && !videoFailed ? (
           <video
+            ref={heroVideoRef}
             src={backdropVideo}
             autoPlay
             loop
             muted
             playsInline
-            onError={() => setVideoFailed(true)}
+            preload="auto"
+            onError={(e) => {
+              console.warn('[Hero] Video load error:', (e.target as HTMLVideoElement)?.error);
+              setVideoFailed(true);
+            }}
             style={{
               width: '100%',
               height: '100%',

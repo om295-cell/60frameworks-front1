@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Sparkles, ArrowUpRight, Volume2, VolumeX } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -22,7 +22,7 @@ interface LatestEventProps {
 export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const { t, language } = useLanguage();
   const [activeIdx, setActiveIdx] = useState(0);
-  const [muted, setMuted] = useState(content?.videosMuted !== false);
+  const [muted, setMuted] = useState(true);
   const [btnHovered, setBtnHovered] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const videoElRef = useRef<HTMLVideoElement | null>(null);
@@ -38,19 +38,45 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
 
   const videoRef = useCallback((node: HTMLVideoElement | null) => {
     videoElRef.current = node;
-  }, []);
+    if (node) {
+      node.defaultMuted = true;
+      node.muted = muted;
+      node.play().catch(() => {
+        if (!node.muted) {
+          node.muted = true;
+          setMuted(true);
+          node.play().catch(() => {});
+        }
+      });
+    }
+  }, [muted]);
+
+  useEffect(() => {
+    const video = videoElRef.current;
+    if (video) {
+      video.muted = muted;
+      video.play().catch(() => {});
+    }
+  }, [currentVideo, muted]);
 
   const handleMuteToggle = () => {
     const next = !muted;
     setMuted(next);
-    if (videoElRef.current) videoElRef.current.muted = next;
+    if (videoElRef.current) {
+      videoElRef.current.muted = next;
+      if (videoElRef.current.paused) {
+        videoElRef.current.play().catch(() => {});
+      }
+    }
   };
 
   const handleVideoEnded = () => {
     if (videos.length > 1) setActiveIdx((i) => (i + 1) % videos.length);
   };
 
-  const handleVideoError = () => {
+  const handleVideoError = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+    const err = (e.target as HTMLVideoElement)?.error;
+    console.warn('[LatestEvent] Video error:', err?.code, err?.message, currentVideo);
     // Try next video; if we've cycled through all, fall back to image
     const nextIdx = (activeIdx + 1) % videos.length;
     if (nextIdx === 0 || videos.length <= 1) {
@@ -106,15 +132,12 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
                   ref={videoRef}
                   src={currentVideo}
                   autoPlay
-                  muted
+                  muted={muted}
                   playsInline
+                  preload="auto"
                   loop={videos.length === 1}
                   onEnded={handleVideoEnded}
                   onError={handleVideoError}
-                  onPlay={() => {
-                    // Once playing, apply the actual muted state
-                    if (videoElRef.current) videoElRef.current.muted = muted;
-                  }}
                   style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               ) : (
