@@ -23,10 +23,14 @@ export const Clients: React.FC<ClientsProps> = ({ clients, content }) => {
 
   // Merge provided clients with FALLBACK_CLIENTS to ensure logoUrl and real partners from شركا النجاح.ai are always populated
   const effectiveClients: ClientItem[] = useMemo(() => {
-    if (clients && clients.length > 0 && clients.some(c => c.logoUrl)) {
-      return clients;
-    }
-    return FALLBACK_CLIENTS;
+    const rawList = (clients && clients.length > 0 && clients.some(c => c.logoUrl)) ? clients : FALLBACK_CLIENTS;
+    const seen = new Set<string>();
+    return rawList.filter(c => {
+      const key = (c.name_ar || c.name || '').trim().toLowerCase();
+      if (key && seen.has(key)) return false;
+      if (key) seen.add(key);
+      return true;
+    });
   }, [clients]);
 
   // Categorize clients
