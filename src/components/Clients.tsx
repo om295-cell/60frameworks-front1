@@ -89,8 +89,11 @@ export const Clients: React.FC<ClientsProps> = ({ clients, content }) => {
         nameAr.includes('مرسول') ||
         nameAr.includes('ترفيه') ||
         ind.includes('dining') ||
+        ind.includes('restaurant') ||
         ind.includes('culture') ||
-        indAr.includes('ضيافة')
+        indAr.includes('ضيافة') ||
+        indAr.includes('مطاعم') ||
+        indAr.includes('أغذية')
       ) {
         category = 'lifestyle';
       }
