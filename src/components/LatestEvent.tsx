@@ -19,6 +19,13 @@ interface LatestEventProps {
   };
 }
 
+const DEFAULT_EVENT_VIDEOS = [
+  'https://spiubsxm2vg65sdm.public.blob.vercel-storage.com/event-video-1-faststart.mp4',
+  'https://spiubsxm2vg65sdm.public.blob.vercel-storage.com/event-video-2.mp4',
+  'https://spiubsxm2vg65sdm.public.blob.vercel-storage.com/event-video-3-faststart.mp4',
+];
+const DEFAULT_EVENT_DRIVE_URL = 'https://drive.google.com/drive/folders/1Pxybwl41N4t3rHG4hZjudAYS17L_vCot';
+
 export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const { t, language } = useLanguage();
   const [activeIdx, setActiveIdx] = useState(0);
@@ -31,11 +38,21 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const title    = (language === 'ar' ? content?.title_ar    : content?.title_en)    || t('latestEventTitle');
   const subtitle = (language === 'ar' ? content?.subtitle_ar : content?.subtitle_en) || t('latestEventSubtitle');
   const imageUrl = content?.imageUrl || 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1600&auto=format&fit=crop';
-  const videos   = (content?.videos?.filter(Boolean) || []) as string[];
-  const driveUrl = content?.driveUrl || 'https://drive.google.com';
+
+  const rawVideos = (content?.videos?.filter(Boolean) || []) as string[];
+  const validVideos = rawVideos.filter((v) => typeof v === 'string' && v.trim().length > 0 && !v.includes('l8t8ykc5tfbkefrg'));
+  const videos   = validVideos.length > 0 ? validVideos : DEFAULT_EVENT_VIDEOS;
+
+  const rawDriveUrl = content?.driveUrl;
+  const driveUrl = (rawDriveUrl && rawDriveUrl !== 'https://drive.google.com') ? rawDriveUrl : DEFAULT_EVENT_DRIVE_URL;
   const buttonText = (language === 'ar' ? (content as any)?.buttonText_ar : (content as any)?.buttonText_en) || t('latestEventCta');
   const showVideo    = videos.length > 0 && !videoError;
-  const currentVideo = videos[activeIdx] || '';
+  const currentVideo = videos[activeIdx] || videos[0] || '';
+
+  useEffect(() => {
+    setVideoError(false);
+    setActiveIdx(0);
+  }, [content?.videos]);
 
   const videoRef = useCallback((node: HTMLVideoElement | null) => {
     videoElRef.current = node;
@@ -81,7 +98,7 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
     // Try next video; if we've cycled through all, fall back to image
     const nextIdx = (activeIdx + 1) % videos.length;
     if (nextIdx === 0 || videos.length <= 1) {
-      setVideoError(true); // all videos failed, show image
+      setVideoError(true);
     } else {
       setActiveIdx(nextIdx);
     }

@@ -22,24 +22,53 @@ interface HeroProps {
   };
 }
 
+const DEFAULT_HERO_BACKDROP_VIDEO = 'https://spiubsxm2vg65sdm.public.blob.vercel-storage.com/hero-video-faststart.mp4';
+
 export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }) => {
   const { t, dir, language } = useLanguage();
-  const [videoFailed, setVideoFailed] = React.useState(false);
   const heroVideoRef = React.useRef<HTMLVideoElement | null>(null);
 
   const headlinePrefix = (language === 'ar' ? content?.headlinePrefix_ar : content?.headlinePrefix_en) || t('heroHeadlinePrefix');
   const headlineHighlight = (language === 'ar' ? content?.headlineHighlight_ar : content?.headlineHighlight_en) || t('heroHeadlineHighlight');
   const subtitle = (language === 'ar' ? content?.subtitle_ar : content?.subtitle_en) || t('heroSubtitle');
   const backdropImage = content?.backdropImage || 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2000&auto=format&fit=crop';
-  const backdropVideo = content?.backdropVideo;
+
+  const rawBackdropVideo = content?.backdropVideo;
+  const initialVideo = (rawBackdropVideo && typeof rawBackdropVideo === 'string' && rawBackdropVideo.trim().length > 0 && !rawBackdropVideo.includes('l8t8ykc5tfbkefrg'))
+    ? rawBackdropVideo
+    : DEFAULT_HERO_BACKDROP_VIDEO;
+
+  const [activeVideoSrc, setActiveVideoSrc] = React.useState<string>(initialVideo);
+  const [videoFailed, setVideoFailed] = React.useState(false);
 
   React.useEffect(() => {
+    const valid = (content?.backdropVideo && typeof content.backdropVideo === 'string' && content.backdropVideo.trim().length > 0 && !content.backdropVideo.includes('l8t8ykc5tfbkefrg'))
+      ? content.backdropVideo
+      : DEFAULT_HERO_BACKDROP_VIDEO;
+    setActiveVideoSrc(valid);
+    setVideoFailed(false);
+  }, [content?.backdropVideo]);
+
+  const handleVideoLoadOrPlay = () => {
     if (heroVideoRef.current) {
       heroVideoRef.current.defaultMuted = true;
       heroVideoRef.current.muted = true;
       heroVideoRef.current.play().catch(() => {});
     }
-  }, [backdropVideo]);
+  };
+
+  const handleVideoError = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+    console.warn('[Hero] Video load error:', (e.target as HTMLVideoElement)?.error);
+    if (activeVideoSrc !== DEFAULT_HERO_BACKDROP_VIDEO) {
+      setActiveVideoSrc(DEFAULT_HERO_BACKDROP_VIDEO);
+    } else {
+      setVideoFailed(true);
+    }
+  };
+
+  React.useEffect(() => {
+    handleVideoLoadOrPlay();
+  }, [activeVideoSrc]);
 
   const impactTitle = (language === 'ar' ? content?.impactTitle_ar : content?.impactTitle_en) || t('impactTitle');
   const impactSubtitle = (language === 'ar' ? content?.impactSubtitle_ar : content?.impactSubtitle_en) || t('impactSubtitle');
@@ -82,19 +111,19 @@ export const Hero: React.FC<HeroProps> = ({ onOpenContact, onViewWork, content }
           zIndex: 1,
         }}
       >
-        {backdropVideo && !videoFailed ? (
+        {!videoFailed && activeVideoSrc ? (
           <video
             ref={heroVideoRef}
-            src={backdropVideo}
+            key={activeVideoSrc}
+            src={activeVideoSrc}
             autoPlay
             loop
             muted
             playsInline
             preload="auto"
-            onError={(e) => {
-              console.warn('[Hero] Video load error:', (e.target as HTMLVideoElement)?.error);
-              setVideoFailed(true);
-            }}
+            onLoadedData={handleVideoLoadOrPlay}
+            onCanPlay={handleVideoLoadOrPlay}
+            onError={handleVideoError}
             style={{
               width: '100%',
               height: '100%',

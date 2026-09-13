@@ -75,7 +75,23 @@ export const App: React.FC = () => {
   const [homeContent, setHomeContent] = useState<any>(() => {
     try {
       const c = localStorage.getItem('60fw_homepage_content');
-      return c ? JSON.parse(c) : null;
+      if (!c) return null;
+      const parsed = JSON.parse(c);
+      if (parsed?.hero?.backdropVideo && parsed.hero.backdropVideo.includes('l8t8ykc5tfbkefrg')) {
+        parsed.hero.backdropVideo = 'https://spiubsxm2vg65sdm.public.blob.vercel-storage.com/hero-video-faststart.mp4';
+      }
+      if (!parsed?.latestEvent?.videos || parsed.latestEvent.videos.length === 0 || parsed.latestEvent.videos.some((v: string) => v.includes('l8t8ykc5tfbkefrg'))) {
+        parsed.latestEvent = {
+          ...parsed?.latestEvent,
+          videos: [
+            'https://spiubsxm2vg65sdm.public.blob.vercel-storage.com/event-video-1-faststart.mp4',
+            'https://spiubsxm2vg65sdm.public.blob.vercel-storage.com/event-video-2.mp4',
+            'https://spiubsxm2vg65sdm.public.blob.vercel-storage.com/event-video-3-faststart.mp4',
+          ],
+          driveUrl: 'https://drive.google.com/drive/folders/1Pxybwl41N4t3rHG4hZjudAYS17L_vCot',
+        };
+      }
+      return parsed;
     } catch { return null; }
   });
 
@@ -126,8 +142,30 @@ export const App: React.FC = () => {
           localStorage.setItem('60fw_testimonials', JSON.stringify(tData));
         }
         if (hData) {
-          setHomeContent(hData);
-          localStorage.setItem('60fw_homepage_content', JSON.stringify(hData));
+          const sanitizedHData = {
+            ...hData,
+            hero: {
+              ...hData.hero,
+              backdropVideo: (hData.hero?.backdropVideo && !hData.hero.backdropVideo.includes('l8t8ykc5tfbkefrg'))
+                ? hData.hero.backdropVideo
+                : 'https://spiubsxm2vg65sdm.public.blob.vercel-storage.com/hero-video-faststart.mp4',
+            },
+            latestEvent: {
+              ...hData.latestEvent,
+              videos: (hData.latestEvent?.videos && hData.latestEvent.videos.length > 0 && !hData.latestEvent.videos.some((v: string) => v.includes('l8t8ykc5tfbkefrg')))
+                ? hData.latestEvent.videos
+                : [
+                    'https://spiubsxm2vg65sdm.public.blob.vercel-storage.com/event-video-1-faststart.mp4',
+                    'https://spiubsxm2vg65sdm.public.blob.vercel-storage.com/event-video-2.mp4',
+                    'https://spiubsxm2vg65sdm.public.blob.vercel-storage.com/event-video-3-faststart.mp4',
+                  ],
+              driveUrl: (hData.latestEvent?.driveUrl && hData.latestEvent.driveUrl !== 'https://drive.google.com')
+                ? hData.latestEvent.driveUrl
+                : 'https://drive.google.com/drive/folders/1Pxybwl41N4t3rHG4hZjudAYS17L_vCot',
+            },
+          };
+          setHomeContent(sanitizedHData);
+          localStorage.setItem('60fw_homepage_content', JSON.stringify(sanitizedHData));
         }
         // Apply and cache fresh theme from server
         if (themeData) {
