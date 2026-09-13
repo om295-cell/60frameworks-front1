@@ -53,7 +53,7 @@ export const translations: Translations = {
     ar: 'انقر على الصورة للاطلاع على التغطية الشاملة، الصور التوثيقية، وملفات الفعالية مباشرة عبر Google Drive.',
   },
   latestEventBadge: { en: 'Google Drive', ar: 'Google Drive' },
-  latestEventCta: { en: 'View Event', ar: 'استعراض الفعالية' },
+  latestEventCta: { en: '26th Scientific Forum | From Coverage to Impact', ar: 'الملتقى العلمي 26 | من التغطية إلى الأثر' },
   latestEventTag: { en: 'Exclusive Event Documentation', ar: 'ملف التوثيق والتغطية الحصرية' },
 
   // About

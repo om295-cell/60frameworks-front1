@@ -33,6 +33,7 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
   const imageUrl = content?.imageUrl || 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1600&auto=format&fit=crop';
   const videos   = (content?.videos?.filter(Boolean) || []) as string[];
   const driveUrl = content?.driveUrl || 'https://drive.google.com';
+  const buttonText = (language === 'ar' ? (content as any)?.buttonText_ar : (content as any)?.buttonText_en) || t('latestEventCta');
   const showVideo    = videos.length > 0 && !videoError;
   const currentVideo = videos[activeIdx] || '';
 
@@ -183,7 +184,7 @@ export const LatestEvent: React.FC<LatestEventProps> = ({ content }) => {
                   transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
                 }}
               >
-                <span>{t('latestEventCta')}</span>
+                <span>{buttonText}</span>
                 <ArrowUpRight size={18} style={{ transition: 'transform 0.3s ease', transform: btnHovered ? 'translate(3px,-3px)' : 'none' }} />
               </a>
 
