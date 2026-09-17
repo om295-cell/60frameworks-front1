@@ -177,12 +177,12 @@ export const ThemeCustomizer: React.FC = () => {
     {
       key: 'whyUs',
       label: '⭐ Why 60FRAMEWORKS (Pillars)',
-      defaultBg: '#FAFAFA',
-      defaultText: '#1A1A1A',
-      defaultSubtitle: '#4B5563',
+      defaultBg: '#141414',
+      defaultText: '#FFFFFF',
+      defaultSubtitle: '#D1D5DB',
       defaultAccent: '#F68621',
-      defaultCardBg: '#FFFFFF',
-      defaultCardText: '#1A1A1A',
+      defaultCardBg: '#1F1F1F',
+      defaultCardText: '#FFFFFF',
     },
     {
       key: 'testimonials',

@@ -81,8 +81,12 @@ export const WhyUs: React.FC<WhyUsProps> = ({ onOpenContact, content }) => {
       id="why-us"
       className="section"
       style={{
-        backgroundColor: 'var(--color-sec-whyUs-bg, #FAFAFA)',
-        backgroundImage: 'radial-gradient(circle at 10% 20%, rgba(246, 134, 33, 0.03) 0%, transparent 45%), radial-gradient(circle at 90% 80%, rgba(246, 134, 33, 0.03) 0%, transparent 45%)',
+        backgroundColor: 'var(--color-sec-whyUs-bg, #141414)',
+        color: 'var(--color-sec-whyUs-text, #FFFFFF)',
+        backgroundImage:
+          'radial-gradient(circle at 10% 20%, rgba(246, 134, 33, 0.08) 0%, transparent 50%), radial-gradient(circle at 90% 80%, rgba(246, 134, 33, 0.04) 0%, transparent 50%)',
+        borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
       }}
     >
       <div className="container">
@@ -100,14 +104,14 @@ export const WhyUs: React.FC<WhyUsProps> = ({ onOpenContact, content }) => {
             <span className="type-eyebrow" style={{ color: 'var(--color-sec-whyUs-accent, var(--color-orange-primary))' }}>
               {eyebrow}
             </span>
-            <h2 className="type-h1" style={{ color: 'var(--color-sec-whyUs-text, #1A1A1A)', marginBottom: '1.25rem' }}>
+            <h2 className="type-h1" style={{ color: 'var(--color-sec-whyUs-text, #FFFFFF)', marginBottom: '1.25rem' }}>
               {heading}
             </h2>
-            <p className="type-body-lg" style={{ color: 'var(--color-sec-whyUs-subtitle, #4B5563)', marginBottom: '2.5rem', lineHeight: 1.75 }}>
+            <p className="type-body-lg" style={{ color: 'var(--color-sec-whyUs-subtitle, #D1D5DB)', marginBottom: '2.5rem', lineHeight: 1.75 }}>
               {subtitle}
             </p>
 
-            {/* Feature Cards with Luxury Styling */}
+            {/* Feature Cards with Luxury Dark Styling */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', marginBottom: '2.5rem' }}>
               {pillars.map((pillar, idx) => (
                 <div
@@ -116,21 +120,23 @@ export const WhyUs: React.FC<WhyUsProps> = ({ onOpenContact, content }) => {
                     display: 'flex',
                     alignItems: 'flex-start',
                     gap: '1.25rem',
-                    padding: '1.35rem 1.5rem',
+                    padding: '1.4rem 1.5rem',
                     borderRadius: '16px',
-                    backgroundColor: 'var(--color-sec-whyUs-card-bg, #FFFFFF)',
-                    border: '1px solid rgba(0, 0, 0, 0.07)',
-                    boxShadow: '0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02)',
+                    backgroundColor: 'var(--color-sec-whyUs-card-bg, #1F1F1F)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    boxShadow: '0 8px 24px -4px rgba(0, 0, 0, 0.35)',
                     transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(246, 134, 33, 0.45)';
-                    e.currentTarget.style.boxShadow = '0 12px 28px -4px rgba(246, 134, 33, 0.14), 0 4px 10px -2px rgba(0, 0, 0, 0.03)';
+                    e.currentTarget.style.borderColor = 'rgba(246, 134, 33, 0.6)';
+                    e.currentTarget.style.boxShadow = '0 12px 32px -4px rgba(246, 134, 33, 0.22), 0 4px 16px rgba(0, 0, 0, 0.5)';
+                    e.currentTarget.style.backgroundColor = '#262626';
                     e.currentTarget.style.transform = 'translateY(-3px)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.07)';
-                    e.currentTarget.style.boxShadow = '0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                    e.currentTarget.style.boxShadow = '0 8px 24px -4px rgba(0, 0, 0, 0.35)';
+                    e.currentTarget.style.backgroundColor = 'var(--color-sec-whyUs-card-bg, #1F1F1F)';
                     e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
@@ -139,13 +145,13 @@ export const WhyUs: React.FC<WhyUsProps> = ({ onOpenContact, content }) => {
                       width: '48px',
                       height: '48px',
                       borderRadius: '13px',
-                      background: 'linear-gradient(135deg, rgba(246, 134, 33, 0.15) 0%, rgba(246, 134, 33, 0.04) 100%)',
-                      border: '1px solid rgba(246, 134, 33, 0.25)',
+                      background: 'linear-gradient(135deg, rgba(246, 134, 33, 0.22) 0%, rgba(246, 134, 33, 0.06) 100%)',
+                      border: '1px solid rgba(246, 134, 33, 0.35)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       flexShrink: 0,
-                      boxShadow: '0 2px 8px rgba(246, 134, 33, 0.12)',
+                      boxShadow: '0 0 16px rgba(246, 134, 33, 0.18)',
                     }}
                   >
                     {pillar.icon}
@@ -154,16 +160,16 @@ export const WhyUs: React.FC<WhyUsProps> = ({ onOpenContact, content }) => {
                   <div style={{ flex: 1 }}>
                     <h3
                       style={{
-                        fontSize: '1.125rem',
+                        fontSize: '1.15rem',
                         fontWeight: 700,
-                        color: 'var(--color-sec-whyUs-card-text, #1A1A1A)',
-                        marginBottom: '0.4rem',
+                        color: 'var(--color-sec-whyUs-card-text, #FFFFFF)',
+                        marginBottom: '0.45rem',
                         lineHeight: 1.45,
                       }}
                     >
                       {pillar.title}
                     </h3>
-                    <p style={{ fontSize: '0.9375rem', lineHeight: 1.75, color: 'var(--color-sec-whyUs-subtitle, #4B5563)', margin: 0 }}>
+                    <p style={{ fontSize: '0.9375rem', lineHeight: 1.75, color: 'var(--color-sec-whyUs-subtitle, #D1D5DB)', margin: 0, opacity: 0.9 }}>
                       {pillar.description}
                     </p>
                   </div>

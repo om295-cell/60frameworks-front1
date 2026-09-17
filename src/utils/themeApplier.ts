@@ -128,12 +128,12 @@ export const DEFAULT_THEME: SiteTheme = {
       cardTextColor: '#FFFFFF',
     },
     whyUs: {
-      backgroundColor: '#FAFAFA',
-      textColor: '#1A1A1A',
-      subtitleColor: '#4B5563',
+      backgroundColor: '#141414',
+      textColor: '#FFFFFF',
+      subtitleColor: '#D1D5DB',
       accentColor: '#F68621',
-      cardBackgroundColor: '#FFFFFF',
-      cardTextColor: '#1A1A1A',
+      cardBackgroundColor: '#1F1F1F',
+      cardTextColor: '#FFFFFF',
     },
     testimonials: {
       backgroundColor: '#F4D3C9',
@@ -211,6 +211,21 @@ export function applyTheme(theme: Partial<SiteTheme> | null | undefined): void {
       finalCta: { ...DEFAULT_THEME.sections.finalCta, ...(theme?.sections?.finalCta || {}) },
     },
   };
+
+  // Ensure whyUs always adheres to the dark luxury aesthetic (migrating legacy white settings)
+  if (
+    t.sections.whyUs &&
+    (t.sections.whyUs.backgroundColor === '#FFFFFF' ||
+      t.sections.whyUs.backgroundColor === '#FAFAFA' ||
+      t.sections.whyUs.backgroundColor === '#F8F9FA' ||
+      !isDarkColor(t.sections.whyUs.backgroundColor))
+  ) {
+    t.sections.whyUs.backgroundColor = '#141414';
+    t.sections.whyUs.textColor = '#FFFFFF';
+    t.sections.whyUs.subtitleColor = '#D1D5DB';
+    t.sections.whyUs.cardBackgroundColor = '#1F1F1F';
+    t.sections.whyUs.cardTextColor = '#FFFFFF';
+  }
 
   const root = document.documentElement;
 
