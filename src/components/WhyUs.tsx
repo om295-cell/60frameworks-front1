@@ -17,6 +17,12 @@ interface WhyUsProps {
     badgeTitle_ar?: string;
     badgeDesc_en?: string;
     badgeDesc_ar?: string;
+    pillars?: {
+      title_en?: string;
+      title_ar?: string;
+      desc_en?: string;
+      desc_ar?: string;
+    }[];
   };
 }
 
@@ -30,28 +36,43 @@ export const WhyUs: React.FC<WhyUsProps> = ({ onOpenContact, content }) => {
   const badgeTitle = (language === 'ar' ? content?.badgeTitle_ar : content?.badgeTitle_en) || t('whyUsBadgeTitle');
   const badgeDesc = (language === 'ar' ? content?.badgeDesc_ar : content?.badgeDesc_en) || t('whyUsBadgeDesc');
 
-  const pillars = [
+  const iconList = [
+    <Sparkles key="1" size={22} color="var(--color-orange-primary)" />,
+    <Zap key="2" size={22} color="var(--color-orange-primary)" />,
+    <Award key="3" size={22} color="var(--color-orange-primary)" />,
+    <ShieldCheck key="4" size={22} color="var(--color-orange-primary)" />,
+  ];
+
+  const defaultPillars = [
     {
       title: t('whyPillar1Title'),
       description: t('whyPillar1Desc'),
-      icon: <Sparkles size={22} color="var(--color-orange-primary)" />,
+      icon: iconList[0],
     },
     {
       title: t('whyPillar2Title'),
       description: t('whyPillar2Desc'),
-      icon: <Zap size={22} color="var(--color-orange-primary)" />,
+      icon: iconList[1],
     },
     {
       title: t('whyPillar3Title'),
       description: t('whyPillar3Desc'),
-      icon: <Award size={22} color="var(--color-orange-primary)" />,
+      icon: iconList[2],
     },
     {
       title: t('whyPillar4Title'),
       description: t('whyPillar4Desc'),
-      icon: <ShieldCheck size={22} color="var(--color-orange-primary)" />,
+      icon: iconList[3],
     },
   ];
+
+  const pillars = content?.pillars && content.pillars.length > 0
+    ? content.pillars.map((p, idx) => ({
+        title: (language === 'ar' ? p.title_ar : p.title_en) || '',
+        description: (language === 'ar' ? p.desc_ar : p.desc_en) || '',
+        icon: iconList[idx % iconList.length],
+      }))
+    : defaultPillars;
 
   return (
     <section id="why-us" className="section" style={{ backgroundColor: 'var(--color-sec-whyUs-bg, #FFFFFF)' }}>

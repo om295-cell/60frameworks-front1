@@ -196,7 +196,7 @@ export const HomepageEditor: React.FC = () => {
 
         // Separate text fields from media fields
         const textFields = Object.entries(sectionData).filter(
-          ([k]) => !['backdropImage', 'backdropVideo', 'image', 'videoUrl', 'videos', 'videosMuted', 'imageUrl', 'stats', 'heroStats'].includes(k)
+          ([k]) => !['backdropImage', 'backdropVideo', 'image', 'videoUrl', 'videos', 'videosMuted', 'imageUrl', 'stats', 'heroStats', 'pillars'].includes(k)
         );
         const mediaFields = Object.entries(sectionData).filter(
           ([k]) => ['backdropImage', 'backdropVideo', 'image', 'imageUrl'].includes(k)
@@ -386,6 +386,123 @@ export const HomepageEditor: React.FC = () => {
                         style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1rem', background: '#FFF7ED', border: '1.5px dashed #F68621', borderRadius: '8px', color: '#F68621', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer' }}
                       >
                         <Plus size={16} /> Add Pillar Card
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Why Us Section: Strategic Feature Cards / Pillars Editor */}
+                {sec.key === 'whyUs' && canEditSec && (
+                  <div style={{ marginBottom: '1.5rem' }}>
+                    <h4 style={subHeading}>⭐ Strategic Feature Cards (Why Us Pillars)</h4>
+                    <p style={{ fontSize: '0.8125rem', color: '#6B7280', marginBottom: '1rem' }}>
+                      Control the 4 feature cards displayed in the &quot;Why Us&quot; section. Update title and description in Arabic and English, or add/remove cards.
+                    </p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      {(((content.whyUs?.pillars || (FALLBACK_HOMEPAGE_CONTENT as any).whyUs?.pillars) || []) as any[]).map((pillar: any, idx: number) => (
+                        <div key={idx} style={{ background: '#F9FAFB', borderRadius: '10px', padding: '1rem', border: '1px solid #E5E7EB' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#F68621' }}>FEATURE CARD #{idx + 1}</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const currentPillars = [...(content.whyUs?.pillars || (FALLBACK_HOMEPAGE_CONTENT as any).whyUs?.pillars || [])];
+                                const newPillars = currentPillars.filter((_: any, i: number) => i !== idx);
+                                setContent((prev: any) => ({ ...prev, whyUs: { ...prev.whyUs, pillars: newPillars } }));
+                              }}
+                              style={{ background: '#FEE2E2', border: 'none', borderRadius: '6px', padding: '0.35rem 0.6rem', cursor: 'pointer', color: '#B91C1C', fontSize: '0.75rem', fontWeight: 700 }}
+                            >
+                              <Trash2 size={13} style={{ display: 'inline', marginRight: '3px' }} /> Remove
+                            </button>
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                            <div>
+                              <label style={fieldLbl}>العنوان (عربي) 📌</label>
+                              <input
+                                type="text"
+                                dir="rtl"
+                                value={pillar.title_ar || ''}
+                                onChange={(e) => {
+                                  const currentPillars = [...(content.whyUs?.pillars || (FALLBACK_HOMEPAGE_CONTENT as any).whyUs?.pillars || [])];
+                                  currentPillars[idx] = { ...currentPillars[idx], title_ar: e.target.value };
+                                  setContent((prev: any) => ({ ...prev, whyUs: { ...prev.whyUs, pillars: currentPillars } }));
+                                }}
+                                style={{ ...inputS, direction: 'rtl', borderColor: autoTranslate ? '#6EE7B7' : undefined }}
+                                onBlur={async () => {
+                                  if (!autoTranslate || !pillar.title_ar?.trim()) return;
+                                  const { translateArToEn } = await import('../../utils/autoTranslate');
+                                  const translated = await translateArToEn(pillar.title_ar);
+                                  if (translated) {
+                                    const currentPillars = [...(content.whyUs?.pillars || (FALLBACK_HOMEPAGE_CONTENT as any).whyUs?.pillars || [])];
+                                    currentPillars[idx] = { ...currentPillars[idx], title_en: translated };
+                                    setContent((prev: any) => ({ ...prev, whyUs: { ...prev.whyUs, pillars: currentPillars } }));
+                                  }
+                                }}
+                              />
+                            </div>
+                            <div>
+                              <label style={fieldLbl}>Title (English)</label>
+                              <input
+                                type="text"
+                                value={pillar.title_en || ''}
+                                onChange={(e) => {
+                                  const currentPillars = [...(content.whyUs?.pillars || (FALLBACK_HOMEPAGE_CONTENT as any).whyUs?.pillars || [])];
+                                  currentPillars[idx] = { ...currentPillars[idx], title_en: e.target.value };
+                                  setContent((prev: any) => ({ ...prev, whyUs: { ...prev.whyUs, pillars: currentPillars } }));
+                                }}
+                                style={inputS}
+                              />
+                            </div>
+                            <div style={{ gridColumn: '1/-1' }}>
+                              <label style={fieldLbl}>الوصف (عربي) 📌</label>
+                              <textarea
+                                rows={2}
+                                dir="rtl"
+                                value={pillar.desc_ar || ''}
+                                onChange={(e) => {
+                                  const currentPillars = [...(content.whyUs?.pillars || (FALLBACK_HOMEPAGE_CONTENT as any).whyUs?.pillars || [])];
+                                  currentPillars[idx] = { ...currentPillars[idx], desc_ar: e.target.value };
+                                  setContent((prev: any) => ({ ...prev, whyUs: { ...prev.whyUs, pillars: currentPillars } }));
+                                }}
+                                style={{ ...inputS, resize: 'vertical', direction: 'rtl', borderColor: autoTranslate ? '#6EE7B7' : undefined }}
+                                onBlur={async () => {
+                                  if (!autoTranslate || !pillar.desc_ar?.trim()) return;
+                                  const { translateArToEn } = await import('../../utils/autoTranslate');
+                                  const translated = await translateArToEn(pillar.desc_ar);
+                                  if (translated) {
+                                    const currentPillars = [...(content.whyUs?.pillars || (FALLBACK_HOMEPAGE_CONTENT as any).whyUs?.pillars || [])];
+                                    currentPillars[idx] = { ...currentPillars[idx], desc_en: translated };
+                                    setContent((prev: any) => ({ ...prev, whyUs: { ...prev.whyUs, pillars: currentPillars } }));
+                                  }
+                                }}
+                              />
+                            </div>
+                            <div style={{ gridColumn: '1/-1' }}>
+                              <label style={fieldLbl}>Description (English)</label>
+                              <textarea
+                                rows={2}
+                                value={pillar.desc_en || ''}
+                                onChange={(e) => {
+                                  const currentPillars = [...(content.whyUs?.pillars || (FALLBACK_HOMEPAGE_CONTENT as any).whyUs?.pillars || [])];
+                                  currentPillars[idx] = { ...currentPillars[idx], desc_en: e.target.value };
+                                  setContent((prev: any) => ({ ...prev, whyUs: { ...prev.whyUs, pillars: currentPillars } }));
+                                }}
+                                style={{ ...inputS, resize: 'vertical' }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const currentPillars = [...(content.whyUs?.pillars || (FALLBACK_HOMEPAGE_CONTENT as any).whyUs?.pillars || [])];
+                          const newPillars = [...currentPillars, { title_en: '', title_ar: '', desc_en: '', desc_ar: '' }];
+                          setContent((prev: any) => ({ ...prev, whyUs: { ...prev.whyUs, pillars: newPillars } }));
+                        }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1rem', background: '#FFF7ED', border: '1.5px dashed #F68621', borderRadius: '8px', color: '#F68621', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer' }}
+                      >
+                        <Plus size={16} /> Add Feature Card / Pillar
                       </button>
                     </div>
                   </div>
