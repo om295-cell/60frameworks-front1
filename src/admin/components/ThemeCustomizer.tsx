@@ -127,12 +127,12 @@ export const ThemeCustomizer: React.FC = () => {
     {
       key: 'about',
       label: '🏢 About Section (Agency Vision)',
-      defaultBg: '#FFFFFF',
-      defaultText: '#242424',
-      defaultSubtitle: '#4A4A4A',
+      defaultBg: '#1A1A1A',
+      defaultText: '#FFFFFF',
+      defaultSubtitle: '#D1D5DB',
       defaultAccent: '#F68621',
-      defaultCardBg: '#E6E7E8',
-      defaultCardText: '#242424',
+      defaultCardBg: '#1F1F1F',
+      defaultCardText: '#FFFFFF',
     },
     {
       key: 'services',

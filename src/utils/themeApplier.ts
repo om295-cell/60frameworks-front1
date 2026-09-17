@@ -88,12 +88,12 @@ export const DEFAULT_THEME: SiteTheme = {
       cardTextColor: '#FFFFFF',
     },
     about: {
-      backgroundColor: '#FFFFFF',
-      textColor: '#242424',
-      subtitleColor: '#4A4A4A',
+      backgroundColor: '#1A1A1A',
+      textColor: '#FFFFFF',
+      subtitleColor: '#D1D5DB',
       accentColor: '#F68621',
-      cardBackgroundColor: '#E6E7E8',
-      cardTextColor: '#242424',
+      cardBackgroundColor: '#1F1F1F',
+      cardTextColor: '#FFFFFF',
     },
     services: {
       backgroundColor: '#E6E7E8',
@@ -212,6 +212,25 @@ export function applyTheme(theme: Partial<SiteTheme> | null | undefined): void {
     },
   };
 
+  // Ensure about section adheres to the dark luxury aesthetic (migrating legacy light card settings)
+  if (
+    t.sections.about &&
+    (t.sections.about.cardBackgroundColor === '#E6E7E8' ||
+      t.sections.about.cardBackgroundColor === '#FFFFFF' ||
+      t.sections.about.cardBackgroundColor === '#FAFAFA' ||
+      t.sections.about.cardBackgroundColor === '#F8F9FA' ||
+      !isDarkColor(t.sections.about.cardBackgroundColor || '#FFFFFF') ||
+      t.sections.about.backgroundColor === '#FFFFFF')
+  ) {
+    if (t.sections.about.backgroundColor === '#FFFFFF') {
+      t.sections.about.backgroundColor = '#1A1A1A';
+      t.sections.about.textColor = '#FFFFFF';
+    }
+    t.sections.about.subtitleColor = '#D1D5DB';
+    t.sections.about.cardBackgroundColor = '#1F1F1F';
+    t.sections.about.cardTextColor = '#FFFFFF';
+  }
+
   // Ensure whyUs always adheres to the dark luxury aesthetic (migrating legacy white settings)
   if (
     t.sections.whyUs &&
@@ -280,9 +299,13 @@ export function applyTheme(theme: Partial<SiteTheme> | null | undefined): void {
       root.style.setProperty(`--color-sec-${secKey}-accent`, sec.accentColor || t.global.primaryColor || '#F68621');
 
       // Cards inside this section
-      const fallbackCardBg = isSecDark ? '#2E2E2E' : '#FFFFFF';
-      const fallbackCardText = isDarkColor(sec.cardBackgroundColor || fallbackCardBg) ? '#FFFFFF' : '#242424';
-      root.style.setProperty(`--color-sec-${secKey}-card-bg`, sec.cardBackgroundColor || fallbackCardBg);
+      const fallbackCardBg = isSecDark ? '#1F1F1F' : '#FFFFFF';
+      let effectiveCardBg = sec.cardBackgroundColor || fallbackCardBg;
+      if (isSecDark && !isDarkColor(effectiveCardBg)) {
+        effectiveCardBg = '#1F1F1F';
+      }
+      const fallbackCardText = isDarkColor(effectiveCardBg) ? '#FFFFFF' : '#242424';
+      root.style.setProperty(`--color-sec-${secKey}-card-bg`, effectiveCardBg);
       root.style.setProperty(`--color-sec-${secKey}-card-text`, sec.cardTextColor || fallbackCardText);
     }
   }

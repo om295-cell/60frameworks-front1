@@ -91,7 +91,17 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
     : FALLBACK_PILLARS;
 
   return (
-    <section id="about" ref={sectionRef} className="section" style={{ backgroundColor: 'var(--color-sec-about-bg, #FFFFFF)' }}>
+    <section
+      id="about"
+      ref={sectionRef}
+      className="section"
+      style={{
+        backgroundColor: 'var(--color-sec-about-bg, #1A1A1A)',
+        color: 'var(--color-sec-about-text, #FFFFFF)',
+        borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+      }}
+    >
       <div className="container">
         {/* Split Editorial Layout */}
         <div
@@ -109,9 +119,10 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
               className="image-zoom-container"
               style={{
                 borderRadius: 'var(--radius-lg)',
-                boxShadow: 'var(--shadow-lg)',
+                boxShadow: '0 16px 40px rgba(0, 0, 0, 0.5)',
                 aspectRatio: '4/3',
-                backgroundColor: 'var(--color-gray-structure)',
+                backgroundColor: '#1F1F1F',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
               }}
             >
               <img
@@ -137,16 +148,17 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
                 position: 'absolute',
                 bottom: '-20px',
                 [dir === 'rtl' ? 'left' : 'right']: '20px',
-                backgroundColor: 'var(--color-sec-about-card-bg, var(--color-charcoal-dark))',
-                color: 'var(--color-sec-about-card-text, var(--color-white))',
-                padding: '1.25rem 1.75rem',
+                backgroundColor: 'var(--color-sec-about-card-bg, #1F1F1F)',
+                color: 'var(--color-sec-about-card-text, #FFFFFF)',
+                padding: '1.15rem 1.6rem',
                 borderRadius: 'var(--radius-md)',
-                boxShadow: 'var(--shadow-dark-card)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
+                boxShadow: '0 12px 32px rgba(0, 0, 0, 0.5)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '1rem',
+                gap: '0.85rem',
                 maxWidth: '280px',
+                backdropFilter: 'blur(10px)',
               }}
             >
               <div
@@ -159,7 +171,7 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
                   flexShrink: 0,
                 }}
               />
-              <span style={{ fontSize: '0.875rem', fontWeight: 600, lineHeight: 1.5 }}>
+              <span style={{ fontSize: '0.875rem', fontWeight: 600, lineHeight: 1.5, color: '#FFFFFF' }}>
                 {badgeText}
               </span>
             </div>
@@ -171,18 +183,18 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
             <h2
               className="type-h1"
               style={{
-                color: 'var(--color-sec-about-text, var(--color-charcoal-dark))',
+                color: 'var(--color-sec-about-text, #FFFFFF)',
                 marginBottom: '1.75rem',
               }}
             >
               {heading}
             </h2>
 
-            <p className="type-body-lg" style={{ color: 'var(--color-sec-about-subtitle, var(--color-body-gray))', marginBottom: '1.25rem', lineHeight: 1.7 }}>
+            <p className="type-body-lg" style={{ color: 'var(--color-sec-about-subtitle, #D1D5DB)', marginBottom: '1.25rem', lineHeight: 1.75 }}>
               {para1}
             </p>
 
-            <p className="type-body" style={{ color: 'var(--color-sec-about-subtitle, var(--color-body-gray))', marginBottom: '2rem', lineHeight: 1.7 }}>
+            <p className="type-body" style={{ color: 'var(--color-sec-about-subtitle, #9CA3AF)', marginBottom: '2rem', lineHeight: 1.75 }}>
               {para2}
             </p>
 
@@ -201,25 +213,53 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '0.4rem',
-                    padding: '1rem 1.1rem',
-                    borderRadius: '10px',
-                    background: 'var(--color-sec-about-card-bg, rgba(0,0,0,0.03))',
-                    border: '1px solid rgba(0,0,0,0.07)',
+                    gap: '0.45rem',
+                    padding: '1.15rem 1.25rem',
+                    borderRadius: '14px',
+                    backgroundColor: 'var(--color-sec-about-card-bg, #1F1F1F)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    boxShadow: '0 4px 20px -2px rgba(0, 0, 0, 0.25)',
+                    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(246, 134, 33, 0.55)';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.backgroundColor = '#262626';
+                    e.currentTarget.style.boxShadow = '0 8px 24px -2px rgba(246, 134, 33, 0.18), 0 4px 12px rgba(0, 0, 0, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.backgroundColor = 'var(--color-sec-about-card-bg, #1F1F1F)';
+                    e.currentTarget.style.boxShadow = '0 4px 20px -2px rgba(0, 0, 0, 0.25)';
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>
-                    <CheckCircle2
-                      size={18}
-                      color="var(--color-sec-about-accent, var(--color-orange-primary))"
-                      style={{ flexShrink: 0, marginTop: '2px' }}
-                    />
-                    <span style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--color-sec-about-text, var(--color-charcoal-dark))', lineHeight: 1.4 }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                    <div
+                      style={{
+                        width: '28px',
+                        height: '28px',
+                        borderRadius: '8px',
+                        background: 'rgba(246, 134, 33, 0.15)',
+                        border: '1px solid rgba(246, 134, 33, 0.35)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        marginTop: '1px',
+                      }}
+                    >
+                      <CheckCircle2
+                        size={16}
+                        color="var(--color-sec-about-accent, var(--color-orange-primary))"
+                      />
+                    </div>
+                    <span style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--color-sec-about-card-text, #FFFFFF)', lineHeight: 1.4 }}>
                       {pillar.title}
                     </span>
                   </div>
                   {pillar.desc && (
-                    <p style={{ fontSize: '0.8125rem', color: 'var(--color-sec-about-subtitle, var(--color-body-gray))', lineHeight: 1.6, margin: 0, paddingLeft: dir === 'rtl' ? 0 : '1.6rem', paddingRight: dir === 'rtl' ? '1.6rem' : 0 }}>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--color-sec-about-subtitle, #D1D5DB)', lineHeight: 1.65, margin: 0, paddingLeft: dir === 'rtl' ? 0 : '2.5rem', paddingRight: dir === 'rtl' ? '2.5rem' : 0, opacity: 0.9 }}>
                       {pillar.desc}
                     </p>
                   )}
@@ -229,13 +269,7 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
 
             <button
               onClick={onOpenContact}
-              className="btn"
-              style={{
-                padding: '0.85rem 1.85rem',
-                border: '1.5px solid var(--color-sec-about-text, var(--color-charcoal-dark))',
-                color: 'var(--color-sec-about-text, var(--color-charcoal-dark))',
-                backgroundColor: 'transparent',
-              }}
+              className="btn btn-primary-orange"
             >
               <span>{t('aboutCta')}</span>
               <ArrowRight
@@ -249,13 +283,14 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
         {/* Animated Statistics Bar */}
         <div
           style={{
-            backgroundColor: 'var(--color-sec-about-card-bg, var(--color-gray-structure))',
+            backgroundColor: 'var(--color-sec-about-card-bg, #1F1F1F)',
             borderRadius: 'var(--radius-lg)',
             padding: 'clamp(2rem, 4vw, 3.5rem)',
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
             gap: '2rem',
-            border: '1px solid rgba(0,0,0,0.06)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.35)',
           }}
         >
           {stats.map((st, idx) => (
@@ -278,7 +313,7 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
                 style={{
                   fontSize: '0.875rem',
                   fontWeight: 600,
-                  color: 'var(--color-sec-about-card-text, var(--color-charcoal-dark))',
+                  color: 'var(--color-sec-about-card-text, #E5E7EB)',
                   textTransform: language === 'ar' ? 'none' : 'uppercase',
                   letterSpacing: '0.04em',
                 }}
