@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, MapPin, Linkedin, Twitter, Instagram, Youtube, ArrowUp } from 'lucide-react';
+import { Mail, MapPin, ArrowUp } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 const WhatsAppIcon: React.FC<{ size?: number; color?: string }> = ({
@@ -165,12 +165,6 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact, content }) => {
     return matched ? matched.path : `/departments/${encodeURIComponent(name.trim())}`;
   };
 
-  const socialLinks = [
-    { icon: <Linkedin size={18} />, label: 'LinkedIn', url: content?.linkedinUrl || 'https://linkedin.com' },
-    { icon: <Twitter size={18} />, label: 'Twitter', url: content?.twitterUrl || 'https://twitter.com' },
-    { icon: <Instagram size={18} />, label: 'Instagram', url: content?.instagramUrl || 'https://instagram.com' },
-    { icon: <Youtube size={18} />, label: 'YouTube', url: content?.youtubeUrl || 'https://youtube.com' },
-  ];
 
   return (
     <footer
@@ -222,42 +216,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact, content }) => {
               {desc}
             </p>
 
-            {/* Social Icons */}
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
-              {socialLinks.map((s, idx) => (
-                <a
-                  key={idx}
-                  href={s.url}
-                  target={s.url.startsWith('http') ? '_blank' : undefined}
-                  rel={s.url.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  aria-label={s.label}
-                  style={{
-                    width: '38px',
-                    height: '38px',
-                    borderRadius: '50%',
-                    backgroundColor: 'rgba(128, 128, 128, 0.15)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'var(--color-footer-heading, var(--color-white))',
-                    textDecoration: 'none',
-                    transition: 'all var(--transition-fast)',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'var(--color-footer-accent, var(--color-orange-primary))';
-                    e.currentTarget.style.color = '#FFFFFF';
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgba(128, 128, 128, 0.15)';
-                    e.currentTarget.style.color = 'var(--color-footer-heading, var(--color-white))';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }}
-                >
-                  {s.icon}
-                </a>
-              ))}
-            </div>
+
           </div>
 
           {/* Col 2: Navigation Links */}
