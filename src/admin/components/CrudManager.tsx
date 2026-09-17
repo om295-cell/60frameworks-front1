@@ -6,7 +6,7 @@ import { useAdminAuth } from '../AdminAuthContext';
 interface Column {
   key: string;
   label: string;
-  type?: 'text' | 'textarea' | 'number' | 'select' | 'media' | 'boolean' | 'mediaArray';
+  type?: 'text' | 'textarea' | 'number' | 'select' | 'media' | 'boolean' | 'mediaArray' | 'stringList';
   options?: string[];
   accept?: 'image' | 'video' | 'both';
   isArabic?: boolean;
@@ -77,11 +77,18 @@ export const CrudManager: React.FC<CrudManagerProps> = ({
     setSaving(true);
     setError('');
     try {
+      const sanitized = { ...editing };
+      columns.forEach(col => {
+        if (col.type === 'stringList' && Array.isArray(sanitized[col.key])) {
+          sanitized[col.key] = sanitized[col.key].map((s: any) => (typeof s === 'string' ? s.trim() : '')).filter(Boolean);
+        }
+      });
+
       if (isNew) {
         const newItem = {
-          ...editing,
-          _id: editing._id || `item_${Date.now()}`,
-          slug: editing.slug || (editing.title ? editing.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') : `item-${Date.now()}`),
+          ...sanitized,
+          _id: sanitized._id || `item_${Date.now()}`,
+          slug: sanitized.slug || (sanitized.title ? sanitized.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') : (sanitized.name ? sanitized.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : `item-${Date.now()}`)),
         };
         const updated = [newItem, ...items];
         setItems(updated);
@@ -90,11 +97,11 @@ export const CrudManager: React.FC<CrudManagerProps> = ({
         try { await createFn(newItem); } catch {}
         setFeedback('Created successfully!');
       } else {
-        const updated = items.map(i => (i._id === editing._id ? editing : i));
+        const updated = items.map(i => (i._id === sanitized._id ? sanitized : i));
         setItems(updated);
         if (storageKey) localStorage.setItem(storageKey, JSON.stringify(updated));
 
-        try { await updateFn(editing._id, editing); } catch {}
+        try { await updateFn(sanitized._id, sanitized); } catch {}
         setFeedback('Updated successfully!');
       }
       setTimeout(() => setFeedback(''), 3000);
@@ -128,7 +135,12 @@ export const CrudManager: React.FC<CrudManagerProps> = ({
     if (col.type === 'media') return val ? '✓ Media set' : '—';
     if (col.type === 'boolean') return val ? '✓' : '✗';
     if (col.type === 'mediaArray') return val?.length ? `${val.length} items` : '—';
-    if (Array.isArray(val)) return val.slice(0, 2).join(', ') + (val.length > 2 ? '...' : '');
+    if (col.type === 'stringList' || Array.isArray(val)) {
+      if (!val || !Array.isArray(val) || val.length === 0) return '—';
+      const clean = val.filter(Boolean);
+      if (clean.length === 0) return '—';
+      return clean.slice(0, 3).join(' • ') + (clean.length > 3 ? '...' : '');
+    }
     return val?.toString()?.slice(0, 60) || '—';
   };
 
@@ -164,7 +176,7 @@ export const CrudManager: React.FC<CrudManagerProps> = ({
               {/* English fields */}
               <div style={fieldGroupHeader}>English Fields</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                {columns.filter(c => !c.isArabic && !['media', 'mediaArray'].includes(c.type || '')).map((col) => (
+                {columns.filter(c => !c.isArabic && !['media', 'mediaArray', 'stringList'].includes(c.type || '')).map((col) => (
                   <div key={col.key} style={col.type === 'textarea' ? { gridColumn: '1/-1' } : {}}>
                     <label style={fieldLabel}>{col.label}</label>
                     {renderField(col, editing[col.key], (v) => updateEditField(col.key, v))}
@@ -172,18 +184,139 @@ export const CrudManager: React.FC<CrudManagerProps> = ({
                 ))}
               </div>
 
+              {/* English String Lists (e.g. Bullet Points, Capabilities, Deliverables) */}
+              {columns.filter(c => !c.isArabic && c.type === 'stringList').map((col) => {
+                const list: string[] = Array.isArray(editing[col.key]) ? editing[col.key] : [];
+                return (
+                  <div key={col.key} style={{ marginBottom: '1.25rem' }}>
+                    <label style={{ ...fieldLabel, marginBottom: '0.4rem' }}>{col.label}</label>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', background: '#F9FAFB', padding: '0.85rem', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
+                      {list.map((item: string, idx: number) => (
+                        <div key={idx} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9CA3AF', width: '24px' }}>#{idx + 1}</span>
+                          <input
+                            type="text"
+                            value={item || ''}
+                            placeholder={`Item ${idx + 1}...`}
+                            onChange={(e) => {
+                              const arr = [...list];
+                              arr[idx] = e.target.value;
+                              updateEditField(col.key, arr);
+                            }}
+                            style={{ ...inputStyle, flex: 1, background: '#fff' }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const arr = list.filter((_, i) => i !== idx);
+                              updateEditField(col.key, arr);
+                            }}
+                            style={deleteSmBtn}
+                            title="Remove bullet point"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={() => updateEditField(col.key, [...list, ''])}
+                        style={{
+                          fontSize: '0.8125rem',
+                          color: '#F68621',
+                          background: '#FFF7ED',
+                          border: '1px dashed #F68621',
+                          borderRadius: '6px',
+                          padding: '0.45rem 0.85rem',
+                          cursor: 'pointer',
+                          alignSelf: 'flex-start',
+                          fontWeight: 700,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.4rem',
+                          marginTop: '0.25rem',
+                        }}
+                      >
+                        <Plus size={14} /> Add Bullet Point
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+
               {/* Arabic fields */}
               {columns.some(c => c.isArabic) && (
                 <>
                   <div style={fieldGroupHeader}>Arabic Fields (عربي)</div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                    {columns.filter(c => c.isArabic).map((col) => (
+                    {columns.filter(c => c.isArabic && !['media', 'mediaArray', 'stringList'].includes(c.type || '')).map((col) => (
                       <div key={col.key} style={col.type === 'textarea' ? { gridColumn: '1/-1' } : {}}>
                         <label style={fieldLabel}>{col.label}</label>
                         {renderField(col, editing[col.key], (v) => updateEditField(col.key, v))}
                       </div>
                     ))}
                   </div>
+
+                  {/* Arabic String Lists (e.g. نقاط القدرات التنفيذية) */}
+                  {columns.filter(c => c.isArabic && c.type === 'stringList').map((col) => {
+                    const list: string[] = Array.isArray(editing[col.key]) ? editing[col.key] : [];
+                    return (
+                      <div key={col.key} style={{ marginBottom: '1.25rem' }}>
+                        <label style={{ ...fieldLabel, marginBottom: '0.4rem', textAlign: 'right' }}>{col.label}</label>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', background: '#F9FAFB', padding: '0.85rem', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
+                          {list.map((item: string, idx: number) => (
+                            <div key={idx} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const arr = list.filter((_, i) => i !== idx);
+                                  updateEditField(col.key, arr);
+                                }}
+                                style={deleteSmBtn}
+                                title="حذف النقطة"
+                              >
+                                <X size={14} />
+                              </button>
+                              <input
+                                type="text"
+                                value={item || ''}
+                                placeholder={`نقطة ${idx + 1}...`}
+                                dir="rtl"
+                                onChange={(e) => {
+                                  const arr = [...list];
+                                  arr[idx] = e.target.value;
+                                  updateEditField(col.key, arr);
+                                }}
+                                style={{ ...inputStyle, flex: 1, direction: 'rtl', background: '#fff' }}
+                              />
+                              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9CA3AF', width: '24px', textAlign: 'center' }}>#{idx + 1}</span>
+                            </div>
+                          ))}
+                          <button
+                            type="button"
+                            onClick={() => updateEditField(col.key, [...list, ''])}
+                            style={{
+                              fontSize: '0.8125rem',
+                              color: '#F68621',
+                              background: '#FFF7ED',
+                              border: '1px dashed #F68621',
+                              borderRadius: '6px',
+                              padding: '0.45rem 0.85rem',
+                              cursor: 'pointer',
+                              alignSelf: 'flex-end',
+                              fontWeight: 700,
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.4rem',
+                              marginTop: '0.25rem',
+                            }}
+                          >
+                            <Plus size={14} /> إضافة نقطة جديدة
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </>
               )}
 

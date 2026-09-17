@@ -17,7 +17,18 @@ import { useLanguage } from '../context/LanguageContext';
 interface SectorsProps {
   sectors: Sector[];
   onOpenContact: (sectorName: string) => void;
-  content?: { eyebrow_en?: string; eyebrow_ar?: string; heading_en?: string; heading_ar?: string; subtitle_en?: string; subtitle_ar?: string; };
+  content?: {
+    eyebrow_en?: string;
+    eyebrow_ar?: string;
+    heading_en?: string;
+    heading_ar?: string;
+    subtitle_en?: string;
+    subtitle_ar?: string;
+    capabilitiesHeading_en?: string;
+    capabilitiesHeading_ar?: string;
+    ctaText_en?: string;
+    ctaText_ar?: string;
+  };
 }
 
 export const Sectors: React.FC<SectorsProps> = ({ sectors, onOpenContact, content }) => {
@@ -54,6 +65,37 @@ export const Sectors: React.FC<SectorsProps> = ({ sectors, onOpenContact, conten
   const activeSectorCapabilities = language === 'ar' && activeSector?.capabilities_ar && activeSector.capabilities_ar.length > 0
     ? activeSector.capabilities_ar
     : activeSector?.capabilities;
+
+  const activeCapabilitiesHeading = (language === 'ar' && activeSector?.capabilitiesTitle_ar)
+    ? activeSector.capabilitiesTitle_ar
+    : (activeSector?.capabilitiesTitle || (language === 'ar' ? content?.capabilitiesHeading_ar : content?.capabilitiesHeading_en) || t('sectorKeyCapabilities'));
+
+  const activeSectorButtonText = (language === 'ar' && activeSector?.buttonText_ar)
+    ? activeSector.buttonText_ar
+    : (activeSector?.buttonText || (language === 'ar' ? content?.ctaText_ar : content?.ctaText_en) || `${t('sectorCtaPrefix')}${activeSectorName}`);
+
+  const handleCtaClick = () => {
+    const link = activeSector?.buttonLink?.trim();
+    if (link) {
+      if (link.startsWith('http://') || link.startsWith('https://') || link.startsWith('mailto:') || link.startsWith('tel:')) {
+        window.open(link, '_blank', 'noopener,noreferrer');
+        return;
+      }
+      if (link.startsWith('#')) {
+        const target = document.querySelector(link);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+        if (link === '#contact') {
+          onOpenContact(activeSectorButtonText);
+        }
+        return;
+      }
+      window.location.href = link;
+      return;
+    }
+    onOpenContact(activeSectorButtonText);
+  };
 
   return (
     <section id="sectors" className="section" style={{ backgroundColor: 'var(--color-sec-sectors-bg, #F4D3C9)' }}>
@@ -235,55 +277,57 @@ export const Sectors: React.FC<SectorsProps> = ({ sectors, onOpenContact, conten
                   </p>
 
                   {/* Specific Capabilities */}
-                  <div style={{ marginBottom: '2rem' }}>
-                    <h4
-                      style={{
-                        fontSize: '0.8125rem',
-                        fontWeight: 700,
-                        textTransform: language === 'ar' ? 'none' : 'uppercase',
-                        letterSpacing: language === 'ar' ? 'normal' : '0.06em',
-                        color: 'var(--color-sec-sectors-card-text, var(--color-charcoal-dark))',
-                        marginBottom: '0.75rem',
-                      }}
-                    >
-                      {t('sectorKeyCapabilities')}
-                    </h4>
-                    <div
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                        gap: '0.625rem',
-                      }}
-                    >
-                      {activeSectorCapabilities?.map((cap, cIdx) => (
-                        <div
-                          key={cIdx}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.5rem',
-                            fontSize: '0.84375rem',
-                            color: 'var(--color-sec-sectors-card-text, var(--color-charcoal-dark))',
-                            fontWeight: 500,
-                          }}
-                        >
-                          <CheckCircle2 size={16} color="var(--color-sec-sectors-accent, var(--color-orange-primary))" />
-                          <span>{cap}</span>
-                        </div>
-                      ))}
+                  {activeSectorCapabilities && activeSectorCapabilities.length > 0 && (
+                    <div style={{ marginBottom: '2rem' }}>
+                      <h4
+                        style={{
+                          fontSize: '0.8125rem',
+                          fontWeight: 700,
+                          textTransform: language === 'ar' ? 'none' : 'uppercase',
+                          letterSpacing: language === 'ar' ? 'normal' : '0.06em',
+                          color: 'var(--color-sec-sectors-card-text, var(--color-charcoal-dark))',
+                          marginBottom: '0.75rem',
+                        }}
+                      >
+                        {activeCapabilitiesHeading}
+                      </h4>
+                      <div
+                        style={{
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                          gap: '0.625rem',
+                        }}
+                      >
+                        {activeSectorCapabilities.map((cap, cIdx) => (
+                          <div
+                            key={cIdx}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.5rem',
+                              fontSize: '0.84375rem',
+                              color: 'var(--color-sec-sectors-card-text, var(--color-charcoal-dark))',
+                              fontWeight: 500,
+                            }}
+                          >
+                            <CheckCircle2 size={16} color="var(--color-sec-sectors-accent, var(--color-orange-primary))" />
+                            <span>{cap}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 <button
-                  onClick={() => onOpenContact(`${t('sectorCtaPrefix')}${activeSectorName}`)}
+                  onClick={handleCtaClick}
                   className="btn btn-primary-orange"
                   style={{
                     alignSelf: 'flex-start',
                     padding: '0.75rem 1.75rem',
                   }}
                 >
-                  <span>{t('sectorCtaPrefix')}{activeSectorName}</span>
+                  <span>{activeSectorButtonText}</span>
                   <ArrowRight
                     size={16}
                     style={{ transform: dir === 'rtl' ? 'rotate(180deg)' : 'none' }}

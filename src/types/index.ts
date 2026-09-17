@@ -49,9 +49,15 @@ export interface Sector {
   slug: string;
   description: string;
   description_ar?: string;
+  capabilitiesTitle?: string;
+  capabilitiesTitle_ar?: string;
   capabilities: string[];
   capabilities_ar?: string[];
+  buttonText?: string;
+  buttonText_ar?: string;
+  buttonLink?: string;
   imageUrl: string;
+  videoUrl?: string;
   icon: string;
   order: number;
 }

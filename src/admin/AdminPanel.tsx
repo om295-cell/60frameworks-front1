@@ -58,9 +58,11 @@ const SERVICE_COLUMNS = [
   { key: 'highlighted', label: 'Highlighted', type: 'boolean' as const },
   { key: 'tagline', label: 'Tagline (EN)', type: 'text' as const },
   { key: 'description', label: 'Description (EN)', type: 'textarea' as const },
+  { key: 'deliverables', label: 'Deliverables / Bullet Points (EN)', type: 'stringList' as const },
   { key: 'title_ar', label: 'Title (AR)', type: 'text' as const, isArabic: true },
   { key: 'tagline_ar', label: 'Tagline (AR)', type: 'text' as const, isArabic: true },
   { key: 'description_ar', label: 'Description (AR)', type: 'textarea' as const, isArabic: true },
+  { key: 'deliverables_ar', label: 'مخرجات الخدمة / Bullet Points (عربي)', type: 'stringList' as const, isArabic: true },
 ];
 
 const SECTOR_COLUMNS = [
@@ -68,8 +70,15 @@ const SECTOR_COLUMNS = [
   { key: 'icon', label: 'Icon', type: 'select' as const, options: ['Landmark', 'Building2', 'HeartPulse', 'GraduationCap', 'Building', 'Cpu', 'Utensils', 'Factory'] },
   { key: 'order', label: 'Order', type: 'number' as const },
   { key: 'description', label: 'Description (EN)', type: 'textarea' as const },
+  { key: 'capabilitiesTitle', label: 'Capabilities Heading (EN) [optional]', type: 'text' as const },
+  { key: 'capabilities', label: 'Key Capabilities / Bullet Points (EN)', type: 'stringList' as const },
+  { key: 'buttonText', label: 'Button Text (EN) [optional]', type: 'text' as const },
+  { key: 'buttonLink', label: 'Button Link / URL [optional, e.g. #contact or https://...]', type: 'text' as const },
   { key: 'name_ar', label: 'Name (AR)', type: 'text' as const, isArabic: true },
   { key: 'description_ar', label: 'Description (AR)', type: 'textarea' as const, isArabic: true },
+  { key: 'capabilitiesTitle_ar', label: 'عنوان القدرات / النقاط (عربي) [افتراضي: أبرز القدرات التنفيذية في القطاع]', type: 'text' as const, isArabic: true },
+  { key: 'capabilities_ar', label: 'نقاط القدرات التنفيذية / Bullet Points (عربي)', type: 'stringList' as const, isArabic: true },
+  { key: 'buttonText_ar', label: 'نص الزر (عربي) [اختياري]', type: 'text' as const, isArabic: true },
   { key: 'imageUrl', label: 'Sector Image', type: 'media' as const, accept: 'image' as const },
   { key: 'videoUrl', label: 'Sector Video', type: 'media' as const, accept: 'video' as const },
 ];
@@ -102,7 +111,7 @@ const TESTIMONIAL_COLUMNS = [
 // Default values for new items
 const DEFAULT_PROJECT = { title: '', title_ar: '', slug: '', category: 'Summits & Conferences', category_ar: '', client: '', client_ar: '', year: new Date().getFullYear(), featured: false, order: 99, summary: '', summary_ar: '', description: '', description_ar: '', coverImage: '', videoUrl: '', galleryImages: [], metrics: [], tags: [], tags_ar: [] };
 const DEFAULT_SERVICE = { title: '', title_ar: '', slug: '', icon: 'Sparkles', tagline: '', tagline_ar: '', description: '', description_ar: '', deliverables: [], deliverables_ar: [], order: 99, highlighted: false };
-const DEFAULT_SECTOR = { name: '', name_ar: '', slug: '', description: '', description_ar: '', capabilities: [], capabilities_ar: [], imageUrl: '', videoUrl: '', icon: 'Building2', order: 99 };
+const DEFAULT_SECTOR = { name: '', name_ar: '', slug: '', description: '', description_ar: '', capabilitiesTitle: '', capabilitiesTitle_ar: '', capabilities: [], capabilities_ar: [], buttonText: '', buttonText_ar: '', buttonLink: '#contact', imageUrl: '', videoUrl: '', icon: 'Building2', order: 99 };
 const DEFAULT_CLIENT = { name: '', name_ar: '', logoSvg: '', logoUrl: '', industry: '', industry_ar: '', tier: 'featured', order: 99 };
 const DEFAULT_TESTIMONIAL = { quote: '', quote_ar: '', authorName: '', authorName_ar: '', authorRole: '', authorRole_ar: '', organization: '', organization_ar: '', avatarUrl: '', metricHighlight: '', metricHighlight_ar: '', rating: 5, order: 99 };
 

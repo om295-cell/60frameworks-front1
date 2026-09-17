@@ -31,6 +31,10 @@ const fieldLabel = (k: string) => {
   if (k === 'videoUrl') return 'Event Showcase Video (overrides image if set)';
   if (k === 'backdropVideo') return 'Hero Background Video';
   if (k === 'backdropImage') return 'Hero Background Image';
+  if (k === 'capabilitiesHeading_en') return 'Default Capabilities Heading (English)';
+  if (k === 'capabilitiesHeading_ar') return 'Default Capabilities Heading (Arabic)';
+  if (k === 'ctaText_en') return 'Default Button Text (English)';
+  if (k === 'ctaText_ar') return 'Default Button Text (Arabic)';
   return k.replace(/_en$/, ' (English)').replace(/_ar$/, ' (Arabic)').replace(/_/g, ' ');
 };
 
