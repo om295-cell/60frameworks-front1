@@ -77,7 +77,7 @@ export const FALLBACK_HOMEPAGE_CONTENT = {
   },
   whyUs: {
     eyebrow_en: 'WHY WORK WITH 60FRAMEWORKS',
-    eyebrow_ar: 'لماذا تختار 60 فريمووركس',
+    eyebrow_ar: 'لماذا تختار 60 إطارًا',
     heading_en: 'Where Uncompromising Strategy Meets Creative Audacity.',
     heading_ar: 'حيث تلتقي الاستراتيجية الدقيقة بالجرأة الإبداعية.',
     subtitle_en:
@@ -154,7 +154,7 @@ export const FALLBACK_HOMEPAGE_CONTENT = {
     directBtnText_en: 'Direct Inquiry',
     directBtnText_ar: 'طلب استشارة فورية',
     copyright_en: '60FRAMEWORKS Experiential Marketing Group. All rights reserved.',
-    copyright_ar: 'مجموعة 60 فريمووركس للتسويق التجريبي والفعاليات. جميع الحقوق محفوظة.',
+    copyright_ar: 'مجموعة 60 إطارًا للتسويق التجريبي والفعاليات. جميع الحقوق محفوظة.',
     privacyText_en: 'Privacy Policy',
     privacyText_ar: 'سياسة الخصوصية',
     privacyUrl: '#',

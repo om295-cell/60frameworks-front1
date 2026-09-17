@@ -130,7 +130,7 @@ export const translations: Translations = {
   viewCaseStudy: { en: 'View Project Case Study', ar: 'استعراض تفاصيل المشروع' },
 
   // Why Us
-  whyUsEyebrow: { en: 'WHY WORK WITH 60FRAMEWORKS', ar: 'لماذا تختار 60 فريمووركس' },
+  whyUsEyebrow: { en: 'WHY WORK WITH 60FRAMEWORKS', ar: 'لماذا تختار 60 إطارًا' },
   whyUsHeading: { en: 'Where Uncompromising Strategy Meets Creative Audacity.', ar: 'حيث تلتقي الاستراتيجية الدقيقة بالجرأة الإبداعية.' },
   whyUsSubtitle: {
     en: 'We eliminate the traditional friction between abstract creative agencies and heavy technical production houses by unifying both into a single seamless powerhouse.',
@@ -179,7 +179,7 @@ export const translations: Translations = {
   footerContactTitle: { en: 'Headquarters & Inquiries', ar: 'المكاتب والتواصل' },
   footerHubs: { en: 'Regional & Global Hubs: Riyadh • Dubai • London • New York', ar: 'المقرات الإقليمية والدولية: الرياض 🇸🇦 • دبي • لندن • نيويورك' },
   footerDirectBtn: { en: 'Direct Inquiry', ar: 'طلب استشارة فورية' },
-  footerCopyright: { en: '60FRAMEWORKS Experiential Marketing Group. All rights reserved.', ar: 'مجموعة 60 فريمووركس للتسويق التجريبي والفعاليات. جميع الحقوق محفوظة.' },
+  footerCopyright: { en: '60FRAMEWORKS Experiential Marketing Group. All rights reserved.', ar: 'مجموعة 60 إطارًا للتسويق التجريبي والفعاليات. جميع الحقوق محفوظة.' },
   footerPrivacy: { en: 'Privacy Policy', ar: 'سياسة الخصوصية' },
   footerTerms: { en: 'Terms of Engagement', ar: 'الشروط والأحكام' },
   footerBackToTop: { en: 'Back to Top', ar: 'العودة للأعلى' },
