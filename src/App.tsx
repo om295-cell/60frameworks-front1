@@ -215,7 +215,7 @@ export const App: React.FC = () => {
         <main style={{ flex: 1 }}>
           <Clients clients={clients} content={homeContent?.clients} />
         </main>
-        <Footer onOpenContact={() => handleOpenContact()} />
+        <Footer onOpenContact={() => handleOpenContact()} content={homeContent?.footer} />
       </div>
     );
   }
@@ -284,7 +284,7 @@ export const App: React.FC = () => {
       </main>
 
       {/* 11. Footer */}
-      <Footer onOpenContact={() => handleOpenContact()} />
+      <Footer onOpenContact={() => handleOpenContact()} content={homeContent?.footer} />
 
       {/* Interactive Modals */}
       <ProjectModal

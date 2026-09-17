@@ -30,6 +30,7 @@ const SECTIONS: Section[] = [
   { key: 'whyUs', title: 'Why Us Section', emoji: '⭐', permKey: 'editAbout' },
   { key: 'testimonials', title: 'Testimonials Section', emoji: '💬' },
   { key: 'finalCta', title: 'Final CTA Section', emoji: '📣', permKey: 'editFinalCTA' },
+  { key: 'footer', title: 'Footer Section (All Pages)', emoji: '🔻', permKey: 'editFinalCTA' },
 ];
 
 const fieldLabel = (k: string) => {
@@ -47,6 +48,35 @@ const fieldLabel = (k: string) => {
   if (k === 'badgeTitle_ar') return 'عنوان الشارة البارزة (عربي)';
   if (k === 'badgeDesc_en') return 'Floating Badge Description (English)';
   if (k === 'badgeDesc_ar') return 'وصف الشارة البارزة (عربي)';
+  if (k === 'email') return 'Contact Email Address';
+  if (k === 'phone') return 'Contact Phone / Display Text';
+  if (k === 'whatsappUrl') return 'WhatsApp Link / URL';
+  if (k === 'linkedinUrl') return 'LinkedIn Profile URL';
+  if (k === 'twitterUrl') return 'Twitter / X Profile URL';
+  if (k === 'instagramUrl') return 'Instagram Profile URL';
+  if (k === 'youtubeUrl') return 'YouTube Channel URL';
+  if (k === 'privacyUrl') return 'Privacy Policy URL';
+  if (k === 'termsUrl') return 'Terms of Engagement URL';
+  if (k === 'desc_en') return 'Agency Bio / Mission in Footer (English)';
+  if (k === 'desc_ar') return 'نبذة الوكالة والرسالة في التذييل (عربي)';
+  if (k === 'hubs_en') return 'Global & Regional Hubs Text (English)';
+  if (k === 'hubs_ar') return 'المقرات والعناوين (عربي)';
+  if (k === 'navTitle_en') return 'Navigation Column Title (English)';
+  if (k === 'navTitle_ar') return 'عنوان عمود التنقل (عربي)';
+  if (k === 'expertiseTitle_en') return 'Expertise Column Title (English)';
+  if (k === 'expertiseTitle_ar') return 'عنوان عمود مجالات الخبرة (عربي)';
+  if (k === 'contactTitle_en') return 'Contact Column Title (English)';
+  if (k === 'contactTitle_ar') return 'عنوان عمود التواصل والمقرات (عربي)';
+  if (k === 'directBtnText_en') return 'Direct Inquiry Button (English)';
+  if (k === 'directBtnText_ar') return 'نص زر الاستشارة الفورية (عربي)';
+  if (k === 'copyright_en') return 'Copyright Notice (English)';
+  if (k === 'copyright_ar') return 'حقوق النشر والملكية (عربي)';
+  if (k === 'privacyText_en') return 'Privacy Policy Link Label (English)';
+  if (k === 'privacyText_ar') return 'نص رابط سياسة الخصوصية (عربي)';
+  if (k === 'termsText_en') return 'Terms Link Label (English)';
+  if (k === 'termsText_ar') return 'نص رابط الشروط والأحكام (عربي)';
+  if (k === 'servicesList_en') return 'Footer Services List (one per line - English)';
+  if (k === 'servicesList_ar') return 'قائمة خدمات التذييل (خدمة في كل سطر - عربي)';
   return k.replace(/_en$/, ' (English)').replace(/_ar$/, ' (Arabic)').replace(/_/g, ' ');
 };
 
@@ -252,7 +282,7 @@ export const HomepageEditor: React.FC = () => {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                       {textFields.map(([k, v]) => {
                         const isAr = k.endsWith('_ar');
-                        const isLong = typeof v === 'string' && (v as string).length > 80;
+                        const isLong = typeof v === 'string' && ((v as string).length > 80 || (v as string).includes('\n') || k.includes('servicesList') || k.includes('desc_'));
                         // Derive the English counterpart key for loading indicator
                         const enCounterpart = isAr ? `${sec.key}.${k.slice(0, -3)}_en` : null;
                         return (

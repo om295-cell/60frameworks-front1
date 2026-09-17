@@ -2,16 +2,65 @@ import React from 'react';
 import { Mail, Phone, MapPin, Linkedin, Twitter, Instagram, Youtube, ArrowUp } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
-interface FooterProps {
-  onOpenContact: () => void;
+export interface FooterContent {
+  desc_en?: string;
+  desc_ar?: string;
+  email?: string;
+  phone?: string;
+  whatsappUrl?: string;
+  hubs_en?: string;
+  hubs_ar?: string;
+  linkedinUrl?: string;
+  twitterUrl?: string;
+  instagramUrl?: string;
+  youtubeUrl?: string;
+  navTitle_en?: string;
+  navTitle_ar?: string;
+  expertiseTitle_en?: string;
+  expertiseTitle_ar?: string;
+  contactTitle_en?: string;
+  contactTitle_ar?: string;
+  directBtnText_en?: string;
+  directBtnText_ar?: string;
+  copyright_en?: string;
+  copyright_ar?: string;
+  privacyText_en?: string;
+  privacyText_ar?: string;
+  privacyUrl?: string;
+  termsText_en?: string;
+  termsText_ar?: string;
+  termsUrl?: string;
+  servicesList_en?: string;
+  servicesList_ar?: string;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
+interface FooterProps {
+  onOpenContact: () => void;
+  content?: FooterContent;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onOpenContact, content }) => {
   const { language, t } = useLanguage();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const desc = (language === 'ar' ? content?.desc_ar : content?.desc_en) || t('footerDesc');
+  const navTitle = (language === 'ar' ? content?.navTitle_ar : content?.navTitle_en) || t('footerNavTitle');
+  const expertiseTitle = (language === 'ar' ? content?.expertiseTitle_ar : content?.expertiseTitle_en) || t('footerExpertiseTitle');
+  const contactTitle = (language === 'ar' ? content?.contactTitle_ar : content?.contactTitle_en) || t('footerContactTitle');
+  const hubs = (language === 'ar' ? content?.hubs_ar : content?.hubs_en) || t('footerHubs');
+  const directBtnText = (language === 'ar' ? content?.directBtnText_ar : content?.directBtnText_en) || t('footerDirectBtn');
+  const copyright = (language === 'ar' ? content?.copyright_ar : content?.copyright_en) || t('footerCopyright');
+  const privacyText = (language === 'ar' ? content?.privacyText_ar : content?.privacyText_en) || t('footerPrivacy');
+  const termsText = (language === 'ar' ? content?.termsText_ar : content?.termsText_en) || t('footerTerms');
+
+  const email = content?.email || 'inquiries@impactagency.com';
+  const phone = content?.phone || '+966 55 307 7467';
+  const whatsappUrl = content?.whatsappUrl || 'https://api.whatsapp.com/send/?phone=966553077467';
+  const privacyUrl = content?.privacyUrl || '#';
+  const termsUrl = content?.termsUrl || '#';
 
   const navLinks = [
     { label: t('navAbout'), href: '#about' },
@@ -22,23 +71,33 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
     { label: t('navWhyUs'), href: '#why-us' },
   ];
 
+  const defaultServicesAr = [
+    'استراتيجية ورؤية الفعاليات',
+    'إدارة وإنتاج الفعاليات الكبرى',
+    'تجارب العلامات التجارية والتدشين',
+    'المعارض والأجنحة المعمارية',
+    'القمم المؤسسية والمؤتمرات السيادية',
+    'الإبداع والسرد القصصي السينمائي',
+  ];
+  const defaultServicesEn = [
+    'Event Strategy & Architecture',
+    'Event Management & Staging',
+    'Brand Experiences & Reveals',
+    'Exhibitions & Custom Booths',
+    'Corporate Summits & Galas',
+    'Creative & 3D Spatial Visuals',
+  ];
+
   const serviceLinks = language === 'ar'
-    ? [
-        'استراتيجية ورؤية الفعاليات',
-        'إدارة وإنتاج الفعاليات الكبرى',
-        'تجارب العلامات التجارية والتدشين',
-        'المعارض والأجنحة المعمارية',
-        'القمم المؤسسية والمؤتمرات السيادية',
-        'الإبداع والسرد القصصي السينمائي',
-      ]
-    : [
-        'Event Strategy & Architecture',
-        'Event Management & Staging',
-        'Brand Experiences & Reveals',
-        'Exhibitions & Custom Booths',
-        'Corporate Summits & Galas',
-        'Creative & 3D Spatial Visuals',
-      ];
+    ? (content?.servicesList_ar ? content.servicesList_ar.split('\n').map(s => s.trim()).filter(Boolean) : defaultServicesAr)
+    : (content?.servicesList_en ? content.servicesList_en.split('\n').map(s => s.trim()).filter(Boolean) : defaultServicesEn);
+
+  const socialLinks = [
+    { icon: <Linkedin size={18} />, label: 'LinkedIn', url: content?.linkedinUrl || 'https://linkedin.com' },
+    { icon: <Twitter size={18} />, label: 'Twitter', url: content?.twitterUrl || 'https://twitter.com' },
+    { icon: <Instagram size={18} />, label: 'Instagram', url: content?.instagramUrl || 'https://instagram.com' },
+    { icon: <Youtube size={18} />, label: 'YouTube', url: content?.youtubeUrl || 'https://youtube.com' },
+  ];
 
   return (
     <footer
@@ -87,20 +146,17 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
             </div>
 
             <p style={{ fontSize: '0.875rem', lineHeight: 1.65, color: 'var(--color-footer-text, rgba(255, 255, 255, 0.7))', marginBottom: '1.5rem' }}>
-              {t('footerDesc')}
+              {desc}
             </p>
 
             {/* Social Icons */}
             <div style={{ display: 'flex', gap: '0.75rem' }}>
-              {[
-                { icon: <Linkedin size={18} />, label: 'LinkedIn' },
-                { icon: <Twitter size={18} />, label: 'Twitter' },
-                { icon: <Instagram size={18} />, label: 'Instagram' },
-                { icon: <Youtube size={18} />, label: 'YouTube' },
-              ].map((s, idx) => (
+              {socialLinks.map((s, idx) => (
                 <a
                   key={idx}
-                  href="#"
+                  href={s.url}
+                  target={s.url.startsWith('http') ? '_blank' : undefined}
+                  rel={s.url.startsWith('http') ? 'noopener noreferrer' : undefined}
                   aria-label={s.label}
                   style={{
                     width: '38px',
@@ -143,7 +199,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
                 marginBottom: '1.25rem',
               }}
             >
-              {t('footerNavTitle')}
+              {navTitle}
             </h4>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {navLinks.map((link, idx) => (
@@ -178,7 +234,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
                 marginBottom: '1.25rem',
               }}
             >
-              {t('footerExpertiseTitle')}
+              {expertiseTitle}
             </h4>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {serviceLinks.map((serv, idx) => (
@@ -213,24 +269,24 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
                 marginBottom: '1.25rem',
               }}
             >
-              {t('footerContactTitle')}
+              {contactTitle}
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.875rem', color: 'var(--color-footer-text, rgba(255, 255, 255, 0.7))' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <Mail size={16} color="var(--color-footer-accent, var(--color-orange-primary))" />
                 <a
-                  href="mailto:inquiries@impactagency.com"
+                  href={`mailto:${email}`}
                   style={{ color: 'inherit', textDecoration: 'none' }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-orange-primary)')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = 'inherit')}
                 >
-                  inquiries@impactagency.com
+                  {email}
                 </a>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <Phone size={16} color="var(--color-footer-accent, var(--color-orange-primary))" />
                 <a
-                  href="https://api.whatsapp.com/send/?phone=966553077467"
+                  href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ color: 'inherit', textDecoration: 'none' }}
@@ -238,12 +294,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
                   onMouseLeave={(e) => (e.currentTarget.style.color = 'inherit')}
                   dir="ltr"
                 >
-                  +966 55 307 7467 (WhatsApp)
+                  {phone}
                 </a>
               </div>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
                 <MapPin size={16} color="var(--color-footer-accent, var(--color-orange-primary))" style={{ marginTop: '2px', flexShrink: 0 }} />
-                <span>{t('footerHubs')}</span>
+                <span>{hubs}</span>
               </div>
             </div>
 
@@ -257,7 +313,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
                 fontSize: '0.875rem',
               }}
             >
-              {t('footerDirectBtn')}
+              {directBtnText}
             </button>
           </div>
         </div>
@@ -277,12 +333,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact }) => {
           }}
         >
           <div>
-            © {new Date().getFullYear()} {t('footerCopyright')}
+            © {new Date().getFullYear()} {copyright}
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>{t('footerPrivacy')}</a>
-            <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>{t('footerTerms')}</a>
+            <a href={privacyUrl} style={{ color: 'inherit', textDecoration: 'none' }}>{privacyText}</a>
+            <a href={termsUrl} style={{ color: 'inherit', textDecoration: 'none' }}>{termsText}</a>
             <button
               onClick={scrollToTop}
               style={{
