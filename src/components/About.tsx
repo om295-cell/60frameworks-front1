@@ -283,14 +283,13 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
         {/* Animated Statistics Bar */}
         <div
           style={{
-            backgroundColor: 'var(--color-sec-about-card-bg, #1F1F1F)',
+            backgroundColor: 'var(--color-gray-structure, #E6E7E8)',
             borderRadius: 'var(--radius-lg)',
             padding: 'clamp(2rem, 4vw, 3.5rem)',
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
             gap: '2rem',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.35)',
+            border: '1px solid rgba(0,0,0,0.06)',
           }}
         >
           {stats.map((st, idx) => (
@@ -313,7 +312,7 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
                 style={{
                   fontSize: '0.875rem',
                   fontWeight: 600,
-                  color: 'var(--color-sec-about-card-text, #E5E7EB)',
+                  color: 'var(--color-charcoal-dark, #242424)',
                   textTransform: language === 'ar' ? 'none' : 'uppercase',
                   letterSpacing: '0.04em',
                 }}
