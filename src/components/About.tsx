@@ -23,6 +23,12 @@ interface AboutProps {
       suffix_en?: string;
       suffix_ar?: string;
     }[];
+    pillars?: {
+      title_en?: string;
+      title_ar?: string;
+      desc_en?: string;
+      desc_ar?: string;
+    }[];
   };
 }
 
@@ -69,6 +75,20 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
         { label: t('stat3'), value: '99', suffix: '%' },
         { label: t('stat4'), value: '24', suffix: '' },
       ];
+
+  // Pillars — prefer CMS content, fall back to hardcoded translations
+  const FALLBACK_PILLARS = [
+    { title: t('aboutPillar1'), desc: '' },
+    { title: t('aboutPillar2'), desc: '' },
+    { title: t('aboutPillar3'), desc: '' },
+    { title: t('aboutPillar4'), desc: '' },
+  ];
+  const pillars = content?.pillars && content.pillars.length > 0
+    ? content.pillars.map(p => ({
+        title: (language === 'ar' ? p.title_ar : p.title_en) || '',
+        desc: (language === 'ar' ? p.desc_ar : p.desc_en) || '',
+      }))
+    : FALLBACK_PILLARS;
 
   return (
     <section id="about" ref={sectionRef} className="section" style={{ backgroundColor: 'var(--color-sec-about-bg, #FFFFFF)' }}>
@@ -166,26 +186,43 @@ export const About: React.FC<AboutProps> = ({ onOpenContact, content }) => {
               {para2}
             </p>
 
-            {/* Strategic Pillars List */}
+            {/* Strategic Pillars — CMS-editable cards */}
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
                 gap: '1rem',
                 marginBottom: '2.5rem',
               }}
             >
-              {[
-                t('aboutPillar1'),
-                t('aboutPillar2'),
-                t('aboutPillar3'),
-                t('aboutPillar4'),
-              ].map((item, idx) => (
-                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-                  <CheckCircle2 size={18} color="var(--color-sec-about-accent, var(--color-orange-primary))" />
-                  <span style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--color-sec-about-text, var(--color-charcoal-dark))' }}>
-                    {item}
-                  </span>
+              {pillars.map((pillar, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.4rem',
+                    padding: '1rem 1.1rem',
+                    borderRadius: '10px',
+                    background: 'var(--color-sec-about-card-bg, rgba(0,0,0,0.03))',
+                    border: '1px solid rgba(0,0,0,0.07)',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>
+                    <CheckCircle2
+                      size={18}
+                      color="var(--color-sec-about-accent, var(--color-orange-primary))"
+                      style={{ flexShrink: 0, marginTop: '2px' }}
+                    />
+                    <span style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--color-sec-about-text, var(--color-charcoal-dark))', lineHeight: 1.4 }}>
+                      {pillar.title}
+                    </span>
+                  </div>
+                  {pillar.desc && (
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--color-sec-about-subtitle, var(--color-body-gray))', lineHeight: 1.6, margin: 0, paddingLeft: dir === 'rtl' ? 0 : '1.6rem', paddingRight: dir === 'rtl' ? '1.6rem' : 0 }}>
+                      {pillar.desc}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>

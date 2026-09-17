@@ -302,6 +302,95 @@ export const HomepageEditor: React.FC = () => {
                   </div>
                 )}
 
+                {/* About Section: Pillars / Strategic Cards Editor */}
+                {sec.key === 'about' && canEditSec && (
+                  <div style={{ marginBottom: '1.5rem' }}>
+                    <h4 style={subHeading}>✅ Strategic Pillars (Checklist Cards)</h4>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      {((content.about?.pillars || []) as any[]).map((pillar: any, idx: number) => (
+                        <div key={idx} style={{ background: '#F9FAFB', borderRadius: '10px', padding: '1rem', border: '1px solid #E5E7EB' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9CA3AF' }}>PILLAR #{idx + 1}</span>
+                            <button
+                              onClick={() => {
+                                const newPillars = (content.about?.pillars || []).filter((_: any, i: number) => i !== idx);
+                                setContent((prev: any) => ({ ...prev, about: { ...prev.about, pillars: newPillars } }));
+                              }}
+                              style={{ background: '#FEE2E2', border: 'none', borderRadius: '6px', padding: '0.35rem 0.6rem', cursor: 'pointer', color: '#B91C1C', fontSize: '0.75rem', fontWeight: 700 }}
+                            >
+                              <Trash2 size={13} style={{ display: 'inline', marginRight: '3px' }} /> Remove
+                            </button>
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                            <div>
+                              <label style={fieldLbl}>Title (English)</label>
+                              <input type="text" value={pillar.title_en || ''} onChange={(e) => {
+                                const newPillars = [...(content.about?.pillars || [])];
+                                newPillars[idx] = { ...newPillars[idx], title_en: e.target.value };
+                                setContent((prev: any) => ({ ...prev, about: { ...prev.about, pillars: newPillars } }));
+                              }} style={inputS} />
+                            </div>
+                            <div>
+                              <label style={fieldLbl}>العنوان (عربي) 📌</label>
+                              <input type="text" dir="rtl" value={pillar.title_ar || ''} onChange={(e) => {
+                                const newPillars = [...(content.about?.pillars || [])];
+                                newPillars[idx] = { ...newPillars[idx], title_ar: e.target.value };
+                                setContent((prev: any) => ({ ...prev, about: { ...prev.about, pillars: newPillars } }));
+                              }} style={{ ...inputS, direction: 'rtl', borderColor: autoTranslate ? '#6EE7B7' : undefined }}
+                              onBlur={async () => {
+                                if (!autoTranslate || !pillar.title_ar?.trim()) return;
+                                const { translateArToEn } = await import('../../utils/autoTranslate');
+                                const translated = await translateArToEn(pillar.title_ar);
+                                if (translated) {
+                                  const newPillars = [...(content.about?.pillars || [])];
+                                  newPillars[idx] = { ...newPillars[idx], title_en: translated };
+                                  setContent((prev: any) => ({ ...prev, about: { ...prev.about, pillars: newPillars } }));
+                                }
+                              }} />
+                            </div>
+                            <div style={{ gridColumn: '1/-1' }}>
+                              <label style={fieldLbl}>Description (English)</label>
+                              <textarea rows={2} value={pillar.desc_en || ''} onChange={(e) => {
+                                const newPillars = [...(content.about?.pillars || [])];
+                                newPillars[idx] = { ...newPillars[idx], desc_en: e.target.value };
+                                setContent((prev: any) => ({ ...prev, about: { ...prev.about, pillars: newPillars } }));
+                              }} style={{ ...inputS, resize: 'vertical' }} />
+                            </div>
+                            <div style={{ gridColumn: '1/-1' }}>
+                              <label style={fieldLbl}>الوصف (عربي) 📌</label>
+                              <textarea rows={2} dir="rtl" value={pillar.desc_ar || ''} onChange={(e) => {
+                                const newPillars = [...(content.about?.pillars || [])];
+                                newPillars[idx] = { ...newPillars[idx], desc_ar: e.target.value };
+                                setContent((prev: any) => ({ ...prev, about: { ...prev.about, pillars: newPillars } }));
+                              }} style={{ ...inputS, resize: 'vertical', direction: 'rtl', borderColor: autoTranslate ? '#6EE7B7' : undefined }}
+                              onBlur={async () => {
+                                if (!autoTranslate || !pillar.desc_ar?.trim()) return;
+                                const { translateArToEn } = await import('../../utils/autoTranslate');
+                                const translated = await translateArToEn(pillar.desc_ar);
+                                if (translated) {
+                                  const newPillars = [...(content.about?.pillars || [])];
+                                  newPillars[idx] = { ...newPillars[idx], desc_en: translated };
+                                  setContent((prev: any) => ({ ...prev, about: { ...prev.about, pillars: newPillars } }));
+                                }
+                              }} />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => {
+                          const newPillar = { title_en: '', title_ar: '', desc_en: '', desc_ar: '' };
+                          const newPillars = [...(content.about?.pillars || []), newPillar];
+                          setContent((prev: any) => ({ ...prev, about: { ...prev.about, pillars: newPillars } }));
+                        }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.65rem 1rem', background: '#FFF7ED', border: '1.5px dashed #F68621', borderRadius: '8px', color: '#F68621', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer' }}
+                      >
+                        <Plus size={16} /> Add Pillar Card
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 {/* Latest Event: multi-video manager + mute toggle */}
                 {isLatestEvent && (
                   <div style={{ marginBottom: '1.5rem' }}>

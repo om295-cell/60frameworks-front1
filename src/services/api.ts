@@ -48,6 +48,32 @@ export const FALLBACK_HOMEPAGE_CONTENT = {
       { label_en: 'Client Retention Rate', label_ar: 'نسبة ولاء واستمرار العملاء', value: '99', suffix_en: '%', suffix_ar: '%' },
       { label_en: 'International Design Awards', label_ar: 'جائزة تصميم عالمية', value: '24', suffix_en: '', suffix_ar: '' },
     ],
+    pillars: [
+      {
+        title_en: 'Engineering Anchored in Human Experience',
+        title_ar: 'هندسة ترتكز على التجربة الإنسانية',
+        desc_en: 'We do not see events as logistical schedules; we engineer integrated emotional journeys that captivate the senses through every spatial, sonic, and visual detail.',
+        desc_ar: 'لا نرى الفعاليات مجرد جداول لوجستية؛ بل نهندس رحلات عاطفية متكاملة تأسر الحواس عبر كل تفصيلة مكانية وصوتية وبصرية.',
+      },
+      {
+        title_en: 'Inspiring Cinematic Storytelling',
+        title_ar: 'سرد قصصي سينمائي ملهم',
+        desc_en: 'Grand visuals fade without narrative depth. We build inspiring plots that connect your brand\'s capabilities to the audience\'s ambitions and aspirations.',
+        desc_ar: 'المشاهد البصرية الكبرى تتلاشى بدون عمق قصصي. نبني حبكات ملهمة تربط قدرات علامتك التجارية بطموحات الجمهور وتطلعاته.',
+      },
+      {
+        title_en: 'Sustainable Impact & Tangible ROI',
+        title_ar: 'أثر مستدام وعائد استثماري ملموس',
+        desc_en: 'Our events achieve wide media momentum, major investment deals, and a lasting institutional standing that endures for years.',
+        desc_ar: 'تحقق فعالياتنا زخماً إعلامياً واسعاً، وصفقات استثمارية كبرى، ومكانة مؤسسية راسخة تدوم لأعوام.',
+      },
+      {
+        title_en: 'Mastery of Sovereign Protocol & Delegation Ceremonies',
+        title_ar: 'إتقان البروتوكول السيادي ومراسم الوفود',
+        desc_en: 'Deep diplomatic proficiency, high-level security management, and strict adherence to the official delegation protocol recognized by leaderships and decision-makers.',
+        desc_ar: 'كفاءة دبلوماسية عميقة، وإدارة أمنية عالية المستوى، والتزام صارم ببروتوكول الوفود الرسمية المعتمد لدى القيادات وصناع القرار.',
+      },
+    ],
   },
   whyUs: {
     eyebrow_en: 'WHY WORK WITH 60FRAMEWORKS',
