@@ -128,12 +128,12 @@ export const DEFAULT_THEME: SiteTheme = {
       cardTextColor: '#FFFFFF',
     },
     whyUs: {
-      backgroundColor: '#FFFFFF',
-      textColor: '#242424',
-      subtitleColor: '#4A4A4A',
+      backgroundColor: '#FAFAFA',
+      textColor: '#1A1A1A',
+      subtitleColor: '#4B5563',
       accentColor: '#F68621',
-      cardBackgroundColor: '#F8F9FA',
-      cardTextColor: '#242424',
+      cardBackgroundColor: '#FFFFFF',
+      cardTextColor: '#1A1A1A',
     },
     testimonials: {
       backgroundColor: '#F4D3C9',

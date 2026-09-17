@@ -77,7 +77,14 @@ export const WhyUs: React.FC<WhyUsProps> = ({ onOpenContact, content }) => {
     : defaultPillars;
 
   return (
-    <section id="why-us" className="section" style={{ backgroundColor: 'var(--color-sec-whyUs-bg, #FFFFFF)' }}>
+    <section
+      id="why-us"
+      className="section"
+      style={{
+        backgroundColor: 'var(--color-sec-whyUs-bg, #FAFAFA)',
+        backgroundImage: 'radial-gradient(circle at 10% 20%, rgba(246, 134, 33, 0.03) 0%, transparent 45%), radial-gradient(circle at 90% 80%, rgba(246, 134, 33, 0.03) 0%, transparent 45%)',
+      }}
+    >
       <div className="container">
         {/* Split Image / Content Layout */}
         <div
@@ -93,64 +100,70 @@ export const WhyUs: React.FC<WhyUsProps> = ({ onOpenContact, content }) => {
             <span className="type-eyebrow" style={{ color: 'var(--color-sec-whyUs-accent, var(--color-orange-primary))' }}>
               {eyebrow}
             </span>
-            <h2 className="type-h1" style={{ color: 'var(--color-sec-whyUs-text, var(--color-charcoal-dark))', marginBottom: '1.25rem' }}>
+            <h2 className="type-h1" style={{ color: 'var(--color-sec-whyUs-text, #1A1A1A)', marginBottom: '1.25rem' }}>
               {heading}
             </h2>
-            <p className="type-body-lg" style={{ color: 'var(--color-sec-whyUs-subtitle, var(--color-body-gray))', marginBottom: '2.5rem', lineHeight: 1.7 }}>
+            <p className="type-body-lg" style={{ color: 'var(--color-sec-whyUs-subtitle, #4B5563)', marginBottom: '2.5rem', lineHeight: 1.75 }}>
               {subtitle}
             </p>
 
-            {/* Feature Cards with Orange Icons */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '2.5rem' }}>
+            {/* Feature Cards with Luxury Styling */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', marginBottom: '2.5rem' }}>
               {pillars.map((pillar, idx) => (
                 <div
                   key={idx}
                   style={{
                     display: 'flex',
                     alignItems: 'flex-start',
-                    gap: '1.125rem',
-                    padding: '1.25rem',
-                    borderRadius: 'var(--radius-md)',
-                    backgroundColor: 'var(--color-sec-whyUs-card-bg, var(--color-gray-light))',
-                    border: '1px solid rgba(0, 0, 0, 0.05)',
-                    transition: 'all var(--transition-normal)',
+                    gap: '1.25rem',
+                    padding: '1.35rem 1.5rem',
+                    borderRadius: '16px',
+                    backgroundColor: 'var(--color-sec-whyUs-card-bg, #FFFFFF)',
+                    border: '1px solid rgba(0, 0, 0, 0.07)',
+                    boxShadow: '0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02)',
+                    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--color-sec-whyUs-accent, var(--color-orange-primary))';
-                    e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                    e.currentTarget.style.borderColor = 'rgba(246, 134, 33, 0.45)';
+                    e.currentTarget.style.boxShadow = '0 12px 28px -4px rgba(246, 134, 33, 0.14), 0 4px 10px -2px rgba(0, 0, 0, 0.03)';
+                    e.currentTarget.style.transform = 'translateY(-3px)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.05)';
-                    e.currentTarget.style.boxShadow = 'none';
+                    e.currentTarget.style.borderColor = 'rgba(0, 0, 0, 0.07)';
+                    e.currentTarget.style.boxShadow = '0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02)';
+                    e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
                   <div
                     style={{
-                      width: '44px',
-                      height: '44px',
-                      borderRadius: '10px',
-                      backgroundColor: 'var(--color-orange-subtle)',
+                      width: '48px',
+                      height: '48px',
+                      borderRadius: '13px',
+                      background: 'linear-gradient(135deg, rgba(246, 134, 33, 0.15) 0%, rgba(246, 134, 33, 0.04) 100%)',
+                      border: '1px solid rgba(246, 134, 33, 0.25)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       flexShrink: 0,
+                      boxShadow: '0 2px 8px rgba(246, 134, 33, 0.12)',
                     }}
                   >
                     {pillar.icon}
                   </div>
 
-                  <div>
+                  <div style={{ flex: 1 }}>
                     <h3
                       style={{
-                        fontSize: '1.0625rem',
+                        fontSize: '1.125rem',
                         fontWeight: 700,
-                        color: 'var(--color-sec-whyUs-card-text, var(--color-charcoal-dark))',
-                        marginBottom: '0.35rem',
+                        color: 'var(--color-sec-whyUs-card-text, #1A1A1A)',
+                        marginBottom: '0.4rem',
+                        lineHeight: 1.45,
                       }}
                     >
                       {pillar.title}
                     </h3>
-                    <p style={{ fontSize: '0.875rem', lineHeight: 1.65, color: 'var(--color-sec-whyUs-card-text, var(--color-body-gray))', opacity: 0.85 }}>
+                    <p style={{ fontSize: '0.9375rem', lineHeight: 1.75, color: 'var(--color-sec-whyUs-subtitle, #4B5563)', margin: 0 }}>
                       {pillar.description}
                     </p>
                   </div>
