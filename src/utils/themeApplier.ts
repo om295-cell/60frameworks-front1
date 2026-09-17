@@ -299,11 +299,8 @@ export function applyTheme(theme: Partial<SiteTheme> | null | undefined): void {
       root.style.setProperty(`--color-sec-${secKey}-accent`, sec.accentColor || t.global.primaryColor || '#F68621');
 
       // Cards inside this section
-      const fallbackCardBg = isSecDark ? '#1F1F1F' : '#FFFFFF';
-      let effectiveCardBg = sec.cardBackgroundColor || fallbackCardBg;
-      if (isSecDark && !isDarkColor(effectiveCardBg)) {
-        effectiveCardBg = '#1F1F1F';
-      }
+      const fallbackCardBg = isSecDark ? '#2E2E2E' : '#FFFFFF';
+      const effectiveCardBg = sec.cardBackgroundColor || fallbackCardBg;
       const fallbackCardText = isDarkColor(effectiveCardBg) ? '#FFFFFF' : '#242424';
       root.style.setProperty(`--color-sec-${secKey}-card-bg`, effectiveCardBg);
       root.style.setProperty(`--color-sec-${secKey}-card-text`, sec.cardTextColor || fallbackCardText);
