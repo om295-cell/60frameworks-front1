@@ -91,6 +91,17 @@ export const App: React.FC = () => {
           driveUrl: 'https://drive.google.com/drive/folders/1Pxybwl41N4t3rHG4hZjudAYS17L_vCot',
         };
       }
+      if (parsed?.footer) {
+        if (!parsed.footer.email || parsed.footer.email === 'inquiries@impactagency.com') {
+          parsed.footer.email = 'hello@60frameworks.com';
+        }
+        if (!parsed.footer.servicesList_ar || !parsed.footer.servicesList_ar.includes('الحملات التسويقية والإعلامية')) {
+          parsed.footer.servicesList_ar = 'الحملات التسويقية والإعلامية\nصناعة وإدارة المحتوى\nالإنتاج المرئي والتغطيات\nتجارب العلامات التجارية\nإدارة المؤثرين\nالفعاليات والملتقيات\nبناء الهوية والتصميم الإبداعي\nتقنيات وتجارب الواقع الافتراضي والمعزز';
+          parsed.footer.servicesList_en = 'Marketing & Media Campaigns\nContent Creation & Management\nVisual Production & Coverage\nBrand Experiences\nInfluencer Management\nEvents & Conferences\nBrand Identity & Creative Design\nVR & AR Technologies & Experiences';
+        }
+        parsed.footer.contactTitle_ar = 'تواصل معنا';
+        parsed.footer.expertiseTitle_ar = 'مجالات الخبرة';
+      }
       return parsed;
     } catch { return null; }
   });
@@ -162,6 +173,20 @@ export const App: React.FC = () => {
               driveUrl: (hData.latestEvent?.driveUrl && hData.latestEvent.driveUrl !== 'https://drive.google.com')
                 ? hData.latestEvent.driveUrl
                 : 'https://drive.google.com/drive/folders/1Pxybwl41N4t3rHG4hZjudAYS17L_vCot',
+            },
+            footer: {
+              ...hData.footer,
+              email: (!hData.footer?.email || hData.footer.email === 'inquiries@impactagency.com') ? 'hello@60frameworks.com' : hData.footer.email,
+              contactTitle_ar: 'تواصل معنا',
+              contactTitle_en: 'Contact Us',
+              expertiseTitle_ar: 'مجالات الخبرة',
+              expertiseTitle_en: 'Areas of Expertise',
+              servicesList_ar: (!hData.footer?.servicesList_ar || !hData.footer.servicesList_ar.includes('الحملات التسويقية والإعلامية'))
+                ? 'الحملات التسويقية والإعلامية\nصناعة وإدارة المحتوى\nالإنتاج المرئي والتغطيات\nتجارب العلامات التجارية\nإدارة المؤثرين\nالفعاليات والملتقيات\nبناء الهوية والتصميم الإبداعي\nتقنيات وتجارب الواقع الافتراضي والمعزز'
+                : hData.footer.servicesList_ar,
+              servicesList_en: (!hData.footer?.servicesList_en || !hData.footer.servicesList_en.includes('Marketing & Media'))
+                ? 'Marketing & Media Campaigns\nContent Creation & Management\nVisual Production & Coverage\nBrand Experiences\nInfluencer Management\nEvents & Conferences\nBrand Identity & Creative Design\nVR & AR Technologies & Experiences'
+                : hData.footer.servicesList_en,
             },
           };
           setHomeContent(sanitizedHData);

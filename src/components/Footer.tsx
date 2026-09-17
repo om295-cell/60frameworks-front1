@@ -39,58 +39,115 @@ interface FooterProps {
   content?: FooterContent;
 }
 
+export const DEPARTMENTS = [
+  {
+    slug: 'marketing-media',
+    name_ar: 'الحملات التسويقية والإعلامية',
+    name_en: 'Marketing & Media Campaigns',
+    path: '/departments/marketing-media',
+  },
+  {
+    slug: 'content-creation',
+    name_ar: 'صناعة وإدارة المحتوى',
+    name_en: 'Content Creation & Management',
+    path: '/departments/content-creation',
+  },
+  {
+    slug: 'visual-production',
+    name_ar: 'الإنتاج المرئي والتغطيات',
+    name_en: 'Visual Production & Coverage',
+    path: '/departments/visual-production',
+  },
+  {
+    slug: 'brand-experiences',
+    name_ar: 'تجارب العلامات التجارية',
+    name_en: 'Brand Experiences',
+    path: '/departments/brand-experiences',
+  },
+  {
+    slug: 'influencer-management',
+    name_ar: 'إدارة المؤثرين',
+    name_en: 'Influencer Management',
+    path: '/departments/influencer-management',
+  },
+  {
+    slug: 'events-conferences',
+    name_ar: 'الفعاليات والملتقيات',
+    name_en: 'Events & Conferences',
+    path: '/departments/events-conferences',
+  },
+  {
+    slug: 'brand-identity',
+    name_ar: 'بناء الهوية والتصميم الإبداعي',
+    name_en: 'Brand Identity & Creative Design',
+    path: '/departments/brand-identity',
+  },
+  {
+    slug: 'vr-ar',
+    name_ar: 'تقنيات وتجارب الواقع الافتراضي والمعزز',
+    name_en: 'VR & AR Technologies & Experiences',
+    path: '/departments/vr-ar',
+  },
+];
+
 export const Footer: React.FC<FooterProps> = ({ onOpenContact, content }) => {
-  const { language, t } = useLanguage();
+  const { language, t, dir } = useLanguage();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const desc = (language === 'ar' ? content?.desc_ar : content?.desc_en) || t('footerDesc');
-  const navTitle = (language === 'ar' ? content?.navTitle_ar : content?.navTitle_en) || t('footerNavTitle');
-  const expertiseTitle = (language === 'ar' ? content?.expertiseTitle_ar : content?.expertiseTitle_en) || t('footerExpertiseTitle');
-  const contactTitle = (language === 'ar' ? content?.contactTitle_ar : content?.contactTitle_en) || t('footerContactTitle');
+  const navTitle = (language === 'ar' ? content?.navTitle_ar : content?.navTitle_en) || (language === 'ar' ? 'أقسام الموقع' : 'Navigation');
+  const expertiseTitle = (language === 'ar' ? content?.expertiseTitle_ar : content?.expertiseTitle_en) || (language === 'ar' ? 'مجالات الخبرة' : 'Areas of Expertise');
+  const contactTitle = (language === 'ar' ? content?.contactTitle_ar : content?.contactTitle_en) || (language === 'ar' ? 'تواصل معنا' : 'Contact Us');
   const hubs = (language === 'ar' ? content?.hubs_ar : content?.hubs_en) || t('footerHubs');
   const directBtnText = (language === 'ar' ? content?.directBtnText_ar : content?.directBtnText_en) || t('footerDirectBtn');
   const copyright = (language === 'ar' ? content?.copyright_ar : content?.copyright_en) || t('footerCopyright');
   const privacyText = (language === 'ar' ? content?.privacyText_ar : content?.privacyText_en) || t('footerPrivacy');
   const termsText = (language === 'ar' ? content?.termsText_ar : content?.termsText_en) || t('footerTerms');
 
-  const email = content?.email || 'inquiries@impactagency.com';
+  const email = (content?.email && content.email !== 'inquiries@impactagency.com') ? content.email : 'hello@60frameworks.com';
   const phone = content?.phone || '+966 55 307 7467';
   const whatsappUrl = content?.whatsappUrl || 'https://api.whatsapp.com/send/?phone=966553077467';
   const privacyUrl = content?.privacyUrl || '#';
   const termsUrl = content?.termsUrl || '#';
 
   const navLinks = [
-    { label: t('navAbout'), href: '#about' },
-    { label: t('navServices'), href: '#services' },
-    { label: t('navClients'), href: '#clients' },
-    { label: t('navSectors'), href: '#sectors' },
-    { label: t('navStories'), href: '#stories' },
-    { label: t('navWhyUs'), href: '#why-us' },
+    { label: language === 'ar' ? 'من نحن' : 'About Us', href: '#about' },
+    { label: language === 'ar' ? 'خدماتنا' : 'Services', href: '#services' },
+    { label: language === 'ar' ? 'عملاؤنا' : 'Clients', href: '#clients' },
+    { label: language === 'ar' ? 'القطاعات' : 'Sectors', href: '#sectors' },
+    { label: language === 'ar' ? 'أعمالنا' : 'Our Work', href: '#stories' },
+    { label: language === 'ar' ? 'لماذا نحن؟' : 'Why Us?', href: '#why-us' },
   ];
 
-  const defaultServicesAr = [
-    'استراتيجية ورؤية الفعاليات',
-    'إدارة وإنتاج الفعاليات الكبرى',
-    'تجارب العلامات التجارية والتدشين',
-    'المعارض والأجنحة المعمارية',
-    'القمم المؤسسية والمؤتمرات السيادية',
-    'الإبداع والسرد القصصي السينمائي',
-  ];
-  const defaultServicesEn = [
-    'Event Strategy & Architecture',
-    'Event Management & Staging',
-    'Brand Experiences & Reveals',
-    'Exhibitions & Custom Booths',
-    'Corporate Summits & Galas',
-    'Creative & 3D Spatial Visuals',
-  ];
+  const defaultServicesAr = DEPARTMENTS.map((d) => d.name_ar);
+  const defaultServicesEn = DEPARTMENTS.map((d) => d.name_en);
+
+  const isOldServiceList = (list?: string) => {
+    if (!list) return true;
+    return !list.includes('الحملات التسويقية والإعلامية') && !list.includes('Marketing & Media');
+  };
 
   const serviceLinks = language === 'ar'
-    ? (content?.servicesList_ar ? content.servicesList_ar.split('\n').map(s => s.trim()).filter(Boolean) : defaultServicesAr)
-    : (content?.servicesList_en ? content.servicesList_en.split('\n').map(s => s.trim()).filter(Boolean) : defaultServicesEn);
+    ? (content?.servicesList_ar && !isOldServiceList(content.servicesList_ar)
+        ? content.servicesList_ar.split('\n').map((s) => s.trim()).filter(Boolean)
+        : defaultServicesAr)
+    : (content?.servicesList_en && !isOldServiceList(content.servicesList_en)
+        ? content.servicesList_en.split('\n').map((s) => s.trim()).filter(Boolean)
+        : defaultServicesEn);
+
+  const getDepartmentLink = (name: string) => {
+    const trimmed = name.trim().toLowerCase();
+    const matched = DEPARTMENTS.find(
+      (d) =>
+        d.name_ar.trim().toLowerCase() === trimmed ||
+        d.name_en.trim().toLowerCase() === trimmed ||
+        trimmed.includes(d.slug)
+    );
+    return matched ? matched.path : `/departments/${encodeURIComponent(name.trim())}`;
+  };
 
   const socialLinks = [
     { icon: <Linkedin size={18} />, label: 'LinkedIn', url: content?.linkedinUrl || 'https://linkedin.com' },
@@ -240,15 +297,24 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact, content }) => {
               {serviceLinks.map((serv, idx) => (
                 <li key={idx}>
                   <a
-                    href="#services"
+                    href={getDepartmentLink(serv)}
+                    data-department={serv}
+                    title={language === 'ar' ? `الانتقال إلى صفحة: ${serv}` : `Navigate to: ${serv}`}
                     style={{
                       fontSize: '0.875rem',
                       color: 'var(--color-footer-link, var(--color-footer-text, #B0B0B0))',
                       textDecoration: 'none',
-                      transition: 'color var(--transition-fast)',
+                      transition: 'all var(--transition-fast)',
+                      display: 'inline-block',
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-footer-accent, var(--color-orange-primary))')}
-                    onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-footer-link, var(--color-footer-text, #B0B0B0))')}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = 'var(--color-footer-accent, var(--color-orange-primary))';
+                      e.currentTarget.style.transform = (dir === 'rtl' || language === 'ar') ? 'translateX(-4px)' : 'translateX(4px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = 'var(--color-footer-link, var(--color-footer-text, #B0B0B0))';
+                      e.currentTarget.style.transform = 'translateX(0)';
+                    }}
                   >
                     {serv}
                   </a>
@@ -276,7 +342,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact, content }) => {
                 <Mail size={16} color="var(--color-footer-accent, var(--color-orange-primary))" />
                 <a
                   href={`mailto:${email}`}
-                  style={{ color: 'inherit', textDecoration: 'none' }}
+                  style={{ color: 'inherit', textDecoration: 'none', transition: 'color var(--transition-fast)' }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-orange-primary)')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = 'inherit')}
                 >
@@ -289,12 +355,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact, content }) => {
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ color: 'inherit', textDecoration: 'none' }}
+                  title={phone}
+                  style={{ color: 'inherit', textDecoration: 'none', transition: 'color var(--transition-fast)' }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-orange-primary)')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = 'inherit')}
-                  dir="ltr"
                 >
-                  {phone}
+                  {language === 'ar' ? 'واتساب' : 'WhatsApp'}
                 </a>
               </div>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
