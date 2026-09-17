@@ -1,6 +1,22 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Linkedin, Twitter, Instagram, Youtube, ArrowUp } from 'lucide-react';
+import { Mail, MapPin, Linkedin, Twitter, Instagram, Youtube, ArrowUp } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+
+const WhatsAppIcon: React.FC<{ size?: number; color?: string }> = ({
+  size = 17,
+  color = 'var(--color-footer-accent, var(--color-orange-primary))',
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    style={{ color, flexShrink: 0 }}
+    aria-hidden="true"
+  >
+    <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.19.53-1.11 1.04-1.54 1.1-.4.07-.92.1-2.67-.63-2.12-.88-3.48-3.05-3.59-3.2-.1-.14-.85-1.13-.85-2.15 0-1.03.54-1.53.73-1.74.19-.21.42-.26.56-.26.14 0 .28 0 .4.01.13.01.3.05.47.45.19.45.64 1.57.7 1.69.06.12.1.26.02.42-.08.17-.12.27-.24.41-.12.14-.26.31-.37.42-.12.12-.24.25-.1.5.14.24.63 1.04 1.35 1.68.93.83 1.71 1.09 1.95 1.21.24.12.38.1.52-.06.14-.17.6-.7.76-.94.16-.24.33-.2.55-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.11.06.63-.13 1.16" />
+  </svg>
+);
 
 export interface FooterContent {
   desc_en?: string;
@@ -350,7 +366,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact, content }) => {
                 </a>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <Phone size={16} color="var(--color-footer-accent, var(--color-orange-primary))" />
+                <WhatsAppIcon size={17} color="var(--color-footer-accent, var(--color-orange-primary))" />
                 <a
                   href={whatsappUrl}
                   target="_blank"
