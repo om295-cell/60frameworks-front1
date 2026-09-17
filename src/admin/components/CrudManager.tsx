@@ -1,7 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Pencil, Trash2, X, Save, ChevronDown, ChevronUp, Eye } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Plus, Pencil, Trash2, X, Save, ChevronDown, ChevronUp, Eye, Languages, Loader2 } from 'lucide-react';
 import { MediaUploader } from './MediaUploader';
 import { useAdminAuth } from '../AdminAuthContext';
+import {
+  translateArToEn,
+  translateArArrayToEn,
+  getEnglishKey,
+  getAutoTranslateEnabled,
+  setAutoTranslateEnabled,
+  AUTO_TRANSLATE_KEY,
+} from '../../utils/autoTranslate';
 
 interface Column {
   key: string;
@@ -57,6 +65,58 @@ export const CrudManager: React.FC<CrudManagerProps> = ({
   const [feedback, setFeedback] = useState('');
   const [error, setError] = useState('');
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
+  const [autoTranslate, setAutoTranslate] = useState<boolean>(getAutoTranslateEnabled);
+  const [translatingFields, setTranslatingFields] = useState<Set<string>>(new Set());
+
+  const toggleAutoTranslate = () => {
+    const next = !autoTranslate;
+    setAutoTranslate(next);
+    setAutoTranslateEnabled(next);
+  };
+
+  // Sync when localStorage changes (e.g. another tab)
+  useEffect(() => {
+    const handler = (e: StorageEvent) => {
+      if (e.key === AUTO_TRANSLATE_KEY) {
+        setAutoTranslate(getAutoTranslateEnabled());
+      }
+    };
+    window.addEventListener('storage', handler);
+    return () => window.removeEventListener('storage', handler);
+  }, []);
+
+  const handleArBlur = useCallback(async (arKey: string, arValue: any) => {
+    if (!autoTranslate || !editing) return;
+    const enKey = getEnglishKey(arKey);
+    if (!enKey) return;
+    // Only translate if English field is empty or user hasn't manually changed it
+    const col = columns.find(c => c.key === arKey);
+    if (!col) return;
+
+    if (col.type === 'stringList') {
+      const list: string[] = Array.isArray(arValue) ? arValue.filter(Boolean) : [];
+      if (list.length === 0) return;
+      setTranslatingFields(prev => new Set(prev).add(enKey));
+      try {
+        const translated = await translateArArrayToEn(list);
+        setEditing((prev: any) => ({ ...prev, [enKey]: translated }));
+      } finally {
+        setTranslatingFields(prev => { const s = new Set(prev); s.delete(enKey); return s; });
+      }
+    } else {
+      const text = typeof arValue === 'string' ? arValue.trim() : '';
+      if (!text) return;
+      setTranslatingFields(prev => new Set(prev).add(enKey));
+      try {
+        const translated = await translateArToEn(text);
+        if (translated) {
+          setEditing((prev: any) => ({ ...prev, [enKey]: translated }));
+        }
+      } finally {
+        setTranslatingFields(prev => { const s = new Set(prev); s.delete(enKey); return s; });
+      }
+    }
+  }, [autoTranslate, editing, columns]);
 
   const load = async () => {
     try {
@@ -169,8 +229,45 @@ export const CrudManager: React.FC<CrudManagerProps> = ({
               <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#111827' }}>
                 {isNew ? `Add New ${title.replace(/s$/, '')}` : `Edit ${title.replace(/s$/, '')}`}
               </h3>
-              <button onClick={() => setEditing(null)} style={closeBtn}><X size={18} /></button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                {/* Auto-Translate Toggle */}
+                {columns.some(c => c.isArabic) && (
+                  <button
+                    type="button"
+                    onClick={toggleAutoTranslate}
+                    title={autoTranslate ? 'Auto-translate ON — Click to turn off' : 'Auto-translate OFF — Click to enable'}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '0.4rem',
+                      padding: '0.4rem 0.85rem',
+                      borderRadius: '20px', border: 'none', cursor: 'pointer',
+                      fontSize: '0.75rem', fontWeight: 700,
+                      background: autoTranslate ? '#D1FAE5' : '#F3F4F6',
+                      color: autoTranslate ? '#065F46' : '#6B7280',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    <Languages size={14} />
+                    {autoTranslate ? '🟢 Auto-Translate ON' : '⭕ Auto-Translate OFF'}
+                  </button>
+                )}
+                <button onClick={() => setEditing(null)} style={closeBtn}><X size={18} /></button>
+              </div>
             </div>
+            {/* Auto-translate info banner */}
+            {columns.some(c => c.isArabic) && (
+              <div style={{
+                padding: '0.6rem 0.85rem', marginBottom: '1rem',
+                background: autoTranslate ? '#ECFDF5' : '#FFF7ED',
+                border: `1px solid ${autoTranslate ? '#6EE7B7' : '#FED7AA'}`,
+                borderRadius: '8px', fontSize: '0.75rem', color: autoTranslate ? '#065F46' : '#92400E',
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+              }}>
+                <Languages size={13} />
+                {autoTranslate
+                  ? 'Arabic fields are the source of truth. English text will be auto-translated when you finish editing an Arabic field.'
+                  : 'Auto-translate is OFF. English fields will not be updated automatically.'}
+              </div>
+            )}
 
             <div style={{ overflowY: 'auto', maxHeight: '65vh', paddingRight: '0.5rem' }}>
               {/* English fields */}
@@ -178,7 +275,14 @@ export const CrudManager: React.FC<CrudManagerProps> = ({
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                 {columns.filter(c => !c.isArabic && !['media', 'mediaArray', 'stringList'].includes(c.type || '')).map((col) => (
                   <div key={col.key} style={col.type === 'textarea' ? { gridColumn: '1/-1' } : {}}>
-                    <label style={fieldLabel}>{col.label}</label>
+                    <label style={fieldLabel}>
+                      {col.label}
+                      {translatingFields.has(col.key) && (
+                        <span style={{ marginLeft: '0.4rem', color: '#059669', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                          <Loader2 size={11} style={{ animation: 'spin 1s linear infinite' }} /> translating…
+                        </span>
+                      )}
+                    </label>
                     {renderField(col, editing[col.key], (v) => updateEditField(col.key, v))}
                   </div>
                 ))}
@@ -189,7 +293,14 @@ export const CrudManager: React.FC<CrudManagerProps> = ({
                 const list: string[] = Array.isArray(editing[col.key]) ? editing[col.key] : [];
                 return (
                   <div key={col.key} style={{ marginBottom: '1.25rem' }}>
-                    <label style={{ ...fieldLabel, marginBottom: '0.4rem' }}>{col.label}</label>
+                    <label style={{ ...fieldLabel, marginBottom: '0.4rem' }}>
+                      {col.label}
+                      {translatingFields.has(col.key) && (
+                        <span style={{ marginLeft: '0.4rem', color: '#059669', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                          <Loader2 size={11} style={{ animation: 'spin 1s linear infinite' }} /> translating…
+                        </span>
+                      )}
+                    </label>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', background: '#F9FAFB', padding: '0.85rem', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
                       {list.map((item: string, idx: number) => (
                         <div key={idx} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
@@ -247,12 +358,15 @@ export const CrudManager: React.FC<CrudManagerProps> = ({
               {/* Arabic fields */}
               {columns.some(c => c.isArabic) && (
                 <>
-                  <div style={fieldGroupHeader}>Arabic Fields (عربي)</div>
+                  <div style={fieldGroupHeader}>Arabic Fields (عربي) — المصدر الرئيسي للنصوص</div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                     {columns.filter(c => c.isArabic && !['media', 'mediaArray', 'stringList'].includes(c.type || '')).map((col) => (
                       <div key={col.key} style={col.type === 'textarea' ? { gridColumn: '1/-1' } : {}}>
                         <label style={fieldLabel}>{col.label}</label>
-                        {renderField(col, editing[col.key], (v) => updateEditField(col.key, v))}
+                        {renderFieldWithTranslate(col, editing[col.key],
+                          (v) => updateEditField(col.key, v),
+                          () => handleArBlur(col.key, editing[col.key])
+                        )}
                       </div>
                     ))}
                   </div>
@@ -271,6 +385,11 @@ export const CrudManager: React.FC<CrudManagerProps> = ({
                                 onClick={() => {
                                   const arr = list.filter((_, i) => i !== idx);
                                   updateEditField(col.key, arr);
+                                  // trigger translate on list change
+                                  if (autoTranslate) {
+                                    const newList = list.filter((_, i) => i !== idx);
+                                    setTimeout(() => handleArBlur(col.key, newList), 100);
+                                  }
                                 }}
                                 style={deleteSmBtn}
                                 title="حذف النقطة"
@@ -286,6 +405,9 @@ export const CrudManager: React.FC<CrudManagerProps> = ({
                                   const arr = [...list];
                                   arr[idx] = e.target.value;
                                   updateEditField(col.key, arr);
+                                }}
+                                onBlur={() => {
+                                  if (autoTranslate) handleArBlur(col.key, editing[col.key]);
                                 }}
                                 style={{ ...inputStyle, flex: 1, direction: 'rtl', background: '#fff' }}
                               />
@@ -505,6 +627,20 @@ function renderField(col: Column, value: any, onChange: (v: any) => void) {
     );
   }
   return <input type="text" value={value || ''} onChange={e => onChange(e.target.value)} style={{ ...inputStyle, direction: dir }} />;
+}
+
+/** renderField variant that also attaches onBlur for auto-translation */
+function renderFieldWithTranslate(
+  col: Column,
+  value: any,
+  onChange: (v: any) => void,
+  onBlur: () => void,
+) {
+  const dir = 'rtl';
+  if (col.type === 'textarea') {
+    return <textarea rows={3} value={value || ''} onChange={e => onChange(e.target.value)} onBlur={onBlur} style={{ ...inputStyle, resize: 'vertical', direction: dir }} />;
+  }
+  return <input type="text" value={value || ''} onChange={e => onChange(e.target.value)} onBlur={onBlur} style={{ ...inputStyle, direction: dir }} />;
 }
 
 const inputStyle: React.CSSProperties = {

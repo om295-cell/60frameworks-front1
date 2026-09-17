@@ -1,9 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Save, ChevronDown, ChevronUp, Lock, Plus, Trash2, Volume2, VolumeX } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Save, ChevronDown, ChevronUp, Lock, Plus, Trash2, Volume2, VolumeX, Languages, Loader2 } from 'lucide-react';
 import { adminApi } from '../adminApi';
 import { MediaUploader } from './MediaUploader';
 import { FALLBACK_HOMEPAGE_CONTENT } from '../../services/api';
 import { useAdminAuth } from '../AdminAuthContext';
+import {
+  translateArToEn,
+  getEnglishKeyHomepage,
+  getAutoTranslateEnabled,
+  setAutoTranslateEnabled,
+  AUTO_TRANSLATE_KEY,
+} from '../../utils/autoTranslate';
 
 interface Section {
   key: string;
@@ -57,6 +64,42 @@ export const HomepageEditor: React.FC = () => {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
   const [openSection, setOpenSection] = useState<string>('hero');
+  const [autoTranslate, setAutoTranslate] = useState<boolean>(getAutoTranslateEnabled);
+  const [translatingFields, setTranslatingFields] = useState<Set<string>>(new Set());
+
+  const toggleAutoTranslate = () => {
+    const next = !autoTranslate;
+    setAutoTranslate(next);
+    setAutoTranslateEnabled(next);
+  };
+
+  // Sync with other tabs / CrudManager toggles
+  useEffect(() => {
+    const handler = (e: StorageEvent) => {
+      if (e.key === AUTO_TRANSLATE_KEY) setAutoTranslate(getAutoTranslateEnabled());
+    };
+    window.addEventListener('storage', handler);
+    return () => window.removeEventListener('storage', handler);
+  }, []);
+
+  const handleArFieldBlur = useCallback(async (sectionKey: string, arFieldKey: string, arValue: string) => {
+    if (!autoTranslate || !arValue.trim()) return;
+    const enKey = getEnglishKeyHomepage(arFieldKey);
+    if (!enKey) return;
+    const fieldId = `${sectionKey}.${enKey}`;
+    setTranslatingFields(prev => new Set(prev).add(fieldId));
+    try {
+      const translated = await translateArToEn(arValue.trim());
+      if (translated) {
+        setContent((prev: any) => ({
+          ...prev,
+          [sectionKey]: { ...prev[sectionKey], [enKey]: translated },
+        }));
+      }
+    } finally {
+      setTranslatingFields(prev => { const s = new Set(prev); s.delete(fieldId); return s; });
+    }
+  }, [autoTranslate]);
 
   useEffect(() => {
     adminApi.getContent()
@@ -97,14 +140,47 @@ export const HomepageEditor: React.FC = () => {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
         <h2 style={sectionTitle}>🌐 Homepage Text & Media</h2>
-        {canEditAny && (
-          <button onClick={handleSave} disabled={saving} style={saveBtn}>
-            <Save size={16} />
-            {saving ? 'Saving...' : saved ? '✓ Saved!' : 'Save All Changes'}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {/* Auto-Translate Toggle */}
+          <button
+            type="button"
+            onClick={toggleAutoTranslate}
+            title={autoTranslate ? 'Auto-translate ON — Click to disable' : 'Auto-translate OFF — Click to enable'}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '0.4rem',
+              padding: '0.4rem 0.9rem', borderRadius: '20px', border: 'none', cursor: 'pointer',
+              fontSize: '0.75rem', fontWeight: 700,
+              background: autoTranslate ? '#D1FAE5' : '#F3F4F6',
+              color: autoTranslate ? '#065F46' : '#6B7280',
+              transition: 'all 0.2s',
+            }}
+          >
+            <Languages size={14} />
+            {autoTranslate ? '🟢 Auto-Translate ON' : '⭕ Auto-Translate OFF'}
           </button>
-        )}
+          {canEditAny && (
+            <button onClick={handleSave} disabled={saving} style={saveBtn}>
+              <Save size={16} />
+              {saving ? 'Saving...' : saved ? '✓ Saved!' : 'Save All Changes'}
+            </button>
+          )}
+        </div>
+      </div>
+      {/* Auto-translate banner */}
+      <div style={{
+        padding: '0.6rem 0.9rem', marginBottom: '1.25rem',
+        background: autoTranslate ? '#ECFDF5' : '#FFF7ED',
+        border: `1px solid ${autoTranslate ? '#6EE7B7' : '#FED7AA'}`,
+        borderRadius: '8px', fontSize: '0.75rem',
+        color: autoTranslate ? '#065F46' : '#92400E',
+        display: 'flex', alignItems: 'center', gap: '0.5rem',
+      }}>
+        <Languages size={13} />
+        {autoTranslate
+          ? 'Arabic (_ar) fields are the source of truth. When you edit an Arabic field and tab away, the English version will be auto-translated.'
+          : 'Auto-translate is OFF. Edit English fields manually.'}
       </div>
 
       {error && <div style={errorBox}>{error}</div>}
@@ -170,22 +246,37 @@ export const HomepageEditor: React.FC = () => {
                     <h4 style={subHeading}>✏️ Text Content (EN / AR)</h4>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                       {textFields.map(([k, v]) => {
+                        const isAr = k.endsWith('_ar');
                         const isLong = typeof v === 'string' && (v as string).length > 80;
+                        // Derive the English counterpart key for loading indicator
+                        const enCounterpart = isAr ? `${sec.key}.${k.slice(0, -3)}_en` : null;
                         return (
                           <div key={k} style={isLong ? { gridColumn: '1 / -1' } : {}}>
-                            <label style={fieldLbl}>{fieldLabel(k)}</label>
+                            <label style={fieldLbl}>
+                              {fieldLabel(k)}
+                              {isAr && autoTranslate && (
+                                <span style={{ marginLeft: '0.4rem', fontSize: '0.65rem', color: '#059669', fontWeight: 700 }}>📌 Source</span>
+                              )}
+                              {!isAr && translatingFields.has(`${sec.key}.${enCounterpart ?? k}`) && (
+                                <span style={{ marginLeft: '0.4rem', color: '#059669', fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                                  <Loader2 size={11} style={{ animation: 'spin 1s linear infinite' }} /> translating…
+                                </span>
+                              )}
+                            </label>
                             {isLong ? (
                               <textarea
                                 rows={3}
                                 value={v as string}
                                 disabled={!canEditSec}
                                 onChange={(e) => updateField(sec.key, k, e.target.value)}
+                                onBlur={isAr && canEditSec ? () => handleArFieldBlur(sec.key, k, v as string) : undefined}
                                 style={{
                                   ...inputS,
                                   resize: 'vertical',
-                                  direction: k.endsWith('_ar') ? 'rtl' : 'ltr',
+                                  direction: isAr ? 'rtl' : 'ltr',
                                   background: canEditSec ? '#fff' : '#F9FAFB',
                                   cursor: canEditSec ? 'text' : 'not-allowed',
+                                  borderColor: isAr && autoTranslate ? '#6EE7B7' : undefined,
                                 }}
                               />
                             ) : (
@@ -194,11 +285,13 @@ export const HomepageEditor: React.FC = () => {
                                 value={v as string}
                                 disabled={!canEditSec}
                                 onChange={(e) => updateField(sec.key, k, e.target.value)}
+                                onBlur={isAr && canEditSec ? () => handleArFieldBlur(sec.key, k, v as string) : undefined}
                                 style={{
                                   ...inputS,
-                                  direction: k.endsWith('_ar') ? 'rtl' : 'ltr',
+                                  direction: isAr ? 'rtl' : 'ltr',
                                   background: canEditSec ? '#fff' : '#F9FAFB',
                                   cursor: canEditSec ? 'text' : 'not-allowed',
+                                  borderColor: isAr && autoTranslate ? '#6EE7B7' : undefined,
                                 }}
                               />
                             )}

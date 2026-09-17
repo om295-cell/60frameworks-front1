@@ -110,4 +110,16 @@ export const adminApi = {
       method: 'POST',
       body: JSON.stringify({ filename, fileData, contentType }),
     }),
+
+  // Translation
+  translateText: (text: string | string[], from = 'ar', to = 'en') =>
+    apiFetch<any>('/translate', {
+      method: 'POST',
+      body: JSON.stringify({ text, from, to }),
+    }),
+  translateBatch: (items: Record<string, string>, from = 'ar', to = 'en') =>
+    apiFetch<any>('/translate/batch', {
+      method: 'POST',
+      body: JSON.stringify({ items, from, to }),
+    }),
 };
