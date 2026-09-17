@@ -17,6 +17,7 @@ interface WhyUsProps {
     badgeTitle_ar?: string;
     badgeDesc_en?: string;
     badgeDesc_ar?: string;
+    badgeValue?: string;
     pillars?: {
       title_en?: string;
       title_ar?: string;
@@ -35,6 +36,7 @@ export const WhyUs: React.FC<WhyUsProps> = ({ onOpenContact, content }) => {
   const image = content?.image || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1200&auto=format&fit=crop';
   const badgeTitle = (language === 'ar' ? content?.badgeTitle_ar : content?.badgeTitle_en) || t('whyUsBadgeTitle');
   const badgeDesc = (language === 'ar' ? content?.badgeDesc_ar : content?.badgeDesc_en) || t('whyUsBadgeDesc');
+  const badgeValue = content?.badgeValue || '360°';
 
   const iconList = [
     <Sparkles key="1" size={22} color="var(--color-orange-primary)" />,
@@ -200,7 +202,7 @@ export const WhyUs: React.FC<WhyUsProps> = ({ onOpenContact, content }) => {
               }}
             >
               <div style={{ fontSize: '1.75rem', fontWeight: 800, lineHeight: 1, marginBottom: '0.25rem' }}>
-                100%
+                {badgeValue}
               </div>
               <div style={{ fontSize: '0.875rem', fontWeight: 700, letterSpacing: '0.04em' }}>
                 {badgeTitle}

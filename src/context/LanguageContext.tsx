@@ -137,8 +137,8 @@ export const translations: Translations = {
     ar: 'نقضي على الفجوة التقليدية بين الوكالات الإبداعية وشركات الإنتاج الفني والتقني من خلال توحيد المنظومتين في بيت خبرة واحد متكامل.',
   },
   whyUsCta: { en: 'Initiate Executive Consultation', ar: 'بدء استشارة تنفيذية' },
-  whyUsBadgeTitle: { en: '100% End-to-End Accountability', ar: 'مسؤولية تنفيذية شاملة 100%' },
-  whyUsBadgeDesc: { en: 'Concept, spatial build, AV, showrunning & post-event audit under one roof.', ar: 'الفكرة، البناء المعماري، الصوت والضوء، الإخراج، والتدقيق تحت سقف واحد.' },
+  whyUsBadgeTitle: { en: '360° Integrated Solutions', ar: 'حلول متكاملة' },
+  whyUsBadgeDesc: { en: 'Strategy, creativity, content, production & execution; a seamless journey from concept to impact measurement.', ar: 'استراتيجية، إبداع، محتوى، إنتاج وتنفيذ؛ تجربة متكاملة من الفكرة حتى قياس الأثر' },
 
   whyPillar1Title: { en: 'Experience-First Architecture', ar: 'هندسة ترتكز على التجربة الإنسانية' },
   whyPillar1Desc: { en: 'We do not view events as logistical schedules; we engineer holistic emotional journeys where every spatial, acoustic, and visual cue commands attention.', ar: 'لا نرى الفعاليات مجرد جداول لوجستية؛ بل نهندس رحلات عاطفية متكاملة تأسر الحواس عبر كل تفصيلة مكانية وصوتية وبصرية.' },

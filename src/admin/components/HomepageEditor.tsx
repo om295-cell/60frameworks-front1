@@ -42,6 +42,11 @@ const fieldLabel = (k: string) => {
   if (k === 'capabilitiesHeading_ar') return 'Default Capabilities Heading (Arabic)';
   if (k === 'ctaText_en') return 'Default Button Text (English)';
   if (k === 'ctaText_ar') return 'Default Button Text (Arabic)';
+  if (k === 'badgeValue') return 'Floating Badge Metric / Value (e.g. 360° or 100%)';
+  if (k === 'badgeTitle_en') return 'Floating Badge Title (English)';
+  if (k === 'badgeTitle_ar') return 'عنوان الشارة البارزة (عربي)';
+  if (k === 'badgeDesc_en') return 'Floating Badge Description (English)';
+  if (k === 'badgeDesc_ar') return 'وصف الشارة البارزة (عربي)';
   return k.replace(/_en$/, ' (English)').replace(/_ar$/, ' (Arabic)').replace(/_/g, ' ');
 };
 
