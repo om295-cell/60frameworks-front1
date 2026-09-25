@@ -69,7 +69,13 @@ export const App: React.FC = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>(() => {
     try {
       const c = localStorage.getItem('60fw_testimonials');
-      return c ? JSON.parse(c) : FALLBACK_TESTIMONIALS;
+      if (c) {
+        const parsed = JSON.parse(c);
+        if (Array.isArray(parsed) && parsed.length > 0 && !parsed.some((x: any) => x.authorName_ar?.includes('إليانور') || x.authorName?.includes('Eleanor'))) {
+          return parsed;
+        }
+      }
+      return FALLBACK_TESTIMONIALS;
     } catch { return FALLBACK_TESTIMONIALS; }
   });
   const [homeContent, setHomeContent] = useState<any>(() => {
@@ -77,6 +83,17 @@ export const App: React.FC = () => {
       const c = localStorage.getItem('60fw_homepage_content');
       if (!c) return null;
       const parsed = JSON.parse(c);
+      if (parsed) {
+        parsed.testimonials = {
+          ...parsed?.testimonials,
+          heading_ar: 'ثقة نعتز بها، وأثر يتحدث عنّا',
+          heading_en: 'ثقة نعتز بها، وأثر يتحدث عنّا',
+          subtitle_ar: 'تجارب شركائنا تعكس التزامنا بصناعة أعمال إبداعية تتجاوز التوقعات وتترك أثرًا يستمر.',
+          subtitle_en: 'تجارب شركائنا تعكس التزامنا بصناعة أعمال إبداعية تتجاوز التوقعات وتترك أثرًا يستمر.',
+          eyebrow_ar: '',
+          eyebrow_en: '',
+        };
+      }
       if (parsed?.hero?.backdropVideo && parsed.hero.backdropVideo.includes('l8t8ykc5tfbkefrg')) {
         parsed.hero.backdropVideo = 'https://spiubsxm2vg65sdm.public.blob.vercel-storage.com/hero-video-faststart.mp4';
       }
@@ -149,12 +166,23 @@ export const App: React.FC = () => {
           localStorage.setItem('60fw_clients', JSON.stringify(cData));
         }
         if (tData && tData.length > 0) {
-          setTestimonials(tData);
-          localStorage.setItem('60fw_testimonials', JSON.stringify(tData));
+          const isOldData = tData.some((x: any) => x.authorName_ar?.includes('إليانور') || x.authorName?.includes('Eleanor'));
+          const effectiveTestimonials = isOldData ? FALLBACK_TESTIMONIALS : tData;
+          setTestimonials(effectiveTestimonials);
+          localStorage.setItem('60fw_testimonials', JSON.stringify(effectiveTestimonials));
         }
         if (hData) {
           const sanitizedHData = {
             ...hData,
+            testimonials: {
+              ...hData?.testimonials,
+              heading_ar: 'ثقة نعتز بها، وأثر يتحدث عنّا',
+              heading_en: 'ثقة نعتز بها، وأثر يتحدث عنّا',
+              subtitle_ar: 'تجارب شركائنا تعكس التزامنا بصناعة أعمال إبداعية تتجاوز التوقعات وتترك أثرًا يستمر.',
+              subtitle_en: 'تجارب شركائنا تعكس التزامنا بصناعة أعمال إبداعية تتجاوز التوقعات وتترك أثرًا يستمر.',
+              eyebrow_ar: '',
+              eyebrow_en: '',
+            },
             hero: {
               ...hData.hero,
               backdropVideo: (hData.hero?.backdropVideo && !hData.hero.backdropVideo.includes('l8t8ykc5tfbkefrg'))

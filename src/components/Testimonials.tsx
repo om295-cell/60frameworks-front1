@@ -1,29 +1,67 @@
 import React from 'react';
 import { Testimonial } from '../types';
-import { Quote, Star } from 'lucide-react';
+import { Quote } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface TestimonialsProps {
   testimonials: Testimonial[];
-  content?: { eyebrow_en?: string; eyebrow_ar?: string; heading_en?: string; heading_ar?: string; subtitle_en?: string; subtitle_ar?: string; };
+  content?: {
+    eyebrow_en?: string;
+    eyebrow_ar?: string;
+    heading_en?: string;
+    heading_ar?: string;
+    subtitle_en?: string;
+    subtitle_ar?: string;
+  };
 }
 
 export const Testimonials: React.FC<TestimonialsProps> = ({ testimonials, content }) => {
-  const { language, t } = useLanguage();
+  const { t } = useLanguage();
+
+  // Testimonials are strictly kept in Arabic across both language modes
+  const heading = content?.heading_ar || t('testHeading') || 'ثقة نعتز بها، وأثر يتحدث عنّا';
+  const subtitle = content?.subtitle_ar || t('testSubtitle') || 'تجارب شركائنا تعكس التزامنا بصناعة أعمال إبداعية تتجاوز التوقعات وتترك أثرًا يستمر.';
+  const eyebrow = content?.eyebrow_ar || t('testEyebrow');
 
   return (
     <section id="testimonials" className="section" style={{ backgroundColor: 'var(--color-sec-testimonials-bg, #F4D3C9)' }}>
-      <div className="container">
+      <div className="container" dir="rtl">
         {/* Section Header */}
-        <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 3.5rem auto' }}>
-          <span className="type-eyebrow" style={{ color: 'var(--color-sec-testimonials-accent, var(--color-orange-primary))' }}>
-            {(language === 'ar' ? content?.eyebrow_ar : content?.eyebrow_en) || t('testEyebrow')}
-          </span>
-          <h2 className="type-h1" style={{ color: 'var(--color-sec-testimonials-text, var(--color-charcoal-dark))', marginBottom: '1rem' }}>
-            {(language === 'ar' ? content?.heading_ar : content?.heading_en) || t('testHeading')}
+        <div style={{ textAlign: 'center', maxWidth: '750px', margin: '0 auto 3.5rem auto' }}>
+          {eyebrow && eyebrow.trim() !== '' && (
+            <span
+              className="type-eyebrow"
+              style={{
+                color: 'var(--color-sec-testimonials-accent, var(--color-orange-primary))',
+                fontFamily: "'Cairo', 'Tajawal', sans-serif",
+                display: 'inline-block',
+                marginBottom: '0.75rem',
+              }}
+            >
+              {eyebrow}
+            </span>
+          )}
+          <h2
+            className="type-h1"
+            style={{
+              color: 'var(--color-sec-testimonials-text, var(--color-charcoal-dark))',
+              marginBottom: '1rem',
+              fontFamily: "'Cairo', 'Tajawal', sans-serif",
+              fontWeight: 800,
+            }}
+          >
+            {heading}
           </h2>
-          <p className="type-body-lg" style={{ color: 'var(--color-sec-testimonials-subtitle, rgba(36,36,36,0.85))', lineHeight: 1.7 }}>
-            {(language === 'ar' ? content?.subtitle_ar : content?.subtitle_en) || t('testSubtitle')}
+          <p
+            className="type-body-lg"
+            style={{
+              color: 'var(--color-sec-testimonials-subtitle, rgba(36,36,36,0.85))',
+              lineHeight: 1.8,
+              fontFamily: "'Cairo', 'Tajawal', sans-serif",
+              fontSize: '1.125rem',
+            }}
+          >
+            {subtitle}
           </p>
         </div>
 
@@ -36,11 +74,13 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ testimonials, conten
           }}
         >
           {testimonials.map((item, idx) => {
-            const quote = language === 'ar' && item.quote_ar ? item.quote_ar : item.quote;
-            const author = language === 'ar' && item.authorName_ar ? item.authorName_ar : item.authorName;
-            const role = language === 'ar' && item.authorRole_ar ? item.authorRole_ar : item.authorRole;
-            const org = language === 'ar' && item.organization_ar ? item.organization_ar : item.organization;
-            const metric = language === 'ar' && item.metricHighlight_ar ? item.metricHighlight_ar : item.metricHighlight;
+            // Always display Arabic in both pages
+            const quote = item.quote_ar || item.quote;
+            const author = item.authorName_ar || item.authorName;
+            const role = item.authorRole_ar || item.authorRole;
+
+            // Strip existing quotes so we format cleanly with « ... »
+            const cleanedQuote = quote.replace(/^[«"'\s]+|[»"'\s]+$/g, '');
 
             return (
               <div
@@ -56,14 +96,15 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ testimonials, conten
                   boxShadow: 'var(--shadow-md)',
                   position: 'relative',
                   border: '1px solid rgba(0, 0, 0, 0.06)',
+                  textAlign: 'right',
                 }}
               >
-                {/* Orange Quotation Accent Icon */}
                 <div>
+                  {/* Orange Quotation Accent Icon */}
                   <div
                     style={{
-                      width: '48px',
-                      height: '48px',
+                      width: '46px',
+                      height: '46px',
                       borderRadius: '50%',
                       backgroundColor: 'var(--color-orange-subtle)',
                       color: 'var(--color-sec-testimonials-accent, var(--color-orange-primary))',
@@ -73,79 +114,58 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ testimonials, conten
                       marginBottom: '1.5rem',
                     }}
                   >
-                    <Quote size={24} />
-                  </div>
-
-                  {/* Rating Stars */}
-                  <div style={{ display: 'flex', gap: '4px', marginBottom: '1rem' }}>
-                    {[...Array(item.rating || 5)].map((_, sIdx) => (
-                      <Star key={sIdx} size={16} fill="var(--color-yellow-energy)" color="var(--color-yellow-energy)" />
-                    ))}
+                    <Quote size={22} />
                   </div>
 
                   {/* Quote Text */}
                   <p
                     style={{
-                      fontSize: '1rem',
-                      lineHeight: 1.7,
+                      fontSize: '1.05rem',
+                      lineHeight: 1.85,
                       color: 'var(--color-sec-testimonials-card-text, var(--color-charcoal-dark))',
-                      fontStyle: 'italic',
-                      marginBottom: '1.75rem',
+                      fontFamily: "'Cairo', 'Tajawal', sans-serif",
+                      marginBottom: '2rem',
+                      fontWeight: 500,
                     }}
                   >
-                    "{quote}"
+                    «{cleanedQuote}»
                   </p>
                 </div>
 
-                <div>
-                  {/* Metric Highlight Badge */}
-                  {metric && (
-                    <div
-                      style={{
-                        display: 'inline-block',
-                        backgroundColor: 'var(--color-blush-subtle)',
-                        color: 'var(--color-sec-testimonials-accent, var(--color-orange-primary))',
-                        padding: '0.35rem 0.85rem',
-                        borderRadius: 'var(--radius-full)',
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
-                        marginBottom: '1.25rem',
-                        border: '1px solid rgba(246, 134, 33, 0.2)',
-                      }}
-                    >
-                      ★ {metric}
-                    </div>
-                  )}
-
-                  {/* Author Info */}
+                {/* Author Info: Name & Role only (No pictures, No company names) */}
+                <div
+                  style={{
+                    paddingTop: '1.25rem',
+                    borderTop: '1px solid rgba(128, 128, 128, 0.15)',
+                  }}
+                >
                   <div
                     style={{
+                      fontWeight: 700,
+                      fontSize: '0.975rem',
+                      color: 'var(--color-sec-testimonials-card-text, var(--color-charcoal-dark))',
+                      fontFamily: "'Cairo', 'Tajawal', sans-serif",
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '1rem',
-                      paddingTop: '1.25rem',
-                      borderTop: '1px solid rgba(128, 128, 128, 0.18)',
+                      flexWrap: 'wrap',
+                      gap: '0.4rem',
                     }}
                   >
-                    <img
-                      src={item.avatarUrl}
-                      alt={author}
-                      style={{
-                        width: '48px',
-                        height: '48px',
-                        borderRadius: '50%',
-                        objectFit: 'cover',
-                        border: '2px solid var(--color-sec-testimonials-accent, var(--color-orange-primary))',
-                      }}
-                    />
-                    <div>
-                      <div style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--color-sec-testimonials-card-text, var(--color-charcoal-dark))' }}>
-                        {author}
-                      </div>
-                      <div style={{ fontSize: '0.8125rem', color: 'var(--color-sec-testimonials-card-text, var(--color-body-light))', opacity: 0.8 }}>
-                        {role}، <strong>{org}</strong>
-                      </div>
-                    </div>
+                    <span>{author}</span>
+                    {role && (
+                      <>
+                        <span style={{ opacity: 0.5 }}>—</span>
+                        <span
+                          style={{
+                            fontWeight: 600,
+                            color: 'var(--color-sec-testimonials-accent, var(--color-orange-primary))',
+                            fontSize: '0.9rem',
+                          }}
+                        >
+                          {role}
+                        </span>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

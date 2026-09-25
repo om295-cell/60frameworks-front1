@@ -153,11 +153,11 @@ export const translations: Translations = {
   whyPillar4Desc: { en: 'Deep diplomatic competence, high-security orchestration, and VIP delegation protocol compliance trusted by sovereign leaders and multinational chairpersons.', ar: 'كفاءة دبلوماسية عميقة، وإدارة أمنية عالية المستوى، والتزام صارم ببروتوكول الوفود الرسمية المعتمد لدى القيادات وصناع القرار.' },
 
   // Testimonials
-  testEyebrow: { en: 'CLIENT VOICES & IMPACT', ar: 'آراء شركاء النجاح وأثرنا' },
-  testHeading: { en: 'Validated by Global Leaders and Visionaries.', ar: 'شهادات نعتز بها من قادة ومسؤولين عالميين.' },
+  testEyebrow: { en: '', ar: '' },
+  testHeading: { en: 'ثقة نعتز بها، وأثر يتحدث عنّا', ar: 'ثقة نعتز بها، وأثر يتحدث عنّا' },
   testSubtitle: {
-    en: 'Real outcomes, tangible metric leaps, and transformative experiences reported by the leaders who trust us with their critical milestones.',
-    ar: 'نتائج واقعية وقفزات قياسية وتجارب استثنائية يرويها القادة الذين ائتمنونا على أهم محطاتهم الاستراتيجية.',
+    en: 'تجارب شركائنا تعكس التزامنا بصناعة أعمال إبداعية تتجاوز التوقعات وتترك أثرًا يستمر.',
+    ar: 'تجارب شركائنا تعكس التزامنا بصناعة أعمال إبداعية تتجاوز التوقعات وتترك أثرًا يستمر.',
   },
 
   // Final CTA

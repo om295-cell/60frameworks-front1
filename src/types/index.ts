@@ -83,9 +83,9 @@ export interface Testimonial {
   authorName_ar?: string;
   authorRole: string;
   authorRole_ar?: string;
-  organization: string;
+  organization?: string;
   organization_ar?: string;
-  avatarUrl: string;
+  avatarUrl?: string;
   metricHighlight?: string;
   metricHighlight_ar?: string;
   rating: number;
