@@ -1,6 +1,6 @@
 import React from 'react';
 import { Testimonial } from '../types';
-import { Quote } from 'lucide-react';
+import { Quote, Star } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface TestimonialsProps {
@@ -100,21 +100,36 @@ export const Testimonials: React.FC<TestimonialsProps> = ({ testimonials, conten
                 }}
               >
                 <div>
-                  {/* Orange Quotation Accent Icon */}
+                  {/* Top Bar: Quotation Accent Icon & 5 Stars */}
                   <div
                     style={{
-                      width: '46px',
-                      height: '46px',
-                      borderRadius: '50%',
-                      backgroundColor: 'var(--color-orange-subtle)',
-                      color: 'var(--color-sec-testimonials-accent, var(--color-orange-primary))',
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center',
+                      justifyContent: 'space-between',
                       marginBottom: '1.5rem',
                     }}
                   >
-                    <Quote size={22} />
+                    <div
+                      style={{
+                        width: '46px',
+                        height: '46px',
+                        borderRadius: '50%',
+                        backgroundColor: 'var(--color-orange-subtle)',
+                        color: 'var(--color-sec-testimonials-accent, var(--color-orange-primary))',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Quote size={22} />
+                    </div>
+
+                    {/* 5 Stars Rating */}
+                    <div style={{ display: 'flex', gap: '3px' }} aria-label="5 stars rating">
+                      {[...Array(item.rating || 5)].map((_, sIdx) => (
+                        <Star key={sIdx} size={18} fill="#FFB800" color="#FFB800" />
+                      ))}
+                    </div>
                   </div>
 
                   {/* Quote Text */}
