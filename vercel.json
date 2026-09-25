@@ -11,7 +11,7 @@
   ],
   "headers": [
     {
-      "source": "/whatsapp-logo.(jpeg|jpg)",
+      "source": "/(whatsapp-logo.*)",
       "headers": [
         {
           "key": "Cache-Control",
