@@ -209,36 +209,6 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose, on
             </p>
           </div>
 
-          {/* Gallery Showcase */}
-          {project.galleryImages && project.galleryImages.length > 0 && (
-            <div style={{ marginBottom: '2.5rem' }}>
-              <h3 className="type-h3" style={{ marginBottom: '1rem', color: 'var(--color-charcoal-dark)' }}>
-                {t('projModalGallery')}
-              </h3>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                  gap: '1rem',
-                }}
-              >
-                {project.galleryImages.map((img, idx) => (
-                  <div
-                    key={idx}
-                    className="image-zoom-container"
-                    style={{
-                      borderRadius: 'var(--radius-md)',
-                      height: '180px',
-                      backgroundColor: 'var(--color-gray-structure)',
-                    }}
-                  >
-                    <img src={img} alt={`${title} detail ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* Action Footer */}
           <div
             style={{
