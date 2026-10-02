@@ -301,10 +301,11 @@ export const CaseStudies: React.FC<CaseStudiesProps> = ({ projects, onSelectProj
                             color: '#F59E0B',
                             backgroundColor: 'rgba(245, 158, 11, 0.12)',
                             border: '1px solid rgba(245, 158, 11, 0.3)',
-                            padding: '0.3rem 0.65rem',
+                            padding: '0.4rem 0.85rem',
                             borderRadius: 'var(--radius-full)',
                             textDecoration: 'none',
                             transition: 'all 0.2s ease',
+                            whiteSpace: 'nowrap',
                           }}
                           onMouseEnter={(e) => {
                             e.currentTarget.style.backgroundColor = 'rgba(245, 158, 11, 0.22)';
