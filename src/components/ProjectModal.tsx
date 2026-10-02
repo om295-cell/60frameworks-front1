@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { X, Calendar, User, Tag, ArrowRight } from 'lucide-react';
+import { X, Calendar, User, Tag, ArrowRight, ExternalLink } from 'lucide-react';
 import { Project } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -254,19 +254,54 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose, on
             <div style={{ fontSize: '0.875rem', color: 'var(--color-body-light)' }}>
               {t('projModalCtaQuestion')}
             </div>
-            <button
-              onClick={() => {
-                onClose();
-                onOpenContact(`${title}`);
-              }}
-              className="btn btn-primary-orange"
-            >
-              <span>{t('projModalCtaBtn')}</span>
-              <ArrowRight
-                size={16}
-                style={{ transform: dir === 'rtl' ? 'rotate(180deg)' : 'none' }}
-              />
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+              {project.driveUrl && (
+                <a
+                  href={project.driveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    backgroundColor: 'rgba(246, 134, 33, 0.1)',
+                    color: 'var(--color-orange-primary)',
+                    border: '1px solid var(--color-orange-primary)',
+                    padding: '0.75rem 1.25rem',
+                    borderRadius: 'var(--radius-full, 9999px)',
+                    fontWeight: 700,
+                    fontSize: '0.875rem',
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--color-orange-primary)';
+                    e.currentTarget.style.color = '#FFFFFF';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(246, 134, 33, 0.1)';
+                    e.currentTarget.style.color = 'var(--color-orange-primary)';
+                  }}
+                >
+                  <ExternalLink size={16} />
+                  <span>{language === 'ar' ? 'عرض التوثيق والملفات عبر Google Drive' : 'View Files on Google Drive'}</span>
+                </a>
+              )}
+              <button
+                onClick={() => {
+                  onClose();
+                  onOpenContact(`${title}`);
+                }}
+                className="btn btn-primary-orange"
+              >
+                <span>{t('projModalCtaBtn')}</span>
+                <ArrowRight
+                  size={16}
+                  style={{ transform: dir === 'rtl' ? 'rotate(180deg)' : 'none' }}
+                />
+              </button>
+            </div>
           </div>
         </div>
       </div>

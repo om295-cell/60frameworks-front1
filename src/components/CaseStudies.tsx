@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Project } from '../types';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, ExternalLink } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface CaseStudiesProps {
@@ -284,22 +284,56 @@ export const CaseStudies: React.FC<CaseStudiesProps> = ({ projects, onSelectProj
                     >
                       {t('viewCaseStudy')}
                     </span>
-                    <div
-                      style={{
-                        width: '36px',
-                        height: '36px',
-                        borderRadius: '50%',
-                        backgroundColor: 'rgba(246, 134, 33, 0.15)',
-                        color: 'var(--color-orange-primary)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <ArrowUpRight
-                        size={18}
-                        style={{ transform: dir === 'rtl' ? 'rotate(-90deg)' : 'none' }}
-                      />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                      {project.driveUrl && (
+                        <a
+                          href={project.driveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          title={language === 'ar' ? 'فتح مجلد Google Drive' : 'Open Google Drive Folder'}
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.35rem',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            color: '#F59E0B',
+                            backgroundColor: 'rgba(245, 158, 11, 0.12)',
+                            border: '1px solid rgba(245, 158, 11, 0.3)',
+                            padding: '0.3rem 0.65rem',
+                            borderRadius: 'var(--radius-full)',
+                            textDecoration: 'none',
+                            transition: 'all 0.2s ease',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = 'rgba(245, 158, 11, 0.22)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = 'rgba(245, 158, 11, 0.12)';
+                          }}
+                        >
+                          <ExternalLink size={12} />
+                          <span>{language === 'ar' ? 'ملفات التغطية' : 'Drive'}</span>
+                        </a>
+                      )}
+                      <div
+                        style={{
+                          width: '36px',
+                          height: '36px',
+                          borderRadius: '50%',
+                          backgroundColor: 'rgba(246, 134, 33, 0.15)',
+                          color: 'var(--color-orange-primary)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <ArrowUpRight
+                          size={18}
+                          style={{ transform: dir === 'rtl' ? 'rotate(-90deg)' : 'none' }}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

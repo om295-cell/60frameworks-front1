@@ -51,7 +51,13 @@ export const App: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>(() => {
     try {
       const c = localStorage.getItem('60fw_projects');
-      return c ? JSON.parse(c) : FALLBACK_PROJECTS;
+      if (c) {
+        const parsed = JSON.parse(c);
+        if (Array.isArray(parsed) && parsed.length > 0 && !parsed.some((x: any) => x.title_ar?.includes('أورا') || x.title?.includes('Aura'))) {
+          return parsed;
+        }
+      }
+      return FALLBACK_PROJECTS;
     } catch { return FALLBACK_PROJECTS; }
   });
   const [clients, setClients] = useState<ClientItem[]>(() => {
@@ -84,6 +90,15 @@ export const App: React.FC = () => {
       if (!c) return null;
       const parsed = JSON.parse(c);
       if (parsed) {
+        if (!parsed.caseStudies || parsed.caseStudies.heading_ar?.includes('فعاليات تاريخية') || parsed.caseStudies.heading_en?.includes('Landmark Experiences')) {
+          parsed.caseStudies = {
+            ...parsed?.caseStudies,
+            heading_ar: 'أعمالنا تصنع الأثر',
+            heading_en: 'Our Work Creates Impact',
+            subtitle_ar: 'مشاريع وتجارب نفذناها لعلامات وجهات مختلفة، من الفكرة إلى التنفيذ.',
+            subtitle_en: 'Projects and experiences we executed for various brands and entities, from concept to execution.',
+          };
+        }
         parsed.testimonials = {
           ...parsed?.testimonials,
           heading_ar: 'ثقة نعتز بها، وأثر يتحدث عنّا',
@@ -150,8 +165,10 @@ export const App: React.FC = () => {
         ]);
 
         if (pData && pData.length > 0) {
-          setProjects(pData);
-          localStorage.setItem('60fw_projects', JSON.stringify(pData));
+          const isOldProjects = pData.some((x: any) => x.title_ar?.includes('أورا') || x.title?.includes('Aura'));
+          const effectiveProjects = isOldProjects ? FALLBACK_PROJECTS : pData;
+          setProjects(effectiveProjects);
+          localStorage.setItem('60fw_projects', JSON.stringify(effectiveProjects));
         }
         if (sData && sData.length > 0) {
           setServices(sData);
@@ -174,6 +191,13 @@ export const App: React.FC = () => {
         if (hData) {
           const sanitizedHData = {
             ...hData,
+            caseStudies: {
+              ...hData?.caseStudies,
+              heading_ar: (hData?.caseStudies?.heading_ar && !hData.caseStudies.heading_ar.includes('فعاليات تاريخية')) ? hData.caseStudies.heading_ar : 'أعمالنا تصنع الأثر',
+              heading_en: (hData?.caseStudies?.heading_en && !hData.caseStudies.heading_en.includes('Landmark Experiences')) ? hData.caseStudies.heading_en : 'Our Work Creates Impact',
+              subtitle_ar: (hData?.caseStudies?.subtitle_ar && !hData.caseStudies.subtitle_ar.includes('اكتشف كيف نحول')) ? hData.caseStudies.subtitle_ar : 'مشاريع وتجارب نفذناها لعلامات وجهات مختلفة، من الفكرة إلى التنفيذ.',
+              subtitle_en: (hData?.caseStudies?.subtitle_en && !hData.caseStudies.subtitle_en.includes('Explore how we translate')) ? hData.caseStudies.subtitle_en : 'Projects and experiences we executed for various brands and entities, from concept to execution.',
+            },
             testimonials: {
               ...hData?.testimonials,
               heading_ar: 'ثقة نعتز بها، وأثر يتحدث عنّا',

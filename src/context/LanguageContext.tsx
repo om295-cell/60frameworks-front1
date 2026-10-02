@@ -116,10 +116,10 @@ export const translations: Translations = {
 
   // Case Studies
   storiesEyebrow: { en: 'FEATURED CASE STUDIES & STORIES', ar: 'قصص نجاح ودراسات حالة بارزة' },
-  storiesHeading: { en: 'Landmark Experiences Crafted on the World Stage.', ar: 'فعاليات تاريخية صيغت بإتقان على المسرح العالمي.' },
+  storiesHeading: { en: 'Our Work Creates Impact', ar: 'أعمالنا تصنع الأثر' },
   storiesSubtitle: {
-    en: 'Explore how we translate high-stakes visions into viral product launches, immersive pavilions, and sovereign summits.',
-    ar: 'اكتشف كيف نحول الرؤى الطموحة إلى تدشينات منتجات تصنع الزخم، وأجنحة معمارية غامرة، وقمم سيادية ملهمة.',
+    en: 'Projects and experiences we executed for various brands and entities, from concept to execution.',
+    ar: 'مشاريع وتجارب نفذناها لعلامات وجهات مختلفة، من الفكرة إلى التنفيذ.',
   },
   storiesAll: { en: 'All', ar: 'الكل' },
   storiesSummits: { en: 'Summits & Conferences', ar: 'القمم والمؤتمرات' },

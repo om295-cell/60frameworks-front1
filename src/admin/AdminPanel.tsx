@@ -47,6 +47,7 @@ const PROJECT_COLUMNS = [
   { key: 'summary_ar', label: 'Summary (AR)', type: 'textarea' as const, isArabic: true },
   { key: 'description_ar', label: 'Description (AR)', type: 'textarea' as const, isArabic: true },
   { key: 'coverImage', label: 'Cover Image', type: 'media' as const, accept: 'image' as const },
+  { key: 'driveUrl', label: 'Google Drive Link / URL', type: 'text' as const },
   { key: 'videoUrl', label: 'Project Video', type: 'media' as const, accept: 'video' as const },
   { key: 'galleryImages', label: 'Gallery Images (URLs)', type: 'mediaArray' as const },
 ];
@@ -109,7 +110,7 @@ const TESTIMONIAL_COLUMNS = [
 ];
 
 // Default values for new items
-const DEFAULT_PROJECT = { title: '', title_ar: '', slug: '', category: 'Summits & Conferences', category_ar: '', client: '', client_ar: '', year: new Date().getFullYear(), featured: false, order: 99, summary: '', summary_ar: '', description: '', description_ar: '', coverImage: '', videoUrl: '', galleryImages: [], metrics: [], tags: [], tags_ar: [] };
+const DEFAULT_PROJECT = { title: '', title_ar: '', slug: '', category: 'Summits & Conferences', category_ar: '', client: '', client_ar: '', year: new Date().getFullYear(), featured: false, order: 99, summary: '', summary_ar: '', description: '', description_ar: '', coverImage: '', driveUrl: '', videoUrl: '', galleryImages: [], metrics: [], tags: [], tags_ar: [] };
 const DEFAULT_SERVICE = { title: '', title_ar: '', slug: '', icon: 'Sparkles', tagline: '', tagline_ar: '', description: '', description_ar: '', deliverables: [], deliverables_ar: [], order: 99, highlighted: false };
 const DEFAULT_SECTOR = { name: '', name_ar: '', slug: '', description: '', description_ar: '', capabilitiesTitle: '', capabilitiesTitle_ar: '', capabilities: [], capabilities_ar: [], buttonText: '', buttonText_ar: '', buttonLink: '#contact', imageUrl: '', videoUrl: '', icon: 'Building2', order: 99 };
 const DEFAULT_CLIENT = { name: '', name_ar: '', logoSvg: '', logoUrl: '', industry: '', industry_ar: '', tier: 'featured', order: 99 };

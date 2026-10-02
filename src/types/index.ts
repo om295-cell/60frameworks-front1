@@ -12,6 +12,8 @@ export interface Project {
   description: string;
   description_ar?: string;
   coverImage: string;
+  videoUrl?: string;
+  driveUrl?: string;
   galleryImages: string[];
   metrics: {
     label: string;
