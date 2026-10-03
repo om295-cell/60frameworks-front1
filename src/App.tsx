@@ -233,6 +233,8 @@ export const App: React.FC = () => {
               contactTitle_en: 'Contact Us',
               expertiseTitle_ar: 'مجالات الخبرة',
               expertiseTitle_en: 'Areas of Expertise',
+              hubs_ar: (!hData.footer?.hubs_ar || hData.footer.hubs_ar.includes('المقرات الإقليمية')) ? 'الرياض' : hData.footer.hubs_ar,
+              hubs_en: (!hData.footer?.hubs_en || hData.footer.hubs_en.includes('Regional & Global Hubs')) ? 'Riyadh' : hData.footer.hubs_en,
               servicesList_ar: (!hData.footer?.servicesList_ar || !hData.footer.servicesList_ar.includes('الحملات التسويقية والإعلامية'))
                 ? 'الحملات التسويقية والإعلامية\nصناعة وإدارة المحتوى\nالإنتاج المرئي والتغطيات\nتجارب العلامات التجارية\nإدارة المؤثرين\nالفعاليات والملتقيات\nبناء الهوية والتصميم الإبداعي\nتقنيات وتجارب الواقع الافتراضي والمعزز'
                 : hData.footer.servicesList_ar,
